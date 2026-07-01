@@ -64,7 +64,7 @@ export function OperatorPanel({ initialState, onStateChange }) {
     };
 
     const connectWebSocket = () => {
-      const wsUrl = "wss://free.piesocket.com/v3/essensa_stream_nikuyaaa?api_key=VC1IyPolUZiwEnffLJccNu4s7344qnvW66v7gGbb";
+      const wsUrl = "wss://itty.ws/c/essensa_stream_nikuyaaa_secure";
       ws = new WebSocket(wsUrl);
       setSocket(ws);
 
