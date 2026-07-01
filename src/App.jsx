@@ -425,13 +425,6 @@ function App() {
               )}
             </AnimatePresence>
 
-            {/* Live Viewer Comments Widget */}
-            <CommentsWidget 
-              isOpen={state.commentsVisible}
-              variant={state.commentsVariant}
-              comments={state.comments}
-            />
-
             {/* Lower Third (Host Nameplate) */}
             <LowerThird 
               isOpen={state.hostVisible} 
