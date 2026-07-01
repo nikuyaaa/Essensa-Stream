@@ -8,6 +8,7 @@ import { Logo } from './Logo';
 export function OperatorPanel({ initialState, onStateChange }) {
   const [state, setState] = useState(initialState);
   const [channel, setChannel] = useState(null);
+  const [socket, setSocket] = useState(null);
   
   // Temporary input states
   const [tickerInput, setTickerInput] = useState(initialState.tickerItems.join('\n'));
@@ -27,33 +28,82 @@ export function OperatorPanel({ initialState, onStateChange }) {
   const [syncedTabsCount, setSyncedTabsCount] = useState(0);
   const [showSyncSuccess, setShowSyncSuccess] = useState(false);
 
-  // Initialize BroadcastChannel
+  // Store the latest state in a ref to let WebSocket/BroadcastChannel handlers
+  // read it without triggering constant reconnection cycles on state change
+  const stateRef = React.useRef(state);
+  useEffect(() => {
+    stateRef.current = state;
+  }, [state]);
+
+  // Initialize BroadcastChannel & WebSocket (Internet Sync for Streamlabs)
   useEffect(() => {
     const bc = new BroadcastChannel('essensa_overlay_channel');
     setChannel(bc);
 
-    bc.onmessage = (event) => {
-      const { type, payload } = event.data;
+    let ws = null;
+    let reconnectTimeout = null;
+
+    const handleIncomingMessage = (type, payload) => {
       if (type === 'REQUEST_STATE') {
-        // Send current state back to the newly opened overlay
-        bc.postMessage({ type: 'STATE_RESPONSE', payload: state });
-        // Register sync
+        const responseMsg = { type: 'STATE_RESPONSE', payload: stateRef.current };
+        bc.postMessage(responseMsg);
+        if (ws && ws.readyState === WebSocket.OPEN) {
+          ws.send(JSON.stringify(responseMsg));
+        }
         setSyncedTabsCount(prev => prev + 1);
         triggerSyncNotice();
       } else if (type === 'OVERLAY_PING') {
-        // Overlay checked in
         setSyncedTabsCount(prev => Math.max(1, prev));
         triggerSyncNotice();
       }
     };
 
-    // Ping overlays to check if any are open
+    bc.onmessage = (event) => {
+      const { type, payload } = event.data;
+      handleIncomingMessage(type, payload);
+    };
+
+    const connectWebSocket = () => {
+      const wsUrl = "wss://free.piesocket.com/v3/essensa_stream_nikuyaaa?api_key=VC1IyPolUZiwEnffLJccNu4s7344qnvW66v7gGbb";
+      ws = new WebSocket(wsUrl);
+      setSocket(ws);
+
+      ws.onopen = () => {
+        ws.send(JSON.stringify({ type: 'STATE_RESPONSE', payload: stateRef.current }));
+      };
+
+      ws.onmessage = (event) => {
+        try {
+          const { type, payload } = JSON.parse(event.data);
+          handleIncomingMessage(type, payload);
+        } catch (e) {
+          console.error("Error parsing WebSocket message:", e);
+        }
+      };
+
+      ws.onclose = () => {
+        console.warn("WebSocket closed. Reconnecting in 3 seconds...");
+        reconnectTimeout = setTimeout(connectWebSocket, 3000);
+      };
+
+      ws.onerror = (err) => {
+        console.error("WebSocket error:", err);
+        ws.close();
+      };
+    };
+
+    connectWebSocket();
     bc.postMessage({ type: 'CONTROL_PING' });
 
     return () => {
       bc.close();
+      if (ws) {
+        ws.onclose = null;
+        ws.close();
+      }
+      clearTimeout(reconnectTimeout);
     };
-  }, [state]);
+  }, []);
 
   const triggerSyncNotice = () => {
     setShowSyncSuccess(true);
@@ -65,9 +115,15 @@ export function OperatorPanel({ initialState, onStateChange }) {
   const updateState = (updatedFields) => {
     const newState = { ...state, ...updatedFields };
     setState(newState);
+    
+    const msg = { type: 'UPDATE_STATE', payload: newState };
     if (channel) {
-      channel.postMessage({ type: 'UPDATE_STATE', payload: newState });
+      channel.postMessage(msg);
     }
+    if (socket && socket.readyState === WebSocket.OPEN) {
+      socket.send(JSON.stringify(msg));
+    }
+
     if (onStateChange) {
       onStateChange(newState);
     }
@@ -127,8 +183,12 @@ export function OperatorPanel({ initialState, onStateChange }) {
     
     updateState({ comments: newComments });
     
+    const msg = { type: 'ADD_COMMENT', payload: newComment };
     if (channel) {
-      channel.postMessage({ type: 'ADD_COMMENT', payload: newComment });
+      channel.postMessage(msg);
+    }
+    if (socket && socket.readyState === WebSocket.OPEN) {
+      socket.send(JSON.stringify(msg));
     }
   };
 

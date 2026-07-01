@@ -87,12 +87,13 @@ function App() {
     }
   }, []);
 
-  // Sync state via BroadcastChannel
+  // Sync state via BroadcastChannel and WebSocket (Internet Sync for Streamlabs)
   useEffect(() => {
     const bc = new BroadcastChannel('essensa_overlay_channel');
+    let socket = null;
+    let reconnectTimeout = null;
 
-    bc.onmessage = (event) => {
-      const { type, payload } = event.data;
+    const handleIncomingMessage = (type, payload) => {
       if (type === 'UPDATE_STATE' || type === 'STATE_RESPONSE') {
         setState(prev => ({
           ...prev,
@@ -110,13 +111,56 @@ function App() {
         });
       } else if (type === 'CONTROL_PING') {
         bc.postMessage({ type: 'OVERLAY_PING' });
+        if (socket && socket.readyState === WebSocket.OPEN) {
+          socket.send(JSON.stringify({ type: 'OVERLAY_PING' }));
+        }
       }
     };
 
+    bc.onmessage = (event) => {
+      const { type, payload } = event.data;
+      handleIncomingMessage(type, payload);
+    };
+
+    // Initialize WebSocket connection for remote sync (e.g. Streamlabs Browser Source)
+    const connectWebSocket = () => {
+      const wsUrl = "wss://free.piesocket.com/v3/essensa_stream_nikuyaaa?api_key=VC1IyPolUZiwEnffLJccNu4s7344qnvW66v7gGbb";
+      socket = new WebSocket(wsUrl);
+
+      socket.onopen = () => {
+        socket.send(JSON.stringify({ type: 'REQUEST_STATE' }));
+      };
+
+      socket.onmessage = (event) => {
+        try {
+          const { type, payload } = JSON.parse(event.data);
+          handleIncomingMessage(type, payload);
+        } catch (e) {
+          console.error("Error parsing WebSocket message:", e);
+        }
+      };
+
+      socket.onclose = () => {
+        console.warn("WebSocket closed. Reconnecting in 3 seconds...");
+        reconnectTimeout = setTimeout(connectWebSocket, 3000);
+      };
+
+      socket.onerror = (err) => {
+        console.error("WebSocket error:", err);
+        socket.close();
+      };
+    };
+
+    connectWebSocket();
     bc.postMessage({ type: 'REQUEST_STATE' });
 
     return () => {
       bc.close();
+      if (socket) {
+        socket.onclose = null;
+        socket.close();
+      }
+      clearTimeout(reconnectTimeout);
     };
   }, []);
 
