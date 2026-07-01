@@ -68,77 +68,40 @@ export function Header({
 
   return (
     <motion.div
-      initial={{ y: -60, opacity: 0 }}
+      initial={{ y: -70, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
-      exit={{ y: -60, opacity: 0 }}
+      exit={{ y: -70, opacity: 0 }}
       transition={{ type: 'spring', damping: 20, stiffness: 100 }}
-      className={`fixed top-0 left-0 w-full h-[54px] z-40 bg-white text-brand-charcoal flex items-center justify-between px-4 sm:px-8 border-b border-black/10 shadow-[0_2px_8px_rgba(0,0,0,0.03)] select-none overflow-hidden ${className}`}
+      className={`absolute top-0 left-0 w-[1920px] h-[64px] z-40 bg-white text-brand-charcoal flex items-center justify-between px-8 border-b border-black/15 shadow-[0_4px_12px_rgba(0,0,0,0.05)] select-none overflow-hidden ${className}`}
     >
       {/* Subtle Shimmer Overlay */}
       <div className="absolute inset-0 shimmer-overlay opacity-30 animate-shimmer pointer-events-none" />
 
       {/* Left: Brand / Tagline */}
-      <div className="flex items-center gap-2 sm:gap-3 relative z-10 min-w-0">
+      <div className="flex items-center gap-3 relative z-10 min-w-0">
         {/* Pulsing Green dot */}
-        <div className="w-2 h-2 sm:w-2.5 sm:h-2.5 bg-brand-green rounded-full animate-pulse shrink-0" />
-        <span className="font-display font-extrabold text-[11px] sm:text-[13px] tracking-[0.25em] uppercase text-brand-green shrink-0">
+        <div className="w-3.5 h-3.5 bg-brand-green rounded-full animate-pulse shrink-0" />
+        <span className="font-display font-black text-xl tracking-[0.2em] uppercase text-brand-green shrink-0">
           Live Event
         </span>
-        <div className="hidden sm:block h-4 w-px bg-black/10 shrink-0" />
-        <span className="hidden sm:inline font-sans font-semibold text-[11px] sm:text-[13px] tracking-wide text-brand-charcoal/80 text-ellipsis overflow-hidden max-w-[200px] md:max-w-[400px] whitespace-nowrap">
+        <div className="h-6 w-0.5 bg-black/20 shrink-0" />
+        <span className="font-sans font-black text-xl tracking-wide text-brand-charcoal/90 truncate max-w-[1200px]">
           {segmentName}
         </span>
       </div>
 
-      {/* Right Content Group: Socials Dock & Live Capsule */}
-      <div className="flex items-center relative z-10 shrink-0">
-        
-        {/* Variant 1: Desktop Socials Dock (Side-by-side row) */}
-        <div className="hidden lg:flex items-center gap-5 mr-6 shrink-0 border-r border-black/5 pr-6">
-          {socialHandles.map((handle, idx) => (
-            <div 
-              key={idx} 
-              className="flex items-center gap-1.5 text-[11px] font-bold text-brand-charcoal/70 hover:text-brand-green transition-colors duration-300"
-            >
-              <span className="shrink-0 text-brand-charcoal/50">{handle.icon}</span>
-              <span className="font-mono tracking-tight">{handle.text}</span>
-            </div>
-          ))}
-        </div>
-
-        {/* Variant 2: Mobile/Compact Socials Dock (Animated Cycle) */}
-        <div className="flex lg:hidden items-center mr-4 shrink-0 border-r border-black/5 pr-4 h-5 overflow-hidden">
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={currentSocialIdx}
-              initial={{ opacity: 0, y: 12 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -12 }}
-              transition={{ duration: 0.25, ease: "easeInOut" }}
-              className="flex items-center gap-1.5 text-[11px] font-extrabold text-brand-charcoal/70"
-            >
-              <span className="shrink-0 text-brand-green">{socialHandles[currentSocialIdx].icon}</span>
-              <span className="font-mono tracking-tight max-w-[120px] truncate">
-                {socialHandles[currentSocialIdx].text}
-              </span>
-            </motion.div>
-          </AnimatePresence>
-        </div>
-
-        {/* Stream Runtime Clock (HH:MM:SS) */}
-        {showClock && (
-          <div className="flex items-center gap-4 shrink-0">
-            <div className="flex items-center gap-1.5 sm:gap-2 bg-brand-charcoal border border-white/5 px-3 sm:px-4 py-1 sm:py-1.5 rounded-full text-xs font-semibold tracking-widest text-brand-cream shadow-md">
-              <span className="w-1.5 h-1.5 bg-red-500 rounded-full animate-pulse shrink-0" />
-              <span className="text-[8px] sm:text-[10px] uppercase font-black tracking-[0.15em] text-white/50">LIVE</span>
-              <span className="font-mono text-xs sm:text-sm font-black tracking-widest text-brand-gold ml-1">
-                {startTime ? formatRuntime(elapsedSeconds) : "00:00:00"}
-              </span>
-            </div>
+      {/* Right Content Group: Live Capsule Uptime Clock */}
+      {showClock && (
+        <div className="flex items-center gap-4 shrink-0 relative z-10">
+          <div className="flex items-center gap-3 bg-brand-charcoal border border-white/10 px-6 py-2 rounded-lg shadow-lg">
+            <span className="w-2.5 h-2.5 bg-red-500 rounded-full animate-pulse shrink-0" />
+            <span className="text-[10px] uppercase font-black tracking-[0.2em] text-white/60">LIVE</span>
+            <span className="font-mono text-xl font-black tracking-widest text-brand-gold ml-1">
+              {startTime ? formatRuntime(elapsedSeconds) : "00:00:00"}
+            </span>
           </div>
-        )}
-
-      </div>
+        </div>
+      )}
     </motion.div>
   );
 }

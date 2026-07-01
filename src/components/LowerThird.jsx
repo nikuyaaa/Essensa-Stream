@@ -24,24 +24,24 @@ export function LowerThird({
     <AnimatePresence>
       {isOpen && (
         <motion.div
-          initial={{ x: -400, opacity: 0 }}
+          initial={{ x: -600, opacity: 0 }}
           animate={{ x: 0, opacity: 1 }}
-          exit={{ x: -400, opacity: 0 }}
+          exit={{ x: -600, opacity: 0 }}
           transition={{ 
             type: 'spring', 
             damping: 18, 
             stiffness: 85,
             mass: 0.8
           }}
-          className={`fixed bottom-[74px] sm:bottom-[94px] left-4 sm:left-[50px] z-30 select-none max-w-[calc(100%-32px)] flex flex-col items-start ${className}`}
+          className={`absolute bottom-[130px] left-[80px] z-30 select-none flex flex-col items-start ${className}`}
         >
           {/* Layer 1: Host Name (Solid Black block with white text and forest green left border) */}
-          <div className="bg-brand-charcoal h-[40px] sm:h-[46px] flex items-center px-4 sm:px-6 min-w-[200px] sm:min-w-[300px] border-l-4 border-brand-green shadow-lg rounded-tr-md relative">
+          <div className="bg-brand-charcoal h-[64px] flex items-center px-8 border-l-[6px] border-brand-green shadow-xl rounded-tr-lg relative">
             <motion.h3 
-              initial={{ opacity: 0, x: -10 }}
+              initial={{ opacity: 0, x: -15 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.2, duration: 0.3 }}
-              className="font-display font-extrabold text-xs sm:text-base text-white leading-tight tracking-wide uppercase truncate"
+              className="font-display font-black text-3xl text-white leading-none tracking-wider uppercase truncate"
             >
               {name}
             </motion.h3>
@@ -52,13 +52,13 @@ export function LowerThird({
             initial={{ scaleX: 0 }}
             animate={{ scaleX: 1 }}
             transition={{ delay: 0.1, duration: 0.4 }}
-            className="origin-left h-[22px] sm:h-[26px] bg-brand-gold flex items-center px-3 sm:px-4 shadow-md rounded-br-md"
+            className="origin-left h-[32px] bg-brand-gold flex items-center px-6 shadow-md rounded-br-lg"
           >
             <motion.span 
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.3, duration: 0.3 }}
-              className="font-sans text-[8px] sm:text-[10px] font-black tracking-widest text-brand-charcoal uppercase truncate"
+              className="font-sans text-xs font-black tracking-[0.2em] text-brand-charcoal uppercase truncate"
             >
               {title}
             </motion.span>

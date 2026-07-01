@@ -14,7 +14,7 @@ const TikTokIcon = ({ className }) => (
 );
 
 const getPlatformIcon = (platform = 'facebook', isDark = false) => {
-  const iconClass = "w-3.5 h-3.5 shrink-0";
+  const iconClass = "w-5 h-5 shrink-0";
   const colorClass = isDark ? "text-white" : "text-brand-green";
   switch (platform.toLowerCase()) {
     case 'youtube':
@@ -31,12 +31,12 @@ const getPlatformIcon = (platform = 'facebook', isDark = false) => {
 };
 
 const renderAvatar = (comment, isGlass = true) => {
-  const sizeClass = "w-7 h-7 sm:w-8 h-8 rounded-full shrink-0 flex items-center justify-center font-bold text-xs uppercase shadow-inner";
+  const sizeClass = "w-10 h-10 rounded-full shrink-0 flex items-center justify-center font-black text-sm uppercase shadow-inner";
   if (comment.avatar) {
     return <img src={comment.avatar} alt={comment.username} className={`${sizeClass} object-cover`} />;
   }
   const initials = comment.username ? comment.username.split(" ").map(w => w[0]).join("").slice(0, 2) : "UN";
-  const bgStyle = isGlass ? "bg-white/10 text-white" : "bg-brand-gold text-brand-charcoal";
+  const bgStyle = isGlass ? "bg-white/20 text-white" : "bg-brand-gold text-brand-charcoal";
   return (
     <div className={`${sizeClass} ${bgStyle}`}>
       {initials}
@@ -58,12 +58,12 @@ export function CommentsWidget({
 }) {
   return (
     <div 
-      className={`fixed left-4 sm:left-[50px] top-[94px] bottom-[94px] w-[280px] sm:w-[360px] md:w-[400px] z-30 flex flex-col justify-center gap-3 pointer-events-none ${className}`}
+      className={`absolute left-[80px] top-[110px] bottom-[240px] w-[500px] z-30 flex flex-col justify-center gap-4 pointer-events-none ${className}`}
     >
       <AnimatePresence initial={false}>
         {isOpen && comments.map((comment) => (
           variant === 'A' ? (
-            /* Variant A: Clean Floating Glass */
+            /* Variant A: Clean Floating Glass (High Contrast) */
             <motion.div
               key={comment.id}
               variants={commentVariants}
@@ -71,17 +71,17 @@ export function CommentsWidget({
               animate="animate"
               exit="exit"
               layout
-              className="backdrop-blur-md bg-black/40 border border-white/10 shadow-[0_4px_24px_rgba(0,0,0,0.15)] p-3.5 rounded-2xl flex gap-3 items-start pointer-events-auto"
+              className="backdrop-blur-md bg-brand-charcoal/95 border border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.35)] p-5 rounded-2xl flex gap-4 items-start pointer-events-auto"
             >
               {renderAvatar(comment, true)}
               <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-2 mb-0.5">
-                  <span className="font-display font-extrabold text-[11px] sm:text-xs tracking-wider uppercase text-brand-gold truncate">
+                <div className="flex items-center gap-2 mb-1.5">
+                  <span className="font-display font-black text-lg tracking-wider uppercase text-brand-gold truncate">
                     {comment.username}
                   </span>
                   {getPlatformIcon(comment.platform, true)}
                 </div>
-                <p className="font-sans text-[11px] sm:text-xs text-white leading-relaxed font-medium drop-shadow-[0_1px_2px_rgba(0,0,0,0.85)] break-words">
+                <p className="font-sans text-xl sm:text-2xl text-white leading-relaxed font-bold drop-shadow-[0_1px_2px_rgba(0,0,0,0.5)] break-words">
                   {comment.message}
                 </p>
               </div>
@@ -95,22 +95,22 @@ export function CommentsWidget({
               animate="animate"
               exit="exit"
               layout
-              className="bg-white rounded-xl shadow-[4px_4px_16px_rgba(0,0,0,0.06)] border border-black/5 overflow-hidden flex items-stretch min-h-[58px] sm:min-h-[64px] pointer-events-auto"
+              className="bg-white rounded-2xl shadow-[8px_8px_24px_rgba(0,0,0,0.1)] border border-black/5 overflow-hidden flex items-stretch min-h-[90px] pointer-events-auto"
             >
               {/* Left Block */}
-              <div className="bg-brand-charcoal w-[44px] sm:w-[50px] shrink-0 flex flex-col items-center justify-center border-r border-black/5 p-1">
+              <div className="bg-brand-charcoal w-[70px] shrink-0 flex flex-col items-center justify-center border-r border-black/5 p-2">
                 {renderAvatar(comment, false)}
               </div>
               
               {/* Right White Body */}
-              <div className="flex-1 p-3 flex flex-col justify-center min-w-0">
-                <div className="flex items-center gap-2 mb-0.5">
-                  <span className="font-display font-extrabold text-[10px] sm:text-xs tracking-wide uppercase text-brand-charcoal truncate">
+              <div className="flex-1 p-4 flex flex-col justify-center min-w-0">
+                <div className="flex items-center gap-2 mb-1.5">
+                  <span className="font-display font-black text-lg tracking-wide uppercase text-brand-charcoal truncate">
                     {comment.username}
                   </span>
                   {getPlatformIcon(comment.platform, false)}
                 </div>
-                <p className="font-sans text-[10px] sm:text-xs text-brand-charcoal/80 leading-snug break-words">
+                <p className="font-sans text-xl sm:text-2xl text-brand-charcoal/90 leading-snug font-bold break-words">
                   {comment.message}
                 </p>
               </div>
