@@ -161,13 +161,15 @@ function App() {
     connectWebSocket();
     bc.postMessage({ type: 'REQUEST_STATE' });
 
-    // HTTP Polling Fallback (runs every 2 seconds when WebSocket is not active)
+    // Local Dev Server Polling Fallback (runs every 1 second when WebSocket is not active)
     const pollInterval = setInterval(() => {
       if (!socket || socket.readyState !== WebSocket.OPEN) {
-        fetch('https://kvdb.io/Jc9qFfX1Y6jS3K4uR6vM/essensa_state_nikuyaaa_secure')
+        // Try localhost first, then relative path
+        fetch('http://localhost:5173/api/state')
+          .catch(() => fetch('/api/state'))
           .then(res => res.json())
           .then(data => {
-            if (data) {
+            if (data && data.activeView) {
               setState(prev => ({
                 ...prev,
                 ...data,
@@ -175,9 +177,9 @@ function App() {
               }));
             }
           })
-          .catch(err => console.warn("HTTP backup sync pending..."));
+          .catch(() => {});
       }
-    }, 2000);
+    }, 1000);
 
     return () => {
       bc.close();

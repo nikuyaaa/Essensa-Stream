@@ -142,12 +142,18 @@ export function OperatorPanel({ initialState, onStateChange }) {
       socket.send(JSON.stringify({ room: "essensa_stream_nikuyaaa_secure", ...msg }));
     }
 
-    // Save state to cloud HTTP backup (for secure context/firewall fallback)
-    fetch('https://kvdb.io/Jc9qFfX1Y6jS3K4uR6vM/essensa_state_nikuyaaa_secure', {
+    // Save state to local Vite server sync API
+    fetch('http://localhost:5173/api/state', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(newState)
-    }).catch(err => console.warn("HTTP backup sync pending..."));
+    })
+      .catch(() => fetch('/api/state', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(newState)
+      }))
+      .catch(() => {});
 
     if (onStateChange) {
       onStateChange(newState);
