@@ -54,23 +54,20 @@ const defaultState = {
 // OverlayWrapper allows layouts to stretch natively to fill the browser viewport fluidly,
 // aligning elements nicely on all device sizes and custom OBS overlay dimensions.
 function OverlayWrapper({ children, currentView }) {
+  const searchParams = new URLSearchParams(window.location.search);
+  const isChromaKey = searchParams.get('chromakey') === 'true';
+
   let bgClass = "bg-transparent";
-  if (currentView === 'intermission' || currentView === 'starting') {
+  if (isChromaKey) {
+    bgClass = "bg-[#00ff00]";
+  } else if (currentView === 'intermission' || currentView === 'starting') {
     bgClass = "bg-brand-charcoal";
   } else if (currentView === 'brb' || currentView === 'ending') {
     bgClass = "bg-brand-cream";
   }
 
-  // Support green screen mode for local Window Capture fallback
-  const searchParams = new URLSearchParams(window.location.search);
-  const isChromaKey = searchParams.get('chromakey') === 'true';
-  const bgStyle = isChromaKey ? { backgroundColor: '#00ff00' } : {};
-
   return (
-    <div 
-      className={`w-full min-h-screen ${bgClass} relative overflow-hidden flex flex-col`}
-      style={bgStyle}
-    >
+    <div className={`w-full min-h-screen ${bgClass} relative overflow-hidden flex flex-col`}>
       {children}
     </div>
   );
