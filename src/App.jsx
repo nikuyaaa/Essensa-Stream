@@ -129,17 +129,19 @@ function App() {
 
     // Initialize WebSocket connection for remote sync (e.g. Streamlabs Browser Source)
     const connectWebSocket = () => {
-      const wsUrl = "wss://connect.websocket.in/v3/essensa_stream_nikuyaaa_secure?api_key=o7MmTYhmz4H4sT4G2EdTph240W593s99Ae4Tbbp4";
+      const wsUrl = "wss://socketsbay.com/wss/v2/1/demo/";
       socket = new WebSocket(wsUrl);
 
       socket.onopen = () => {
-        socket.send(JSON.stringify({ type: 'REQUEST_STATE' }));
+        socket.send(JSON.stringify({ room: "essensa_stream_nikuyaaa_secure", type: 'REQUEST_STATE' }));
       };
 
       socket.onmessage = (event) => {
         try {
-          const { type, payload } = JSON.parse(event.data);
-          handleIncomingMessage(type, payload);
+          const msg = JSON.parse(event.data);
+          if (msg.room === "essensa_stream_nikuyaaa_secure") {
+            handleIncomingMessage(msg.type, msg.payload);
+          }
         } catch (e) {
           console.error("Error parsing WebSocket message:", e);
         }

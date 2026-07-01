@@ -67,19 +67,21 @@ export function OperatorPanel({ initialState, onStateChange }) {
     };
 
     const connectWebSocket = () => {
-      const wsUrl = "wss://connect.websocket.in/v3/essensa_stream_nikuyaaa_secure?api_key=o7MmTYhmz4H4sT4G2EdTph240W593s99Ae4Tbbp4";
+      const wsUrl = "wss://socketsbay.com/wss/v2/1/demo/";
       ws = new WebSocket(wsUrl);
       setSocket(ws);
 
       ws.onopen = () => {
         setWsConnected(true);
-        ws.send(JSON.stringify({ type: 'STATE_RESPONSE', payload: stateRef.current }));
+        ws.send(JSON.stringify({ room: "essensa_stream_nikuyaaa_secure", type: 'STATE_RESPONSE', payload: stateRef.current }));
       };
 
       ws.onmessage = (event) => {
         try {
-          const { type, payload } = JSON.parse(event.data);
-          handleIncomingMessage(type, payload);
+          const msg = JSON.parse(event.data);
+          if (msg.room === "essensa_stream_nikuyaaa_secure") {
+            handleIncomingMessage(msg.type, msg.payload);
+          }
         } catch (e) {
           console.error("Error parsing WebSocket message:", e);
         }
@@ -106,7 +108,7 @@ export function OperatorPanel({ initialState, onStateChange }) {
       const syncMsg = { type: 'STATE_RESPONSE', payload: stateRef.current };
       bc.postMessage(syncMsg);
       if (ws && ws.readyState === WebSocket.OPEN) {
-        ws.send(JSON.stringify(syncMsg));
+        ws.send(JSON.stringify({ room: "essensa_stream_nikuyaaa_secure", ...syncMsg }));
       }
     }, 3000);
 
@@ -137,7 +139,7 @@ export function OperatorPanel({ initialState, onStateChange }) {
       channel.postMessage(msg);
     }
     if (socket && socket.readyState === WebSocket.OPEN) {
-      socket.send(JSON.stringify(msg));
+      socket.send(JSON.stringify({ room: "essensa_stream_nikuyaaa_secure", ...msg }));
     }
 
     // Save state to cloud HTTP backup (for secure context/firewall fallback)
@@ -211,7 +213,7 @@ export function OperatorPanel({ initialState, onStateChange }) {
       channel.postMessage(msg);
     }
     if (socket && socket.readyState === WebSocket.OPEN) {
-      socket.send(JSON.stringify(msg));
+      socket.send(JSON.stringify({ room: "essensa_stream_nikuyaaa_secure", ...msg }));
     }
   };
 
