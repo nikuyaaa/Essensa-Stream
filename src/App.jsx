@@ -61,8 +61,16 @@ function OverlayWrapper({ children, currentView }) {
     bgClass = "bg-brand-cream";
   }
 
+  // Support green screen mode for local Window Capture fallback
+  const searchParams = new URLSearchParams(window.location.search);
+  const isChromaKey = searchParams.get('chromakey') === 'true';
+  const bgStyle = isChromaKey ? { backgroundColor: '#00ff00' } : {};
+
   return (
-    <div className={`w-full min-h-screen ${bgClass} relative overflow-hidden flex flex-col`}>
+    <div 
+      className={`w-full min-h-screen ${bgClass} relative overflow-hidden flex flex-col`}
+      style={bgStyle}
+    >
       {children}
     </div>
   );
