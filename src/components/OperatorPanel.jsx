@@ -23,6 +23,9 @@ export function OperatorPanel({ initialState, onStateChange }) {
   const [customCommentName, setCustomCommentName] = useState("");
   const [customCommentMessage, setCustomCommentMessage] = useState("");
   const [customCommentPlatform, setCustomCommentPlatform] = useState("facebook");
+
+  const [elapsedSeconds, setElapsedSeconds] = useState(0);
+  const [wsConnected, setWsConnected] = useState(false);
   
   // Notification of sync
   const [syncedTabsCount, setSyncedTabsCount] = useState(0);
@@ -69,6 +72,7 @@ export function OperatorPanel({ initialState, onStateChange }) {
       setSocket(ws);
 
       ws.onopen = () => {
+        setWsConnected(true);
         ws.send(JSON.stringify({ type: 'STATE_RESPONSE', payload: stateRef.current }));
       };
 
@@ -82,11 +86,13 @@ export function OperatorPanel({ initialState, onStateChange }) {
       };
 
       ws.onclose = () => {
+        setWsConnected(false);
         console.warn("WebSocket closed. Reconnecting in 3 seconds...");
         reconnectTimeout = setTimeout(connectWebSocket, 3000);
       };
 
       ws.onerror = (err) => {
+        setWsConnected(false);
         console.error("WebSocket error:", err);
         ws.close();
       };
@@ -133,6 +139,13 @@ export function OperatorPanel({ initialState, onStateChange }) {
     if (socket && socket.readyState === WebSocket.OPEN) {
       socket.send(JSON.stringify(msg));
     }
+
+    // Save state to cloud HTTP backup (for secure context/firewall fallback)
+    fetch('https://kvdb.io/Jc9qFfX1Y6jS3K4uR6vM/essensa_state_nikuyaaa_secure', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(newState)
+    }).catch(err => console.warn("HTTP backup sync pending..."));
 
     if (onStateChange) {
       onStateChange(newState);
@@ -202,6 +215,30 @@ export function OperatorPanel({ initialState, onStateChange }) {
     }
   };
 
+  useEffect(() => {
+    if (!state.startTime) {
+      setElapsedSeconds(0);
+      return;
+    }
+
+    const initialElapsed = Math.floor((Date.now() - state.startTime) / 1000);
+    setElapsedSeconds(initialElapsed > 0 ? initialElapsed : 0);
+
+    const interval = setInterval(() => {
+      const currentElapsed = Math.floor((Date.now() - state.startTime) / 1000);
+      setElapsedSeconds(currentElapsed > 0 ? currentElapsed : 0);
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [state.startTime]);
+
+  const formatElapsed = (totalSecs) => {
+    const hrs = Math.floor(totalSecs / 3600).toString().padStart(2, '0');
+    const mins = Math.floor((totalSecs % 3600) / 60).toString().padStart(2, '0');
+    const secs = (totalSecs % 60).toString().padStart(2, '0');
+    return `${hrs}:${mins}:${secs}`;
+  };
+
   return (
     <div className="w-full h-full min-h-screen bg-zinc-950 text-zinc-100 flex flex-col font-sans select-none">
       {/* 1. Header Bar */}
@@ -221,6 +258,17 @@ export function OperatorPanel({ initialState, onStateChange }) {
               State Broadcasted!
             </span>
           )}
+
+          {/* WebSocket Status Indicator */}
+          <div className={`flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-semibold border ${
+            wsConnected 
+              ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30' 
+              : 'bg-red-500/10 text-red-400 border-red-500/30'
+          }`}>
+            <span className={`w-2 h-2 rounded-full ${wsConnected ? 'bg-emerald-400 animate-pulse' : 'bg-red-400'}`} />
+            <span>Cloud Sync: {wsConnected ? 'Online' : 'Offline'}</span>
+          </div>
+
           <div className={`flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-semibold ${
             syncedTabsCount > 0 
               ? 'bg-brand-green/20 text-brand-gold border border-brand-green/30' 
@@ -229,8 +277,8 @@ export function OperatorPanel({ initialState, onStateChange }) {
             <RefreshCw className={`w-3.5 h-3.5 ${syncedTabsCount > 0 ? 'animate-spin' : ''}`} style={{ animationDuration: '6s' }} />
             <span>
               {syncedTabsCount > 0 
-                ? `Connected to Overlay: ${syncedTabsCount} active` 
-                : 'No Overlay tabs detected'}
+                ? `Local Overlay: ${syncedTabsCount} active` 
+                : 'No Local Overlay'}
             </span>
           </div>
         </div>
@@ -276,8 +324,8 @@ export function OperatorPanel({ initialState, onStateChange }) {
             <div className="flex flex-col gap-3">
               <div className="flex justify-between items-center bg-zinc-950 border border-zinc-800 p-3 rounded-lg font-mono text-lg text-center">
                 <span className="text-zinc-500 text-xs uppercase font-bold tracking-wider font-sans">Elapsed</span>
-                <span className="text-white font-bold tracking-widest">
-                  {state.startTime ? "ACTIVE" : "STOPPED"}
+                <span className="text-brand-gold font-bold tracking-widest tabular-nums">
+                  {state.startTime ? formatElapsed(elapsedSeconds) : "00:00:00"}
                 </span>
               </div>
               <div className="grid grid-cols-3 gap-2">
