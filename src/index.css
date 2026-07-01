@@ -1,0 +1,186 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Montserrat:wght@400;500;600;700;800;900&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --color-brand-green: #1B7339;
+  --color-brand-accent: #4CAF50;
+  --color-brand-charcoal: #1A1A1A;
+  --color-brand-cream: #F8F9FA;
+  --color-brand-gold: #D4AF37;
+  --color-brand-sage: #E2ECE9;
+  --font-sans: 'Inter', system-ui, sans-serif;
+  --font-display: 'Montserrat', system-ui, sans-serif;
+  
+  --animate-shimmer: shimmer 4s infinite linear;
+  --animate-sunburst: spin-slow 30s infinite linear;
+  --animate-pulse-slow: pulse-slow 3s infinite ease-in-out;
+  --animate-breath: breath 4s infinite ease-in-out;
+  --animate-flare: flare 1.5s infinite ease-in-out;
+  --animate-bg-scroll: bg-scroll 25s ease infinite;
+  
+  @keyframes shimmer {
+    0% {
+      background-position: -200% 0;
+    }
+    100% {
+      background-position: 200% 0;
+    }
+  }
+  @keyframes spin-slow {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+  @keyframes pulse-slow {
+    0%, 100% {
+      opacity: 0.6;
+    }
+    50% {
+      opacity: 1;
+    }
+  }
+  @keyframes breath {
+    0%, 100% {
+      transform: scale(1);
+      opacity: 0.9;
+    }
+    50% {
+      transform: scale(1.02);
+      opacity: 1;
+      text-shadow: 0 0 20px rgba(76, 175, 80, 0.4);
+    }
+  }
+  @keyframes flare {
+    0%, 100% {
+      filter: drop-shadow(0 0 6px rgba(76, 175, 80, 0.6));
+      transform: scale(1);
+    }
+    50% {
+      filter: drop-shadow(0 0 25px rgba(76, 175, 80, 1));
+      transform: scale(1.03);
+    }
+  }
+  @keyframes bg-scroll {
+    0% {
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
+    }
+    100% {
+      background-position: 0% 50%;
+    }
+  }
+}
+
+/* Custom Styles */
+body {
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  background-color: transparent;
+  font-family: var(--font-sans);
+  color: var(--color-brand-cream);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Fixed 1080p canvas for stream software ingestion */
+.canvas-1080p {
+  width: 1920px;
+  height: 1080px;
+  position: relative;
+  overflow: hidden;
+  background-color: transparent;
+  box-sizing: border-box;
+}
+
+/* Custom Shimmer Effect */
+.shimmer-overlay {
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.08) 25%,
+    rgba(255, 255, 255, 0.2) 50%,
+    rgba(255, 255, 255, 0.08) 75%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  background-size: 200% 100%;
+}
+
+/* Ambient organic moving background (refreshed with a lighter, vibrant organic gradient) */
+.organic-bg {
+  background: linear-gradient(-45deg, #1b5e20, #2e7d32, #4caf50, #1b7339);
+  background-size: 400% 400%;
+}
+
+/* Scrollbar behaviors for control panel */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #18181b;
+}
+::-webkit-scrollbar-thumb {
+  background: #27272a;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #3f3f46;
+}
+
+/* Marquee Scrolling animation */
+.marquee-container {
+  display: flex;
+  overflow: hidden;
+  white-space: nowrap;
+  width: 100%;
+}
+
+.marquee-content {
+  display: flex;
+  white-space: nowrap;
+  animation: marquee-scroll 60s linear infinite;
+  min-width: 100%;
+  flex-shrink: 0;
+}
+
+.marquee-content:hover {
+  animation-play-state: paused;
+}
+
+@keyframes marquee-scroll {
+  0% {
+    transform: translate3d(0, 0, 0);
+  }
+  100% {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+/* Glassmorphism panel base */
+.glass-panel {
+  background: rgba(33, 33, 33, 0.75);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.glass-panel-light {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(27, 115, 57, 0.08);
+}
+
+.sage-bg {
+  background-color: var(--color-brand-sage);
+}
+
+.cream-bg {
+  background-color: var(--color-brand-cream);
+}
