@@ -95,6 +95,15 @@ export function OperatorPanel({ initialState, onStateChange }) {
     connectWebSocket();
     bc.postMessage({ type: 'CONTROL_PING' });
 
+    // Periodically broadcast state every 3 seconds to keep any newly loaded/reopened overlay synced
+    const syncInterval = setInterval(() => {
+      const syncMsg = { type: 'STATE_RESPONSE', payload: stateRef.current };
+      bc.postMessage(syncMsg);
+      if (ws && ws.readyState === WebSocket.OPEN) {
+        ws.send(JSON.stringify(syncMsg));
+      }
+    }, 3000);
+
     return () => {
       bc.close();
       if (ws) {
@@ -102,6 +111,7 @@ export function OperatorPanel({ initialState, onStateChange }) {
         ws.close();
       }
       clearTimeout(reconnectTimeout);
+      clearInterval(syncInterval);
     };
   }, []);
 
