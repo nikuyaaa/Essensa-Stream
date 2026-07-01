@@ -124,7 +124,7 @@ function App() {
 
     // Initialize WebSocket connection for remote sync (e.g. Streamlabs Browser Source)
     const connectWebSocket = () => {
-      const wsUrl = "wss://itty.ws/c/essensa_stream_nikuyaaa_secure";
+      const wsUrl = "wss://connect.websocket.in/v3/essensa_stream_nikuyaaa_secure?api_key=o7MmTYhmz4H4sT4G2EdTph240W593s99Ae4Tbbp4";
       socket = new WebSocket(wsUrl);
 
       socket.onopen = () => {
