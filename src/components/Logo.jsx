@@ -1,6 +1,21 @@
 import React from 'react';
 
-export function Logo({ className = '', showText = true, light = false }) {
+export function Logo({ className = '', showText = true, light = false, logoUrl = '' }) {
+  if (logoUrl) {
+    const isVideo = logoUrl.match(/\.(mp4|webm|ogg)$/i) || logoUrl.startsWith('data:video/');
+    // Maintain consistent aspect ratio containment sizes matching original SVG bounds
+    const sizeClass = showText ? "h-[48px] max-w-[200px]" : "w-[36px] sm:w-[48px] h-[36px] sm:h-[48px]";
+    return (
+      <div className={`flex items-center justify-center overflow-hidden shrink-0 ${className}`}>
+        {isVideo ? (
+          <video src={logoUrl} autoPlay loop muted playsInline className={`${sizeClass} object-contain`} />
+        ) : (
+          <img src={logoUrl} alt="Logo" className={`${sizeClass} object-contain`} />
+        )}
+      </div>
+    );
+  }
+
   const primaryGreen = '#1B7339';
   const accentGreen = '#4CAF50';
   const charcoal = '#1A1A1A';

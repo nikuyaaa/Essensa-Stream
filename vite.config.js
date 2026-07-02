@@ -49,6 +49,42 @@ export default defineConfig({
               });
               res.end();
             }
+          } else if (urlPath === '/api/upload') {
+            if (req.method === 'POST') {
+              let body = '';
+              req.on('data', chunk => {
+                body += chunk.toString();
+              });
+              req.on('end', () => {
+                try {
+                  const { filename, fileData } = JSON.parse(body);
+                  const buffer = Buffer.from(fileData.split(',')[1] || fileData, 'base64');
+                  const fs = require('fs');
+                  const path = require('path');
+                  const uploadDir = path.join(process.cwd(), 'public', 'uploads');
+                  if (!fs.existsSync(uploadDir)) {
+                    fs.mkdirSync(uploadDir, { recursive: true });
+                  }
+                  fs.writeFileSync(path.join(uploadDir, filename), buffer);
+                  res.writeHead(200, { 
+                    'Content-Type': 'application/json',
+                    'Access-Control-Allow-Origin': '*',
+                    'Access-Control-Allow-Headers': 'Content-Type'
+                  });
+                  res.end(JSON.stringify({ url: `/uploads/${filename}` }));
+                } catch (e) {
+                  res.writeHead(500);
+                  res.end('Upload failed: ' + e.message);
+                }
+              });
+            } else if (req.method === 'OPTIONS') {
+              res.writeHead(200, {
+                'Access-Control-Allow-Origin': '*',
+                'Access-Control-Allow-Methods': 'POST, OPTIONS',
+                'Access-Control-Allow-Headers': 'Content-Type'
+              });
+              res.end();
+            }
           } else {
             next();
           }

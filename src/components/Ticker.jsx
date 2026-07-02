@@ -8,6 +8,7 @@ export function Ticker({
     "Revitalizing Health with Non-Toxic, All-Natural organic products",
     "Celebrating 16 Years of Wellness, Credibility, and Prosperity"
   ],
+  logoUrl = '',
   className = '' 
 }) {
   const combinedText = items.join("  •  ");
@@ -24,7 +25,7 @@ export function Ticker({
         }}
       >
         {/* Full Essensa Naturale logo (charcoal text on clean white backdrop) */}
-        <Logo showText={true} light={false} className="relative z-10 scale-110 origin-left" />
+        <Logo showText={true} light={false} logoUrl={logoUrl} className="relative z-10 scale-110 origin-left" />
       </div>
 
       {/* 2. Scrolling Marquee Area */}

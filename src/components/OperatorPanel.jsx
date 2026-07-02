@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { 
   Play, Pause, RotateCcw, Eye, EyeOff, User, 
-  Tag, Clock, List, RefreshCw, Layers, Award, Sparkles, Check, Save, Globe, Facebook, Youtube, Instagram
+  Tag, Clock, List, RefreshCw, Layers, Sparkles, Save, Globe, Facebook, Youtube, Instagram, Settings, Plus, Trash
 } from 'lucide-react';
 import { Logo } from './Logo';
 
 export function OperatorPanel({ initialState, onStateChange }) {
   const [state, setState] = useState(initialState);
   const [draftState, setDraftState] = useState(initialState);
-  const [activeTab, setActiveTab] = useState('main'); // intermission, starting, main, brb, ending
+  const [activeTab, setActiveTab] = useState('main'); // intermission-banner, starting, main, brb, ending, settings
   
   const [channel, setChannel] = useState(null);
   const [socket, setSocket] = useState(null);
@@ -36,17 +36,16 @@ export function OperatorPanel({ initialState, onStateChange }) {
       initialState.main.hostName !== state.main.hostName ||
       initialState.main.hostTitle !== state.main.hostTitle ||
       initialState.main.hostAutoHide !== state.main.hostAutoHide ||
-      initialState.main.productVisible !== state.main.productVisible ||
-      initialState.main.productName !== state.main.productName ||
-      initialState.main.productPrice !== state.main.productPrice ||
-      initialState.main.productPromo !== state.main.productPromo ||
-      initialState.main.productImage !== state.main.productImage ||
+      JSON.stringify(initialState.main.products) !== JSON.stringify(state.main.products) ||
       initialState.brb.bannerText !== state.brb.bannerText ||
       JSON.stringify(initialState.brb.announcements) !== JSON.stringify(state.brb.announcements) ||
       initialState.ending.title !== state.ending.title ||
       initialState.ending.description !== state.ending.description ||
       initialState.ending.signature !== state.ending.signature ||
-      JSON.stringify(initialState.ending.socialHandles) !== JSON.stringify(state.ending.socialHandles);
+      JSON.stringify(initialState.socials) !== JSON.stringify(state.socials) ||
+      JSON.stringify(initialState.socialsStyle) !== JSON.stringify(state.socialsStyle) ||
+      JSON.stringify(initialState.timerPresets) !== JSON.stringify(state.timerPresets) ||
+      initialState.globalLogoUrl !== state.globalLogoUrl;
 
     setState(initialState);
     if (hasConfigChanged) {
@@ -164,22 +163,32 @@ export function OperatorPanel({ initialState, onStateChange }) {
     }
 
     // Save state to local Vite server sync API
-    fetch('http://localhost:5173/api/state', {
+    fetch('/api/state', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(newState)
-    })
-      .catch(() => fetch('/api/state', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(newState)
-      }))
-      .catch(() => {});
+    }).catch(() => {});
 
     if (onStateChange) {
       onStateChange(newState);
     }
     triggerSyncNotice();
+  };
+
+  // Commit dynamic sections independently
+  const commitSection = (sectionKey) => {
+    const nextState = { ...state };
+    if (sectionKey === 'socials') {
+      nextState.socials = draftState.socials;
+      nextState.socialsStyle = draftState.socialsStyle;
+    } else if (sectionKey === 'timerPresets') {
+      nextState.timerPresets = draftState.timerPresets;
+    } else if (sectionKey === 'globalLogoUrl') {
+      nextState.globalLogoUrl = draftState.globalLogoUrl;
+    } else {
+      nextState[sectionKey] = draftState[sectionKey];
+    }
+    commitState(nextState);
   };
 
   // Local state update handler for draft configurations
@@ -193,12 +202,198 @@ export function OperatorPanel({ initialState, onStateChange }) {
     }));
   };
 
-  // Apply Changes buffer click handler
-  const handleApplyChanges = () => {
-    commitState(draftState);
+  // Direct Time controls bypassing the save buffer
+  const triggerStartingCountdownAction = (action, val) => {
+    setState(prev => {
+      let countdownSeconds = prev.starting.countdownSeconds;
+      let countdownRunning = prev.starting.countdownRunning;
+      
+      if (action === 'toggle') {
+        countdownRunning = !prev.starting.countdownRunning;
+      } else if (action === 'reset') {
+        countdownSeconds = val !== undefined ? val : 300;
+        countdownRunning = false;
+      } else if (action === 'set') {
+        countdownSeconds = val;
+      }
+      
+      const nextState = {
+        ...prev,
+        starting: {
+          ...prev.starting,
+          countdownSeconds,
+          countdownRunning
+        }
+      };
+      
+      setDraftState(prevDraft => ({
+        ...prevDraft,
+        starting: {
+          ...prevDraft.starting,
+          countdownSeconds,
+          countdownRunning
+        }
+      }));
+      
+      commitState(nextState);
+      return nextState;
+    });
   };
 
-  // Preset definitions
+  const triggerBrbCountdownAction = (action, val) => {
+    setState(prev => {
+      let countdownSeconds = prev.brb.countdownSeconds;
+      let countdownRunning = prev.brb.countdownRunning;
+      
+      if (action === 'toggle') {
+        countdownRunning = !prev.brb.countdownRunning;
+      } else if (action === 'reset') {
+        countdownSeconds = val !== undefined ? val : 300;
+        countdownRunning = false;
+      } else if (action === 'set') {
+        countdownSeconds = val;
+      }
+      
+      const nextState = {
+        ...prev,
+        brb: {
+          ...prev.brb,
+          countdownSeconds,
+          countdownRunning
+        }
+      };
+      
+      setDraftState(prevDraft => ({
+        ...prevDraft,
+        brb: {
+          ...prevDraft.brb,
+          countdownSeconds,
+          countdownRunning
+        }
+      }));
+      
+      commitState(nextState);
+      return nextState;
+    });
+  };
+
+  const triggerClockAction = (action) => {
+    setState(prev => {
+      let startTime = prev.main.startTime;
+      if (action === 'start') {
+        startTime = Date.now();
+      } else if (action === 'stop') {
+        startTime = null;
+      } else if (action === 'reset') {
+        startTime = Date.now();
+      }
+      
+      const nextState = {
+        ...prev,
+        main: {
+          ...prev.main,
+          startTime
+        }
+      };
+      
+      setDraftState(prevDraft => ({
+        ...prevDraft,
+        main: {
+          ...prevDraft.main,
+          startTime
+        }
+      }));
+      
+      commitState(nextState);
+      return nextState;
+    });
+  };
+
+  // Direct Host Visibility toggles bypassing buffer
+  const triggerHostVisibility = () => {
+    setState(prev => {
+      const hostVisible = !prev.main.hostVisible;
+      const nextState = {
+        ...prev,
+        main: {
+          ...prev.main,
+          hostVisible
+        }
+      };
+      setDraftState(prevDraft => ({
+        ...prevDraft,
+        main: {
+          ...prevDraft.main,
+          hostVisible
+        }
+      }));
+      commitState(nextState);
+      return nextState;
+    });
+  };
+
+  // Direct Product Visibility toggles bypassing buffer
+  const triggerProductVisibility = (productId) => {
+    setState(prev => {
+      const updatedProducts = prev.main.products.map(p => 
+        p.id === productId ? { ...p, visible: !p.visible } : p
+      );
+      const nextState = {
+        ...prev,
+        main: {
+          ...prev.main,
+          products: updatedProducts
+        }
+      };
+      setDraftState(prevDraft => {
+        const updatedDraftProducts = prevDraft.main.products.map(p => 
+          p.id === productId ? { ...p, visible: !p.visible } : p
+        );
+        return {
+          ...prevDraft,
+          main: {
+            ...prevDraft.main,
+            products: updatedDraftProducts
+          }
+        };
+      });
+      commitState(nextState);
+      return nextState;
+    });
+  };
+
+  // Upload processing helper
+  const handleFileUpload = (e, callback) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const base64Data = event.target.result;
+      
+      fetch('/api/upload', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          filename: file.name,
+          fileData: base64Data
+        })
+      })
+        .then(res => res.json())
+        .then(data => {
+          if (data.url) {
+            callback(data.url);
+          }
+        })
+        .catch(err => {
+          console.error("Upload error:", err);
+          callback(base64Data); // fallback to raw base64 data URL
+        });
+    };
+    reader.readAsDataURL(file);
+  };
+
+  // Presets definitions
   const productPresets = [
     { name: "Buah Merah Mix", price: "₱350.00", promo: "Promo: Buy 2 Get 1 Free • Free Shipping Nationwide!" },
     { name: "Organic Herbal Soap", price: "₱120.00", promo: "Promo: Buy 5 Get 1 Free • 100% Organic Ingredients!" },
@@ -240,18 +435,18 @@ export function OperatorPanel({ initialState, onStateChange }) {
   };
 
   return (
-    <div className="w-full h-full min-h-screen bg-zinc-950 text-zinc-100 flex flex-col font-sans select-none">
+    <div className="w-full h-full min-h-screen bg-zinc-950 text-zinc-100 flex flex-col font-sans select-none pb-12">
       {/* 1. Header Bar */}
       <header className="bg-zinc-900 border-b border-zinc-800 px-6 py-4 flex flex-col sm:flex-row gap-4 items-center justify-between shrink-0">
         <div className="flex flex-col sm:flex-row items-center gap-3">
-          <Logo showText={true} light={true} className="scale-90" />
+          <Logo showText={true} light={true} logoUrl={state.globalLogoUrl} className="scale-90" />
           <div className="hidden sm:block h-6 w-px bg-zinc-800" />
           <span className="text-xs sm:text-sm font-semibold text-brand-gold tracking-[0.25em] uppercase text-center sm:text-left">
             Broadcast Content Editor
           </span>
         </div>
         
-        {/* Sync Status Badge & Save Changes Button */}
+        {/* Sync Status Badge */}
         <div className="flex items-center gap-4">
           {showSyncSuccess && (
             <span className="text-xs text-brand-gold animate-pulse font-black uppercase tracking-wider">
@@ -279,14 +474,6 @@ export function OperatorPanel({ initialState, onStateChange }) {
               Sources: {syncedTabsCount > 0 ? `${syncedTabsCount} active` : '0 active'}
             </span>
           </div>
-
-          <button 
-            onClick={handleApplyChanges}
-            className="flex items-center gap-2 bg-brand-green hover:bg-brand-green/90 text-white font-black uppercase tracking-wider text-xs py-2.5 px-6 rounded-lg border border-brand-gold/45 shadow-[0_4px_12px_rgba(212,175,55,0.15)] transition-all duration-300 transform active:scale-95"
-          >
-            <Save className="w-4 h-4 text-brand-gold" />
-            Save Design Edits
-          </button>
         </div>
       </header>
 
@@ -297,7 +484,8 @@ export function OperatorPanel({ initialState, onStateChange }) {
           { id: 'starting', label: 'Starting Soon' },
           { id: 'main', label: 'Main Stream overlay' },
           { id: 'brb', label: 'Be Right Back (BRB)' },
-          { id: 'ending', label: 'Ending outro' }
+          { id: 'ending', label: 'Ending outro' },
+          { id: 'settings', label: 'Global Settings' }
         ].map((tab) => (
           <button
             key={tab.id}
@@ -305,7 +493,7 @@ export function OperatorPanel({ initialState, onStateChange }) {
             className={`py-4 px-6 font-black uppercase text-xs tracking-widest border-b-2 transition-all duration-200 shrink-0 ${
               activeTab === tab.id 
                 ? 'border-brand-gold text-brand-gold bg-zinc-850/50' 
-                : 'border-transparent text-zinc-455 hover:text-zinc-250 hover:bg-zinc-850/20'
+                : 'border-transparent text-zinc-400 hover:text-zinc-200 hover:bg-zinc-850/20'
             }`}
           >
             {tab.label}
@@ -324,7 +512,7 @@ export function OperatorPanel({ initialState, onStateChange }) {
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="flex flex-col gap-1.5">
-                <label className="text-[10px] uppercase font-black tracking-wider text-zinc-400">Welcome Text / Label</label>
+                <label className="text-[10px] uppercase font-black tracking-wider text-zinc-400">Left-side Header Welcome Text</label>
                 <input
                   type="text"
                   value={draftState['intermission-banner'].welcomeText}
@@ -333,7 +521,7 @@ export function OperatorPanel({ initialState, onStateChange }) {
                 />
               </div>
               <div className="flex flex-col gap-1.5">
-                <label className="text-[10px] uppercase font-black tracking-wider text-zinc-400">Secondary Tagline</label>
+                <label className="text-[10px] uppercase font-black tracking-wider text-zinc-400">Left-side Tagline Description</label>
                 <input
                   type="text"
                   value={draftState['intermission-banner'].tagline}
@@ -342,14 +530,54 @@ export function OperatorPanel({ initialState, onStateChange }) {
                 />
               </div>
               <div className="flex flex-col gap-1.5 md:col-span-2">
-                <label className="text-[10px] uppercase font-black tracking-wider text-zinc-400">Announcement / Notice Announcement</label>
+                <label className="text-[10px] uppercase font-black tracking-wider text-zinc-400">Left-side Notice Announcement</label>
                 <textarea
-                  rows="3"
+                  rows="2"
                   value={draftState['intermission-banner'].announcement}
                   onChange={(e) => updateDraft('intermission-banner', 'announcement', e.target.value)}
                   className="bg-zinc-950 border border-zinc-800 rounded-lg px-3 py-2 text-sm text-zinc-200 focus:outline-none focus:border-brand-green font-bold resize-none"
                 />
               </div>
+              
+              <div className="flex flex-col gap-1.5">
+                <label className="text-[10px] uppercase font-black tracking-wider text-zinc-400">Right-side Banner Header</label>
+                <input
+                  type="text"
+                  value={draftState['intermission-banner'].rightHeader || ''}
+                  onChange={(e) => updateDraft('intermission-banner', 'rightHeader', e.target.value)}
+                  className="bg-zinc-950 border border-zinc-800 rounded-lg px-3 py-2 text-sm text-zinc-200 focus:outline-none focus:border-brand-green font-bold"
+                />
+              </div>
+              <div className="flex flex-col gap-1.5">
+                <label className="text-[10px] uppercase font-black tracking-wider text-zinc-400">Right-side Dynamic Alert Message (Optional)</label>
+                <input
+                  type="text"
+                  placeholder="e.g. SPECIAL PROMO REVEAL AT 8PM!"
+                  value={draftState['intermission-banner'].alertText || ''}
+                  onChange={(e) => updateDraft('intermission-banner', 'alertText', e.target.value)}
+                  className="bg-zinc-950 border border-zinc-850 border-red-900/30 rounded-lg px-3 py-2 text-sm text-red-400 focus:outline-none focus:border-red-500 font-bold"
+                />
+              </div>
+              <div className="flex flex-col gap-1.5 md:col-span-2">
+                <label className="text-[10px] uppercase font-black tracking-wider text-zinc-400">Right-side Body Subtext</label>
+                <textarea
+                  rows="2"
+                  value={draftState['intermission-banner'].rightBody || ''}
+                  onChange={(e) => updateDraft('intermission-banner', 'rightBody', e.target.value)}
+                  className="bg-zinc-950 border border-zinc-800 rounded-lg px-3 py-2 text-sm text-zinc-200 focus:outline-none focus:border-brand-green font-bold resize-none"
+                />
+              </div>
+            </div>
+
+            {/* Individual Save Button */}
+            <div className="flex justify-end border-t border-zinc-800 pt-4 mt-2">
+              <button
+                onClick={() => commitSection('intermission-banner')}
+                className="flex items-center gap-2 bg-brand-green hover:bg-brand-green/90 text-white font-black uppercase tracking-wider text-xs py-2.5 px-6 rounded-lg border border-brand-gold/45 shadow-md transition-all active:scale-95"
+              >
+                <Save className="w-4 h-4 text-brand-gold" />
+                Save Intermission Details
+              </button>
             </div>
           </div>
         )}
@@ -359,7 +587,7 @@ export function OperatorPanel({ initialState, onStateChange }) {
           <div className="flex flex-col gap-6">
             <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-6 shadow-xl flex flex-col gap-6">
               <h2 className="text-sm font-black text-brand-gold uppercase tracking-widest flex items-center gap-2 border-b border-zinc-800 pb-3">
-                <Clock className="w-4 h-4" /> Edit Starting Soon Countdown & Title
+                <Clock className="w-4 h-4" /> Edit Starting Soon Screen Details
               </h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="flex flex-col gap-4">
@@ -381,63 +609,93 @@ export function OperatorPanel({ initialState, onStateChange }) {
                       className="bg-zinc-950 border border-zinc-800 rounded-lg px-3 py-2 text-sm text-zinc-200 focus:outline-none focus:border-brand-green font-bold"
                     />
                   </div>
+                  <div className="flex justify-end mt-2">
+                    <button
+                      onClick={() => commitSection('starting')}
+                      className="flex items-center gap-2 bg-brand-green hover:bg-brand-green/90 text-white font-black uppercase tracking-wider text-xs py-2 px-4 rounded-lg border border-brand-gold/45 shadow-sm active:scale-95"
+                    >
+                      <Save className="w-3.5 h-3.5 text-brand-gold" />
+                      Save Starting Details
+                    </button>
+                  </div>
                 </div>
 
-                {/* Countdown Controls */}
+                {/* Countdown Controls (Direct execution bypassing draft) */}
                 <div className="flex flex-col gap-4 bg-zinc-950 border border-zinc-800/80 p-5 rounded-xl">
-                  <span className="text-[10px] uppercase font-black tracking-wider text-zinc-500">Starting Soon Timer Setup</span>
+                  <span className="text-[10px] uppercase font-black tracking-wider text-zinc-500">Live countdown clock setup</span>
                   <div className="flex items-center justify-between">
-                    <div className="text-brand-gold font-mono text-3xl font-black tracking-widest">
-                      {Math.floor(draftState.starting.countdownSeconds / 60).toString().padStart(2, '0')}:
-                      {(draftState.starting.countdownSeconds % 60).toString().padStart(2, '0')}
+                    <div className="text-brand-gold font-mono text-3xl font-black tracking-widest tabular-nums">
+                      {Math.floor(state.starting.countdownSeconds / 60).toString().padStart(2, '0')}:
+                      {(state.starting.countdownSeconds % 60).toString().padStart(2, '0')}
                     </div>
                     <div className="flex gap-2">
                       <button
-                        onClick={() => updateDraft('starting', 'countdownRunning', !draftState.starting.countdownRunning)}
+                        onClick={() => triggerStartingCountdownAction('toggle')}
                         className={`px-4 py-2 rounded-lg text-xs font-black tracking-wider border transition-all ${
-                          draftState.starting.countdownRunning
+                          state.starting.countdownRunning
                             ? 'bg-amber-500/10 border-amber-500/30 text-amber-400 hover:bg-amber-500/20'
                             : 'bg-brand-green/20 border-brand-green/30 text-brand-gold hover:bg-brand-green/30'
                         }`}
                       >
-                        {draftState.starting.countdownRunning ? 'PAUSE LIVE' : 'START LIVE'}
+                        {state.starting.countdownRunning ? 'PAUSE LIVE' : 'START LIVE'}
                       </button>
                       <button
-                        onClick={() => {
-                          updateDraft('starting', 'countdownSeconds', 300);
-                          updateDraft('starting', 'countdownRunning', false);
-                        }}
-                        className="bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 px-3 py-2 rounded-lg text-xs font-black tracking-wider text-zinc-300"
+                        onClick={() => triggerStartingCountdownAction('reset', (state.timerPresets?.starting?.[2] || 5) * 60)}
+                        className="bg-zinc-850 hover:bg-zinc-800 border border-zinc-750 px-3 py-2 rounded-lg text-xs font-black tracking-wider text-zinc-300 transition-all"
                       >
                         RESET (5M)
                       </button>
                     </div>
                   </div>
-                  <div className="grid grid-cols-4 gap-2 border-t border-zinc-800/60 pt-3">
-                    {[1, 3, 5, 10].map((m) => (
-                      <button
-                        key={m}
-                        onClick={() => {
-                          updateDraft('starting', 'countdownSeconds', m * 60);
-                          updateDraft('starting', 'countdownRunning', false);
-                        }}
-                        className="bg-zinc-900 hover:bg-zinc-800 border border-zinc-800/80 text-[10px] font-black tracking-wider py-2 rounded-lg"
-                      >
-                        {m} Min
-                      </button>
-                    ))}
+                  
+                  {/* Preset quick actions dynamic grid */}
+                  <div className="flex flex-col gap-2 border-t border-zinc-800/60 pt-3">
+                    <span className="text-[9px] uppercase font-black text-zinc-500">Duration Presets</span>
+                    <div className="grid grid-cols-4 gap-2">
+                      {(state.timerPresets?.starting || [1, 3, 5, 10]).map((m) => (
+                        <button
+                          key={m}
+                          onClick={() => triggerStartingCountdownAction('reset', m * 60)}
+                          className="bg-zinc-900 hover:bg-zinc-850 border border-zinc-800/80 text-[10px] font-black py-2 rounded-lg text-zinc-350 hover:text-brand-gold transition"
+                        >
+                          {m} Min
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Custom duration loader */}
+                  <div className="flex items-center gap-2 border-t border-zinc-800/60 pt-3">
+                    <input 
+                      type="number" 
+                      placeholder="Min" 
+                      min="1"
+                      id="starting_custom_min"
+                      className="bg-zinc-900 border border-zinc-800 rounded px-2.5 py-1.5 text-xs w-16 text-center font-bold text-zinc-100 focus:outline-none focus:border-brand-green"
+                    />
+                    <button
+                      onClick={() => {
+                        const val = parseInt(document.getElementById('starting_custom_min').value);
+                        if (val > 0) {
+                          triggerStartingCountdownAction('reset', val * 60);
+                        }
+                      }}
+                      className="bg-brand-green/20 hover:bg-brand-green/30 border border-brand-green/30 text-brand-gold text-[10px] font-black uppercase py-1.5 px-3.5 rounded-lg transition-all"
+                    >
+                      Apply Custom Time
+                    </button>
                   </div>
                 </div>
               </div>
             </div>
 
-            {/* Minor Ticker */}
+            {/* Scrolling Ticker Card */}
             <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-6 shadow-xl flex flex-col gap-4">
               <h3 className="text-sm font-black text-brand-gold uppercase tracking-widest flex items-center gap-2 border-b border-zinc-800 pb-3">
-                <List className="w-4 h-4" /> Pre-Show Scrolling Ticker Items
+                <List className="w-4 h-4" /> Scrolling Announcement Ticker Items
               </h3>
               <div className="flex flex-col gap-3">
-                <label className="text-[10px] uppercase font-black tracking-wider text-zinc-400">One announcement statement per line</label>
+                <label className="text-[10px] uppercase font-black tracking-wider text-zinc-400">One statement per line</label>
                 <textarea
                   rows="4"
                   value={draftState.starting.tickerItems.join('\n')}
@@ -448,6 +706,15 @@ export function OperatorPanel({ initialState, onStateChange }) {
                   className="bg-zinc-950 border border-zinc-800 rounded-lg px-3 py-2 text-xs font-mono text-zinc-200 focus:outline-none focus:border-brand-green font-bold resize-none"
                 />
               </div>
+              <div className="flex justify-end border-t border-zinc-800 pt-3 mt-1">
+                <button
+                  onClick={() => commitSection('starting')}
+                  className="flex items-center gap-2 bg-brand-green hover:bg-brand-green/90 text-white font-black uppercase tracking-wider text-xs py-2 px-4 rounded-lg border border-brand-gold/45 shadow-sm active:scale-95"
+                >
+                  <Save className="w-3.5 h-3.5 text-brand-gold" />
+                  Save Ticker Items
+                </button>
+              </div>
             </div>
           </div>
         )}
@@ -456,12 +723,14 @@ export function OperatorPanel({ initialState, onStateChange }) {
         {activeTab === 'main' && (
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             
-            {/* Top Banner Header & Ticker */}
+            {/* Left Column: Headers & Tickers */}
             <div className="flex flex-col gap-6">
+              
+              {/* Header card */}
               <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-6 shadow-xl flex flex-col gap-5">
                 <div className="flex justify-between items-center border-b border-zinc-800 pb-3">
                   <h2 className="text-sm font-black text-brand-gold uppercase tracking-widest flex items-center gap-2">
-                    <Layers className="w-4 h-4" /> Top Segment Header Overlay
+                    <Layers className="w-4 h-4" /> Segment Header Config
                   </h2>
                   <button
                     onClick={() => updateDraft('main', 'headerVisible', !draftState.main.headerVisible)}
@@ -476,7 +745,7 @@ export function OperatorPanel({ initialState, onStateChange }) {
                 </div>
                 <div className="flex flex-col gap-4">
                   <div className="flex flex-col gap-1.5">
-                    <label className="text-[10px] uppercase font-black tracking-wider text-zinc-400">Active Segment/Show Title</label>
+                    <label className="text-[10px] uppercase font-black tracking-wider text-zinc-400">Show Title</label>
                     <input
                       type="text"
                       value={draftState.main.segmentName}
@@ -485,7 +754,7 @@ export function OperatorPanel({ initialState, onStateChange }) {
                     />
                   </div>
                   <div className="flex items-center justify-between border-t border-zinc-850 pt-3">
-                    <span className="text-xs text-zinc-400 font-bold">Display clock uptime capsule</span>
+                    <span className="text-xs text-zinc-400 font-bold">Show clock uptime capsule</span>
                     <input 
                       type="checkbox"
                       checked={draftState.main.showClock}
@@ -494,30 +763,30 @@ export function OperatorPanel({ initialState, onStateChange }) {
                     />
                   </div>
 
-                  {/* Uptime clock controls */}
+                  {/* Uptime clock controls (Direct instant execution) */}
                   <div className="bg-zinc-950 border border-zinc-800/80 p-4 rounded-xl flex flex-col gap-3">
                     <div className="flex justify-between items-center font-mono">
                       <span className="text-zinc-500 text-[10px] uppercase font-black tracking-wider font-sans">Uptime Clock</span>
                       <span className="text-brand-gold text-xl font-black tracking-widest tabular-nums">
-                        {draftState.main.startTime ? formatElapsed(elapsedSeconds) : "00:00:00"}
+                        {state.main.startTime ? formatElapsed(elapsedSeconds) : "00:00:00"}
                       </span>
                     </div>
                     <div className="grid grid-cols-3 gap-2">
                       <button
-                        onClick={() => updateDraft('main', 'startTime', Date.now())}
-                        className="bg-brand-green/10 hover:bg-brand-green/20 border border-brand-green/30 text-brand-gold py-1.5 rounded-md font-bold text-2xs flex items-center justify-center gap-1"
+                        onClick={() => triggerClockAction('start')}
+                        className="bg-brand-green/10 hover:bg-brand-green/20 border border-brand-green/30 text-brand-gold py-1.5 rounded-md font-bold text-2xs flex items-center justify-center gap-1 transition"
                       >
-                        <Play className="w-3 h-3" /> Start
+                        <Play className="w-3 h-3" /> Start Clock
                       </button>
                       <button
-                        onClick={() => updateDraft('main', 'startTime', null)}
-                        className="bg-red-500/10 hover:bg-red-500/20 border border-red-500/30 text-red-400 py-1.5 rounded-md font-bold text-2xs flex items-center justify-center gap-1"
+                        onClick={() => triggerClockAction('stop')}
+                        className="bg-red-500/10 hover:bg-red-500/20 border border-red-500/30 text-red-400 py-1.5 rounded-md font-bold text-2xs flex items-center justify-center gap-1 transition"
                       >
-                        <Pause className="w-3 h-3" /> Stop
+                        <Pause className="w-3 h-3" /> Stop Clock
                       </button>
                       <button
-                        onClick={() => updateDraft('main', 'startTime', Date.now())}
-                        className="bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 text-zinc-300 py-1.5 rounded-md font-bold text-2xs flex items-center justify-center gap-1"
+                        onClick={() => triggerClockAction('reset')}
+                        className="bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 text-zinc-300 py-1.5 rounded-md font-bold text-2xs flex items-center justify-center gap-1 transition"
                       >
                         <RotateCcw className="w-3 h-3" /> Reset
                       </button>
@@ -526,11 +795,12 @@ export function OperatorPanel({ initialState, onStateChange }) {
 
                   {/* Segment presets */}
                   <div className="border-t border-zinc-850 pt-3">
-                    <span className="text-[10px] uppercase font-black tracking-wider text-zinc-500 block mb-2">Segment Title Presets</span>
+                    <span className="text-[10px] uppercase font-black tracking-wider text-zinc-500 block mb-2">Preset Segments</span>
                     <div className="flex flex-col gap-1.5 max-h-[140px] overflow-y-auto pr-1">
                       {segmentPresets.map((seg, idx) => (
                         <button
                           key={idx}
+                          type="button"
                           onClick={() => updateDraft('main', 'segmentName', seg)}
                           className={`text-left w-full p-2 rounded-lg text-2xs font-semibold border transition ${
                             draftState.main.segmentName === seg
@@ -544,13 +814,23 @@ export function OperatorPanel({ initialState, onStateChange }) {
                     </div>
                   </div>
                 </div>
+
+                <div className="flex justify-end border-t border-zinc-800 pt-3 mt-1">
+                  <button
+                    onClick={() => commitSection('main')}
+                    className="flex items-center gap-2 bg-brand-green hover:bg-brand-green/90 text-white font-black uppercase tracking-wider text-xs py-2 px-4 rounded-lg border border-brand-gold/45 shadow-sm active:scale-95"
+                  >
+                    <Save className="w-3.5 h-3.5 text-brand-gold" />
+                    Save Header Settings
+                  </button>
+                </div>
               </div>
 
-              {/* Scrolling ticker */}
+              {/* News ticker card */}
               <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-6 shadow-xl flex flex-col gap-4">
                 <div className="flex justify-between items-center border-b border-zinc-800 pb-3">
                   <h2 className="text-sm font-black text-brand-gold uppercase tracking-widest flex items-center gap-2">
-                    <List className="w-4 h-4" /> Scrolling News Ticker
+                    <List className="w-4 h-4" /> Bottom News Ticker
                   </h2>
                   <button
                     onClick={() => updateDraft('main', 'tickerVisible', !draftState.main.tickerVisible)}
@@ -575,27 +855,38 @@ export function OperatorPanel({ initialState, onStateChange }) {
                     className="bg-zinc-950 border border-zinc-800 rounded-lg px-3 py-2 text-xs font-mono text-zinc-200 focus:outline-none focus:border-brand-green font-bold resize-none"
                   />
                 </div>
+                <div className="flex justify-end border-t border-zinc-800 pt-3 mt-1">
+                  <button
+                    onClick={() => commitSection('main')}
+                    className="flex items-center gap-2 bg-brand-green hover:bg-brand-green/90 text-white font-black uppercase tracking-wider text-xs py-2 px-4 rounded-lg border border-brand-gold/45 shadow-sm active:scale-95"
+                  >
+                    <Save className="w-3.5 h-3.5 text-brand-gold" />
+                    Save Ticker Settings
+                  </button>
+                </div>
               </div>
             </div>
 
-            {/* Host Lower-Third & Product Card */}
+            {/* Right Column: Nameplate & Product Matrix */}
             <div className="flex flex-col gap-6">
               
-              {/* Host Lower Third */}
+              {/* Host nameplate card */}
               <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-6 shadow-xl flex flex-col gap-4">
                 <div className="flex justify-between items-center border-b border-zinc-800 pb-3">
                   <h2 className="text-sm font-black text-brand-gold uppercase tracking-widest flex items-center gap-2">
-                    <User className="w-4 h-4" /> Host Lower-Third Nameplate
+                    <User className="w-4 h-4" /> Host Nameplate
                   </h2>
+                  
+                  {/* Dedicated instant PUSH LIVE toggle */}
                   <button
-                    onClick={() => updateDraft('main', 'hostVisible', !draftState.main.hostVisible)}
+                    onClick={triggerHostVisibility}
                     className={`px-4 py-1.5 text-xs font-black rounded-lg border transition-all ${
-                      draftState.main.hostVisible 
-                        ? 'bg-brand-green border-brand-gold text-white shadow-sm' 
-                        : 'bg-zinc-800 border-zinc-700 text-zinc-300 hover:bg-zinc-700'
+                      state.main.hostVisible 
+                        ? 'bg-red-600 border-brand-gold text-white shadow-md animate-pulse' 
+                        : 'bg-zinc-800 border-zinc-700 text-zinc-300 hover:bg-zinc-750'
                     }`}
                   >
-                    {draftState.main.hostVisible ? 'VISIBLE' : 'HIDDEN'}
+                    {state.main.hostVisible ? 'DISPLAYED LIVE' : 'DISPLAY LIVE'}
                   </button>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -609,7 +900,7 @@ export function OperatorPanel({ initialState, onStateChange }) {
                     />
                   </div>
                   <div className="flex flex-col gap-1.5">
-                    <label className="text-[10px] uppercase font-black tracking-wider text-zinc-400">Host Title / Credentials</label>
+                    <label className="text-[10px] uppercase font-black tracking-wider text-zinc-400">Credentials Title</label>
                     <input
                       type="text"
                       value={draftState.main.hostTitle}
@@ -617,98 +908,294 @@ export function OperatorPanel({ initialState, onStateChange }) {
                       className="bg-zinc-950 border border-zinc-800 rounded-lg px-3 py-2 text-sm text-zinc-200 focus:outline-none focus:border-brand-green font-bold"
                     />
                   </div>
-                  <div className="flex items-center justify-between md:col-span-2 border-t border-zinc-850 pt-3">
-                    <span className="text-xs text-zinc-400 font-bold">Auto-hide nameplate after 8 seconds</span>
-                    <input 
-                      type="checkbox"
-                      checked={draftState.main.hostAutoHide}
-                      onChange={(e) => updateDraft('main', 'hostAutoHide', e.target.checked)}
-                      className="rounded text-brand-green focus:ring-brand-green h-4 w-4 bg-zinc-950 border-zinc-800 cursor-pointer"
-                    />
+
+                  {/* Host visibility timer parameters */}
+                  <div className="flex flex-col gap-2 md:col-span-2 border-t border-zinc-850 pt-3">
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs text-zinc-400 font-bold">Auto-hide host nameplate automatically</span>
+                      <input 
+                        type="checkbox"
+                        checked={draftState.main.hostAutoHide}
+                        onChange={(e) => updateDraft('main', 'hostAutoHide', e.target.checked)}
+                        className="rounded text-brand-green focus:ring-brand-green h-4 w-4 bg-zinc-950 border-zinc-800 cursor-pointer"
+                      />
+                    </div>
+                    {draftState.main.hostAutoHide && (
+                      <div className="flex flex-col gap-2 mt-1 bg-zinc-950 p-3 rounded-lg border border-zinc-850">
+                        <span className="text-[9px] uppercase font-black text-zinc-500">Auto-Hide Duration (seconds)</span>
+                        <div className="flex gap-2 items-center">
+                          {[5, 10, 30].map(s => (
+                            <button
+                              type="button"
+                              key={s}
+                              onClick={() => updateDraft('main', 'hostHideDuration', s)}
+                              className={`px-3 py-1.5 rounded text-[10px] font-black border transition ${
+                                draftState.main.hostHideDuration === s
+                                  ? 'bg-brand-green border-brand-gold text-white'
+                                  : 'bg-zinc-900 border-zinc-800 text-zinc-400'
+                              }`}
+                            >
+                              {s}s
+                            </button>
+                          ))}
+                          <input
+                            type="number"
+                            placeholder="Custom"
+                            value={draftState.main.hostHideDuration || ''}
+                            onChange={(e) => updateDraft('main', 'hostHideDuration', parseInt(e.target.value) || 0)}
+                            className="bg-zinc-900 border border-zinc-800 rounded px-2.5 py-1 text-xs w-16 text-center font-bold text-zinc-100"
+                          />
+                        </div>
+                      </div>
+                    )}
                   </div>
+                </div>
+                <div className="flex justify-end border-t border-zinc-800 pt-3 mt-1">
+                  <button
+                    onClick={() => commitSection('main')}
+                    className="flex items-center gap-2 bg-brand-green hover:bg-brand-green/90 text-white font-black uppercase tracking-wider text-xs py-2 px-4 rounded-lg border border-brand-gold/45 shadow-sm active:scale-95"
+                  >
+                    <Save className="w-3.5 h-3.5 text-brand-gold" />
+                    Save Nameplate Details
+                  </button>
                 </div>
               </div>
 
-              {/* Product Flashcard */}
+              {/* Product matrix card */}
               <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-6 shadow-xl flex flex-col gap-4">
-                <div className="flex justify-between items-center border-b border-zinc-800 pb-3">
-                  <h2 className="text-sm font-black text-brand-gold uppercase tracking-widest flex items-center gap-2">
-                    <Tag className="w-4 h-4" /> Featured Product Flashcard
-                  </h2>
-                  <button
-                    onClick={() => updateDraft('main', 'productVisible', !draftState.main.productVisible)}
-                    className={`px-4 py-1.5 text-xs font-black rounded-lg border transition-all ${
-                      draftState.main.productVisible 
-                        ? 'bg-brand-green border-brand-gold text-white shadow-sm' 
-                        : 'bg-zinc-800 border-zinc-700 text-zinc-300 hover:bg-zinc-700'
-                    }`}
-                  >
-                    {draftState.main.productVisible ? 'VISIBLE' : 'HIDDEN'}
-                  </button>
-                </div>
-                <div className="flex flex-col gap-4">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div className="flex flex-col gap-1.5">
-                      <label className="text-[10px] uppercase font-black tracking-wider text-zinc-400">Product Name</label>
-                      <input
-                        type="text"
-                        value={draftState.main.productName}
-                        onChange={(e) => updateDraft('main', 'productName', e.target.value)}
-                        className="bg-zinc-950 border border-zinc-800 rounded-lg px-3 py-2 text-sm text-zinc-200 focus:outline-none focus:border-brand-green font-bold"
-                      />
-                    </div>
-                    <div className="flex flex-col gap-1.5">
-                      <label className="text-[10px] uppercase font-black tracking-wider text-zinc-400">Price Tag</label>
-                      <input
-                        type="text"
-                        value={draftState.main.productPrice}
-                        onChange={(e) => updateDraft('main', 'productPrice', e.target.value)}
-                        className="bg-zinc-950 border border-zinc-800 rounded-lg px-3 py-2 text-sm text-zinc-200 focus:outline-none focus:border-brand-green font-mono font-bold"
-                      />
-                    </div>
-                  </div>
+                <h2 className="text-sm font-black text-brand-gold uppercase tracking-widest border-b border-zinc-800 pb-3 flex items-center gap-2">
+                  <Tag className="w-4 h-4" /> Featured Product Flashcards Grid
+                </h2>
+                
+                <div className="flex flex-col gap-5 max-h-[500px] overflow-y-auto pr-1">
+                  {draftState.main.products && draftState.main.products.map((product, idx) => (
+                    <div key={product.id} className="bg-zinc-950 border border-zinc-850 p-4 rounded-xl flex flex-col gap-4 relative">
+                      
+                      {/* Product header & display trigger */}
+                      <div className="flex justify-between items-center border-b border-zinc-900 pb-2">
+                        <span className="text-xs font-black text-brand-gold">Product Card #{idx + 1}</span>
+                        <div className="flex gap-2">
+                          <button
+                            type="button"
+                            onClick={() => triggerProductVisibility(product.id)}
+                            className={`px-3 py-1 text-[10px] font-black rounded-lg border transition-all ${
+                              state.main.products?.find(p => p.id === product.id)?.visible
+                                ? 'bg-red-600 border-brand-gold text-white shadow-md animate-pulse'
+                                : 'bg-zinc-800 border-zinc-700 text-zinc-300 hover:bg-zinc-750'
+                            }`}
+                          >
+                            {state.main.products?.find(p => p.id === product.id)?.visible ? 'DISPLAYED LIVE' : 'DISPLAY LIVE'}
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setDraftState(prev => {
+                                const filtered = prev.main.products.filter(p => p.id !== product.id);
+                                return { ...prev, main: { ...prev.main, products: filtered } };
+                              });
+                            }}
+                            className="bg-red-500/10 hover:bg-red-500/20 border border-red-500/30 text-red-400 px-2 py-0.5 rounded text-[10px] font-black"
+                          >
+                            REMOVE
+                          </button>
+                        </div>
+                      </div>
 
-                  <div className="flex flex-col gap-1.5">
-                    <label className="text-[10px] uppercase font-black tracking-wider text-zinc-400">Promo Marquee Banner Text</label>
-                    <input
-                      type="text"
-                      value={draftState.main.productPromo}
-                      onChange={(e) => updateDraft('main', 'productPromo', e.target.value)}
-                      className="bg-zinc-950 border border-zinc-800 rounded-lg px-3 py-2 text-sm text-zinc-200 focus:outline-none focus:border-brand-green font-bold"
-                    />
-                  </div>
+                      {/* Inputs */}
+                      <div className="grid grid-cols-2 gap-3">
+                        <div className="flex flex-col gap-1">
+                          <label className="text-[9px] uppercase font-black text-zinc-400">Product Name</label>
+                          <input
+                            type="text"
+                            value={product.name}
+                            onChange={(e) => {
+                              const val = e.target.value;
+                              setDraftState(prev => {
+                                const updated = prev.main.products.map(p => p.id === product.id ? { ...p, name: val } : p);
+                                return { ...prev, main: { ...prev.main, products: updated } };
+                              });
+                            }}
+                            className="bg-zinc-900 border border-zinc-800 rounded px-2.5 py-1.5 text-xs font-bold text-zinc-100 focus:outline-none focus:border-brand-green"
+                          />
+                        </div>
+                        <div className="flex flex-col gap-1">
+                          <label className="text-[9px] uppercase font-black text-zinc-400">Price Pill</label>
+                          <input
+                            type="text"
+                            value={product.price}
+                            onChange={(e) => {
+                              const val = e.target.value;
+                              setDraftState(prev => {
+                                const updated = prev.main.products.map(p => p.id === product.id ? { ...p, price: val } : p);
+                                return { ...prev, main: { ...prev.main, products: updated } };
+                              });
+                            }}
+                            className="bg-zinc-900 border border-zinc-800 rounded px-2.5 py-1.5 text-xs font-bold text-zinc-100 focus:outline-none focus:border-brand-green"
+                          />
+                        </div>
+                      </div>
 
-                  <div className="flex flex-col gap-1.5">
-                    <label className="text-[10px] uppercase font-black tracking-wider text-zinc-400">Product Image URL (Optional)</label>
-                    <input
-                      type="text"
-                      placeholder="e.g. /images/soap.jpg"
-                      value={draftState.main.productImage}
-                      onChange={(e) => updateDraft('main', 'productImage', e.target.value)}
-                      className="bg-zinc-950 border border-zinc-800 rounded-lg px-3 py-2 text-sm text-zinc-200 focus:outline-none focus:border-brand-green font-bold"
-                    />
-                  </div>
-
-                  {/* Product Presets */}
-                  <div className="border-t border-zinc-850 pt-3">
-                    <span className="text-[10px] uppercase font-black tracking-wider text-zinc-500 block mb-2">Apply Product Presets</span>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-                      {productPresets.map((p, idx) => (
-                        <button
-                          key={idx}
-                          onClick={() => {
-                            updateDraft('main', 'productName', p.name);
-                            updateDraft('main', 'productPrice', p.price);
-                            updateDraft('main', 'productPromo', p.promo);
+                      <div className="flex flex-col gap-1">
+                        <label className="text-[9px] uppercase font-black text-zinc-400">Promo Scrolling Banner</label>
+                        <input
+                          type="text"
+                          value={product.promoText}
+                          onChange={(e) => {
+                            const val = e.target.value;
+                            setDraftState(prev => {
+                              const updated = prev.main.products.map(p => p.id === product.id ? { ...p, promoText: val } : p);
+                              return { ...prev, main: { ...prev.main, products: updated } };
+                            });
                           }}
-                          className="text-left p-2.5 bg-zinc-950 hover:bg-zinc-900 border border-zinc-850 rounded-lg text-2xs font-semibold flex items-center justify-between transition"
-                        >
-                          <span className="truncate pr-2 font-bold text-zinc-350">{p.name}</span>
-                          <span className="text-brand-gold font-mono shrink-0 font-bold">{p.price}</span>
-                        </button>
-                      ))}
+                          className="bg-zinc-900 border border-zinc-800 rounded px-2.5 py-1.5 text-xs font-bold text-zinc-100 focus:outline-none focus:border-brand-green"
+                        />
+                      </div>
+
+                      {/* Direct file upload wrapper */}
+                      <div className="flex flex-col gap-1 bg-zinc-900/60 p-2.5 rounded border border-zinc-850">
+                        <span className="text-[8px] uppercase font-black text-zinc-500">Asset File Upload (Image / Animated GIF / Video MP4)</span>
+                        <input 
+                          type="file" 
+                          accept="image/*,video/*"
+                          onChange={(e) => {
+                            handleFileUpload(e, (url) => {
+                              setDraftState(prev => {
+                                const updated = prev.main.products.map(p => p.id === product.id ? { ...p, imageUrl: url } : p);
+                                return { ...prev, main: { ...prev.main, products: updated } };
+                              });
+                            });
+                          }}
+                          className="bg-zinc-950 border border-zinc-800 rounded px-2 py-1 text-2xs text-zinc-300 w-full cursor-pointer focus:outline-none"
+                        />
+                        {product.imageUrl && (
+                          <span className="text-[9px] text-brand-gold font-bold truncate max-w-[300px] mt-1.5">
+                            Loaded URL: {product.imageUrl.slice(0, 45)}...
+                          </span>
+                        )}
+                      </div>
+
+                      {/* Visibility Timers */}
+                      <div className="flex flex-col gap-1.5 border-t border-zinc-850 pt-2.5">
+                        <div className="flex items-center justify-between">
+                          <span className="text-[9px] uppercase font-black text-zinc-400">Stay on screen indefinitely</span>
+                          <input 
+                            type="checkbox"
+                            checked={product.stayOnScreen}
+                            onChange={(e) => {
+                              const val = e.target.checked;
+                              setDraftState(prev => {
+                                const updated = prev.main.products.map(p => p.id === product.id ? { ...p, stayOnScreen: val } : p);
+                                return { ...prev, main: { ...prev.main, products: updated } };
+                              });
+                            }}
+                            className="rounded text-brand-green focus:ring-brand-green h-4 w-4 bg-zinc-900 border-zinc-800 cursor-pointer"
+                          />
+                        </div>
+                        {!product.stayOnScreen && (
+                          <div className="flex flex-col gap-1.5 mt-1 bg-zinc-900 p-2 rounded border border-zinc-850">
+                            <span className="text-[8px] uppercase font-black text-zinc-500">Auto-Hide Duration (seconds)</span>
+                            <div className="flex gap-2 items-center">
+                              {[5, 10, 30].map(s => (
+                                <button
+                                  type="button"
+                                  key={s}
+                                  onClick={() => {
+                                    setDraftState(prev => {
+                                      const updated = prev.main.products.map(p => p.id === product.id ? { ...p, hideDuration: s } : p);
+                                      return { ...prev, main: { ...prev.main, products: updated } };
+                                    });
+                                  }}
+                                  className={`px-2 py-1 rounded text-[9px] font-black border transition ${
+                                    product.hideDuration === s
+                                      ? 'bg-brand-green border-brand-gold text-white'
+                                      : 'bg-zinc-950 border-zinc-850 text-zinc-400'
+                                  }`}
+                                >
+                                  {s}s
+                                </button>
+                              ))}
+                              <input
+                                type="number"
+                                placeholder="Custom"
+                                value={product.hideDuration || ''}
+                                onChange={(e) => {
+                                  const val = parseInt(e.target.value) || 0;
+                                  setDraftState(prev => {
+                                    const updated = prev.main.products.map(p => p.id === product.id ? { ...p, hideDuration: val } : p);
+                                    return { ...prev, main: { ...prev.main, products: updated } };
+                                  });
+                                }}
+                                className="bg-zinc-950 border border-zinc-850 rounded px-1.5 py-0.5 text-xs w-12 text-center font-bold text-zinc-100"
+                              />
+                            </div>
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Product Presets */}
+                      <div className="border-t border-zinc-850 pt-2.5">
+                        <span className="text-[8px] uppercase font-black text-zinc-500 block mb-1.5">Apply Presets directly</span>
+                        <div className="grid grid-cols-2 gap-1.5">
+                          {productPresets.map((pr, pIdx) => (
+                            <button
+                              key={pIdx}
+                              type="button"
+                              onClick={() => {
+                                setDraftState(prev => {
+                                  const updated = prev.main.products.map(p => 
+                                    p.id === product.id 
+                                      ? { ...p, name: pr.name, price: pr.price, promoText: pr.promo } 
+                                      : p
+                                  );
+                                  return { ...prev, main: { ...prev.main, products: updated } };
+                                });
+                              }}
+                              className="text-left p-1.5 bg-zinc-900 border border-zinc-850 hover:bg-zinc-850 rounded text-[9px] font-semibold flex items-center justify-between transition"
+                            >
+                              <span className="truncate pr-1 font-bold text-zinc-400">{pr.name}</span>
+                              <span className="text-brand-gold font-mono shrink-0 font-bold">{pr.price}</span>
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+
                     </div>
-                  </div>
+                  ))}
+                </div>
+
+                <button
+                  type="button"
+                  onClick={() => {
+                    setDraftState(prev => {
+                      const nextId = prev.main.products?.length > 0 
+                        ? Math.max(...prev.main.products.map(p => p.id)) + 1 
+                        : 1;
+                      const newProd = {
+                        id: nextId,
+                        visible: false,
+                        name: "Organic Product Name",
+                        price: "₱0.00",
+                        promoText: "Exclusive Anniversary Deals!",
+                        imageUrl: "",
+                        stayOnScreen: true,
+                        hideDuration: 10
+                      };
+                      return { ...prev, main: { ...prev.main, products: [...(prev.main.products || []), newProd] } };
+                    });
+                  }}
+                  className="w-full py-2 bg-zinc-950 hover:bg-zinc-900 border border-zinc-800 rounded-xl text-xs font-black uppercase text-brand-gold tracking-widest flex items-center justify-center gap-2 mt-2 transition"
+                >
+                  <Plus className="w-3.5 h-3.5" /> Add Product Card
+                </button>
+
+                <div className="flex justify-end border-t border-zinc-800 pt-3 mt-1">
+                  <button
+                    onClick={() => commitSection('main')}
+                    className="flex items-center gap-2 bg-brand-green hover:bg-brand-green/90 text-white font-black uppercase tracking-wider text-xs py-2 px-4 rounded-lg border border-brand-gold/45 shadow-sm active:scale-95"
+                  >
+                    <Save className="w-3.5 h-3.5 text-brand-gold" />
+                    Save Products List
+                  </button>
                 </div>
               </div>
 
@@ -734,7 +1221,7 @@ export function OperatorPanel({ initialState, onStateChange }) {
                   />
                 </div>
                 <div className="flex flex-col gap-1.5">
-                  <label className="text-[10px] uppercase font-black tracking-wider text-zinc-400">Notices / Scroll Items (One per line)</label>
+                  <label className="text-[10px] uppercase font-black tracking-wider text-zinc-400">Notices / Status Box Statements (One statement per line)</label>
                   <textarea
                     rows="4"
                     value={draftState.brb.announcements.join('\n')}
@@ -745,51 +1232,81 @@ export function OperatorPanel({ initialState, onStateChange }) {
                     className="bg-zinc-950 border border-zinc-800 rounded-lg px-3 py-2 text-xs font-mono text-zinc-200 focus:outline-none focus:border-brand-green font-bold resize-none"
                   />
                 </div>
+                <div className="flex justify-end mt-2">
+                  <button
+                    onClick={() => commitSection('brb')}
+                    className="flex items-center gap-2 bg-brand-green hover:bg-brand-green/90 text-white font-black uppercase tracking-wider text-xs py-2.5 px-6 rounded-lg border border-brand-gold/45 shadow-sm active:scale-95"
+                  >
+                    <Save className="w-4 h-4 text-brand-gold" />
+                    Save BRB Details
+                  </button>
+                </div>
               </div>
 
-              {/* Countdown settings */}
+              {/* Countdown settings (Direct execution) */}
               <div className="flex flex-col gap-4 bg-zinc-950 border border-zinc-800/80 p-5 rounded-xl">
                 <span className="text-[10px] uppercase font-black tracking-wider text-zinc-500">Return Timer setup</span>
                 <div className="flex items-center justify-between">
-                  <div className="text-brand-gold font-mono text-3xl font-black tracking-widest">
-                    {Math.floor(draftState.brb.countdownSeconds / 60).toString().padStart(2, '0')}:
-                    {(draftState.brb.countdownSeconds % 60).toString().padStart(2, '0')}
+                  <div className="text-brand-gold font-mono text-3xl font-black tracking-widest tabular-nums">
+                    {Math.floor(state.brb.countdownSeconds / 60).toString().padStart(2, '0')}:
+                    {(state.brb.countdownSeconds % 60).toString().padStart(2, '0')}
                   </div>
                   <div className="flex gap-2">
                     <button
-                      onClick={() => updateDraft('brb', 'countdownRunning', !draftState.brb.countdownRunning)}
+                      onClick={() => triggerBrbCountdownAction('toggle')}
                       className={`px-4 py-2 rounded-lg text-xs font-black tracking-wider border transition-all ${
-                        draftState.brb.countdownRunning
+                        state.brb.countdownRunning
                           ? 'bg-amber-500/10 border-amber-500/30 text-amber-400 hover:bg-amber-500/20'
                           : 'bg-brand-green/20 border-brand-green/30 text-brand-gold hover:bg-brand-green/30'
                       }`}
                     >
-                      {draftState.brb.countdownRunning ? 'PAUSE LIVE' : 'START LIVE'}
+                      {state.brb.countdownRunning ? 'PAUSE LIVE' : 'START LIVE'}
                     </button>
                     <button
-                      onClick={() => {
-                        updateDraft('brb', 'countdownSeconds', 300);
-                        updateDraft('brb', 'countdownRunning', false);
-                      }}
-                      className="bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 px-3 py-2 rounded-lg text-xs font-black tracking-wider text-zinc-300"
-                      >
+                      onClick={() => triggerBrbCountdownAction('reset', (state.timerPresets?.brb?.[2] || 5) * 60)}
+                      className="bg-zinc-850 hover:bg-zinc-800 border border-zinc-750 px-3 py-2 rounded-lg text-xs font-black tracking-wider text-zinc-300 transition"
+                    >
                       RESET (5M)
                     </button>
                   </div>
                 </div>
-                <div className="grid grid-cols-4 gap-2 border-t border-zinc-800/60 pt-3">
-                  {[1, 3, 5, 10].map((m) => (
-                    <button
-                      key={m}
-                      onClick={() => {
-                        updateDraft('brb', 'countdownSeconds', m * 60);
-                        updateDraft('brb', 'countdownRunning', false);
-                      }}
-                      className="bg-zinc-900 hover:bg-zinc-800 border border-zinc-800/80 text-[10px] font-black tracking-wider py-2 rounded-lg"
-                    >
-                      {m} Min
-                    </button>
-                  ))}
+                
+                {/* Presets loops */}
+                <div className="flex flex-col gap-2 border-t border-zinc-800/60 pt-3">
+                  <span className="text-[9px] uppercase font-black text-zinc-500">Duration Presets</span>
+                  <div className="grid grid-cols-4 gap-2">
+                    {(state.timerPresets?.brb || [1, 3, 5, 10]).map((m) => (
+                      <button
+                        key={m}
+                        onClick={() => triggerBrbCountdownAction('reset', m * 60)}
+                        className="bg-zinc-900 hover:bg-zinc-850 border border-zinc-800/80 text-[10px] font-black py-2 rounded-lg text-zinc-350 hover:text-brand-gold transition"
+                      >
+                        {m} Min
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Custom Time */}
+                <div className="flex items-center gap-2 border-t border-zinc-800/60 pt-3">
+                  <input 
+                    type="number" 
+                    placeholder="Min" 
+                    min="1"
+                    id="brb_custom_min"
+                    className="bg-zinc-900 border border-zinc-800 rounded px-2.5 py-1.5 text-xs w-16 text-center font-bold text-zinc-100 focus:outline-none focus:border-brand-green"
+                  />
+                  <button
+                    onClick={() => {
+                      const val = parseInt(document.getElementById('brb_custom_min').value);
+                      if (val > 0) {
+                        triggerBrbCountdownAction('reset', val * 60);
+                      }
+                    }}
+                    className="bg-brand-green/20 hover:bg-brand-green/30 border border-brand-green/30 text-brand-gold text-[10px] font-black uppercase py-1.5 px-3.5 rounded-lg transition-all"
+                  >
+                    Apply Custom Time
+                  </button>
                 </div>
               </div>
             </div>
@@ -830,19 +1347,269 @@ export function OperatorPanel({ initialState, onStateChange }) {
                   className="bg-zinc-950 border border-zinc-800 rounded-lg px-3 py-2 text-sm text-zinc-200 focus:outline-none focus:border-brand-green font-bold resize-none"
                 />
               </div>
-              <div className="flex flex-col gap-1.5 md:col-span-2">
-                <label className="text-[10px] uppercase font-black tracking-wider text-zinc-400">Social Handles (One per line)</label>
-                <textarea
-                  rows="4"
-                  value={draftState.ending.socialHandles.join('\n')}
+            </div>
+
+            {/* Individual Save Button */}
+            <div className="flex justify-end border-t border-zinc-800 pt-4 mt-2">
+              <button
+                onClick={() => commitSection('ending')}
+                className="flex items-center gap-2 bg-brand-green hover:bg-brand-green/90 text-white font-black uppercase tracking-wider text-xs py-2.5 px-6 rounded-lg border border-brand-gold/45 shadow-md transition-all active:scale-95"
+              >
+                <Save className="w-4 h-4 text-brand-gold" />
+                Save Ending Details
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* TAB 6: Settings (Global Management Panels) */}
+        {activeTab === 'settings' && (
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            
+            {/* Global Logo Upload Card */}
+            <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-6 shadow-xl flex flex-col gap-4">
+              <h2 className="text-sm font-black text-brand-gold uppercase tracking-widest flex items-center gap-2 border-b border-zinc-800 pb-3">
+                <Layers className="w-4 h-4" /> Global Logo Customization
+              </h2>
+              <div className="flex flex-col gap-3">
+                <label className="text-[10px] uppercase font-black text-zinc-400">Global Logo (static image or animated/video loop)</label>
+                <input 
+                  type="file" 
+                  accept="image/*,video/*"
                   onChange={(e) => {
-                    const lines = e.target.value.split('\n');
-                    updateDraft('ending', 'socialHandles', lines);
+                    handleFileUpload(e, (url) => {
+                      setDraftState(prev => ({
+                        ...prev,
+                        globalLogoUrl: url
+                      }));
+                    });
                   }}
-                  className="bg-zinc-950 border border-zinc-800 rounded-lg px-3 py-2 text-xs font-mono text-zinc-200 focus:outline-none focus:border-brand-green font-bold resize-none"
+                  className="bg-zinc-950 border border-zinc-800 rounded px-2.5 py-1.5 text-xs text-zinc-350 w-full cursor-pointer focus:outline-none"
                 />
+                
+                {draftState.globalLogoUrl && (
+                  <div className="bg-zinc-950 p-3 rounded-lg border border-zinc-850 flex items-center justify-between gap-3">
+                    <span className="text-2xs font-bold text-zinc-400 truncate max-w-[280px]">
+                      Current Logo: {draftState.globalLogoUrl.slice(0, 50)}...
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => setDraftState(prev => ({ ...prev, globalLogoUrl: "" }))}
+                      className="text-red-400 hover:text-red-300 text-2xs font-black uppercase shrink-0"
+                    >
+                      Clear logo
+                    </button>
+                  </div>
+                )}
+              </div>
+
+              <div className="flex justify-end border-t border-zinc-800 pt-3 mt-1">
+                <button
+                  onClick={() => commitSection('globalLogoUrl')}
+                  className="flex items-center gap-2 bg-brand-green hover:bg-brand-green/90 text-white font-black uppercase tracking-wider text-xs py-2 px-4 rounded-lg border border-brand-gold/45 shadow-sm active:scale-95"
+                >
+                  <Save className="w-3.5 h-3.5 text-brand-gold" />
+                  Save Logo
+                </button>
               </div>
             </div>
+
+            {/* Global Timer Presets setup */}
+            <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-6 shadow-xl flex flex-col gap-4">
+              <h2 className="text-sm font-black text-brand-gold uppercase tracking-widest flex items-center gap-2 border-b border-zinc-800 pb-3">
+                <Clock className="w-4 h-4" /> Quick Timer Presets (Minutes)
+              </h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="flex flex-col gap-3">
+                  <span className="text-[10px] uppercase font-black text-brand-gold tracking-wider">Starting Screen Presets</span>
+                  <div className="grid grid-cols-4 gap-2">
+                    {[0, 1, 2, 3].map(i => (
+                      <input
+                        key={i}
+                        type="number"
+                        min="1"
+                        value={draftState.timerPresets?.starting?.[i] || ''}
+                        onChange={(e) => {
+                          const val = parseInt(e.target.value) || 1;
+                          setDraftState(prev => {
+                            const arr = [...(prev.timerPresets?.starting || [1, 3, 5, 10])];
+                            arr[i] = val;
+                            return {
+                              ...prev,
+                              timerPresets: { ...prev.timerPresets, starting: arr }
+                            };
+                          });
+                        }}
+                        className="bg-zinc-950 border border-zinc-800 rounded px-1 py-2 text-center text-xs font-bold text-zinc-100 focus:outline-none focus:border-brand-green"
+                      />
+                    ))}
+                  </div>
+                </div>
+
+                <div className="flex flex-col gap-3">
+                  <span className="text-[10px] uppercase font-black text-brand-gold tracking-wider">BRB Screen Presets</span>
+                  <div className="grid grid-cols-4 gap-2">
+                    {[0, 1, 2, 3].map(i => (
+                      <input
+                        key={i}
+                        type="number"
+                        min="1"
+                        value={draftState.timerPresets?.brb?.[i] || ''}
+                        onChange={(e) => {
+                          const val = parseInt(e.target.value) || 1;
+                          setDraftState(prev => {
+                            const arr = [...(prev.timerPresets?.brb || [1, 3, 5, 10])];
+                            arr[i] = val;
+                            return {
+                              ...prev,
+                              timerPresets: { ...prev.timerPresets, brb: arr }
+                            };
+                          });
+                        }}
+                        className="bg-zinc-950 border border-zinc-800 rounded px-1 py-2 text-center text-xs font-bold text-zinc-100 focus:outline-none focus:border-brand-green"
+                      />
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex justify-end border-t border-zinc-800 pt-3 mt-1">
+                <button
+                  onClick={() => commitSection('timerPresets')}
+                  className="flex items-center gap-2 bg-brand-green hover:bg-brand-green/90 text-white font-black uppercase tracking-wider text-xs py-2 px-4 rounded-lg border border-brand-gold/45 shadow-sm active:scale-95"
+                >
+                  <Save className="w-3.5 h-3.5 text-brand-gold" />
+                  Save Presets
+                </button>
+              </div>
+            </div>
+
+            {/* Centralized Social Media Manager Card */}
+            <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-6 shadow-xl flex flex-col gap-4 lg:col-span-2">
+              <h2 className="text-sm font-black text-brand-gold uppercase tracking-widest flex items-center gap-2 border-b border-zinc-800 pb-3">
+                <Globe className="w-4 h-4" /> Centralized Social Media Handles Manager
+              </h2>
+              
+              {/* Display & Layout settings */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 bg-zinc-950 p-4 rounded-xl border border-zinc-850">
+                <div className="flex flex-col gap-1">
+                  <label className="text-[9px] uppercase font-black text-zinc-400">Display Layout Format</label>
+                  <select
+                    value={draftState.socialsStyle?.format || 'icon-text'}
+                    onChange={(e) => {
+                      const val = e.target.value;
+                      setDraftState(prev => ({
+                        ...prev,
+                        socialsStyle: { ...prev.socialsStyle, format: val }
+                      }));
+                    }}
+                    className="bg-zinc-900 border border-zinc-800 text-xs rounded p-2.5 font-bold focus:outline-none focus:border-brand-green text-zinc-200 cursor-pointer"
+                  >
+                    <option value="icon-text">Show Icon + Text Display</option>
+                    <option value="text-only">Show Text Only (Hide Icons)</option>
+                    <option value="icon-only">Show Icon Only (Hide Handles)</option>
+                  </select>
+                </div>
+
+                <div className="flex flex-col gap-1">
+                  <label className="text-[9px] uppercase font-black text-zinc-400">Display Grid Alignment</label>
+                  <select
+                    value={draftState.socialsStyle?.layout || 'grid'}
+                    onChange={(e) => {
+                      const val = e.target.value;
+                      setDraftState(prev => ({
+                        ...prev,
+                        socialsStyle: { ...prev.socialsStyle, layout: val }
+                      }));
+                    }}
+                    className="bg-zinc-900 border border-zinc-800 text-xs rounded p-2.5 font-bold focus:outline-none focus:border-brand-green text-zinc-200 cursor-pointer"
+                  >
+                    <option value="grid">2-Column Grid Layout</option>
+                    <option value="row">Horizontal Row Layout</option>
+                  </select>
+                </div>
+              </div>
+
+              {/* Social handles rows */}
+              <div className="flex flex-col gap-3 mt-2">
+                {draftState.socials && draftState.socials.map((handle, idx) => (
+                  <div key={idx} className="flex gap-4 items-center bg-zinc-950 p-3.5 rounded-xl border border-zinc-850">
+                    <div className="flex flex-col gap-1 w-44">
+                      <label className="text-[8px] uppercase font-black text-zinc-500">Platform</label>
+                      <select
+                        value={handle.platform}
+                        onChange={(e) => {
+                          const val = e.target.value;
+                          setDraftState(prev => {
+                            const updated = prev.socials.map((s, sIdx) => sIdx === idx ? { ...s, platform: val } : s);
+                            return { ...prev, socials: updated };
+                          });
+                        }}
+                        className="bg-zinc-900 border border-zinc-800 text-xs rounded p-1.5 font-bold text-zinc-350 cursor-pointer"
+                      >
+                        <option value="facebook">Facebook</option>
+                        <option value="instagram">Instagram</option>
+                        <option value="youtube">YouTube</option>
+                        <option value="globe">Website (Globe)</option>
+                      </select>
+                    </div>
+
+                    <div className="flex-1 flex flex-col gap-1">
+                      <label className="text-[8px] uppercase font-black text-zinc-500">Display String Handle</label>
+                      <input
+                        type="text"
+                        value={handle.text}
+                        onChange={(e) => {
+                          const val = e.target.value;
+                          setDraftState(prev => {
+                            const updated = prev.socials.map((s, sIdx) => sIdx === idx ? { ...s, text: val } : s);
+                            return { ...prev, socials: updated };
+                          });
+                        }}
+                        className="bg-zinc-900 border border-zinc-800 rounded px-2.5 py-1.5 text-xs font-bold text-zinc-200 focus:outline-none focus:border-brand-green w-full"
+                      />
+                    </div>
+
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setDraftState(prev => {
+                          const filtered = prev.socials.filter((s, sIdx) => sIdx !== idx);
+                          return { ...prev, socials: filtered };
+                        });
+                      }}
+                      className="bg-red-500/10 hover:bg-red-500/20 border border-red-500/30 text-red-400 p-2.5 rounded-lg mt-3 transition shrink-0"
+                    >
+                      <Trash className="w-4 h-4" />
+                    </button>
+                  </div>
+                ))}
+              </div>
+
+              <button
+                type="button"
+                onClick={() => {
+                  setDraftState(prev => ({
+                    ...prev,
+                    socials: [...(prev.socials || []), { platform: 'globe', text: 'www.newhandle.com' }]
+                  }));
+                }}
+                className="py-2.5 bg-zinc-950 hover:bg-zinc-900 border border-zinc-800 rounded-xl text-xs font-black uppercase text-brand-gold tracking-widest flex items-center justify-center gap-2 mt-2 transition"
+              >
+                <Plus className="w-3.5 h-3.5" /> Add New Social Handle
+              </button>
+
+              <div className="flex justify-end border-t border-zinc-800 pt-3 mt-1">
+                <button
+                  onClick={() => commitSection('socials')}
+                  className="flex items-center gap-2 bg-brand-green hover:bg-brand-green/90 text-white font-black uppercase tracking-wider text-xs py-2 px-4 rounded-lg border border-brand-gold/45 shadow-sm active:scale-95"
+                >
+                  <Save className="w-3.5 h-3.5 text-brand-gold" />
+                  Save Social Handles
+                </button>
+              </div>
+            </div>
+
           </div>
         )}
 

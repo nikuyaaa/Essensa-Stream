@@ -44,7 +44,11 @@ export function ProductCard({
               {/* Product Image Wrapper */}
               <div className="w-[110px] h-[110px] bg-brand-cream rounded-xl border border-brand-green/10 flex items-center justify-center overflow-hidden shrink-0 shadow-inner p-3">
                 {imageUrl ? (
-                  <img src={imageUrl} alt={name} className="w-full h-full object-contain" />
+                  (imageUrl.match(/\.(mp4|webm|ogg)$/i) || imageUrl.startsWith('data:video/')) ? (
+                    <video src={imageUrl} autoPlay loop muted playsInline className="w-full h-full object-contain" />
+                  ) : (
+                    <img src={imageUrl} alt={name} className="w-full h-full object-contain" />
+                  )
                 ) : (
                   /* Fallback SVG Mockup of Organic Bottle */
                   <svg viewBox="0 0 60 80" className="w-14 h-20" fill="none" xmlns="http://www.w3.org/2000/svg">

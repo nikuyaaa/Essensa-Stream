@@ -14,64 +14,82 @@ import { OperatorPanel } from './components/OperatorPanel';
 import { CommentsWidget } from './components/CommentsWidget';
 
 const defaultState = {
+  "globalLogoUrl": "",
+  "socials": [
+    { "platform": "facebook", "text": "@EssensaNaturaleOfficial" },
+    { "platform": "instagram", "text": "@essensanaturale" },
+    { "platform": "globe", "text": "www.essensanaturale.org" },
+    { "platform": "youtube", "text": "Essensa Naturale TV" }
+  ],
+  "socialsStyle": {
+    "format": "icon-text",
+    "layout": "grid"
+  },
+  "timerPresets": {
+    "starting": [60, 180, 300, 600],
+    "brb": [60, 180, 300, 600]
+  },
   "intermission-banner": {
-    welcomeText: "Anniversary Live Stream",
-    announcement: "Advocating the Organic Way of Living",
-    tagline: "16 Years of Wellness & Prosperity"
+    "welcomeText": "Anniversary Live Stream",
+    "announcement": "Advocating the Organic Way of Living",
+    "tagline": "16 Years of Wellness & Prosperity",
+    "rightHeader": "Live Stream Starting Soon",
+    "rightBody": "Our broadcast will begin shortly. Sit back, relax, and get ready for an organic way of living!",
+    "alertText": "ALERT: Special anniversary promo packages will be revealed during the live show!"
   },
   "starting": {
-    announcement: "Advocating the Organic Way of Living",
-    tagline: "16 Years of Wellness & Prosperity",
-    countdownSeconds: 300,
-    countdownRunning: false,
-    tickerItems: [
+    "announcement": "Advocating the Organic Way of Living",
+    "tagline": "16 Years of Wellness & Prosperity",
+    "countdownSeconds": 300,
+    "countdownRunning": false,
+    "tickerItems": [
       "Essensa Naturale: 16 Years of Organic Way of Living",
       "Celebrating 16 Years of Wellness, Credibility, and Prosperity"
     ]
   },
   "main": {
-    headerVisible: true,
-    segmentName: "Revitalizing Health Anytime, Anywhere.",
-    startTime: Date.now(),
-    showClock: true,
-    tickerVisible: true,
-    tickerItems: [
+    "headerVisible": true,
+    "segmentName": "Revitalizing Health Anytime, Anywhere.",
+    "startTime": Date.now(),
+    "showClock": true,
+    "tickerVisible": true,
+    "tickerItems": [
       "Essensa Naturale: 16 Years of Organic Way of Living",
       "Empowering Filipino Networker-Entrepreneurs Worldwide",
       "Revitalizing Health with Non-Toxic, All-Natural organic products",
       "Celebrating 16 Years of Wellness, Credibility, and Prosperity"
     ],
-    hostVisible: false,
-    hostName: "Juan Dela Cruz",
-    hostTitle: "Entrepreneurial Coach",
-    hostAutoHide: true,
-    productVisible: false,
-    productName: "Buah Merah Mix",
-    productPrice: "₱350.00",
-    productPromo: "Promo: Buy 2 Get 1 Free • Free Shipping Nationwide!",
-    productImage: ""
+    "hostVisible": false,
+    "hostName": "Juan Dela Cruz",
+    "hostTitle": "Entrepreneurial Coach",
+    "hostAutoHide": true,
+    "hostHideDuration": 8,
+    "products": [
+      {
+        "id": 1,
+        "visible": false,
+        "name": "Buah Merah Mix",
+        "price": "₱350.00",
+        "promoText": "Promo: Buy 2 Get 1 Free • Free Shipping!",
+        "imageUrl": "",
+        "stayOnScreen": true,
+        "hideDuration": 10
+      }
+    ]
   },
   "brb": {
-    bannerText: "Be Right Back",
-    countdownSeconds: 300,
-    countdownRunning: false,
-    announcements: [
-      "@EssensaNaturaleOfficial",
-      "@essensanaturale",
-      "www.essensanaturale.org",
-      "Essensa Naturale TV"
+    "bannerText": "Be Right Back",
+    "countdownSeconds": 300,
+    "countdownRunning": false,
+    "announcements": [
+      "Taking a short 5 minute break.",
+      "Stay tuned for the awarding ceremony next!"
     ]
   },
   "ending": {
-    title: "Thank you for joining us!",
-    description: "Celebrating the Organic Way of Living. Let's continue empowering lives together.",
-    signature: "Made with ❤️ Essensa Naturale Family",
-    socialHandles: [
-      "@EssensaNaturaleOfficial",
-      "@essensanaturale",
-      "www.essensanaturale.org",
-      "Essensa Naturale TV"
-    ]
+    "title": "Thank you for joining us!",
+    "description": "Celebrating the Organic Way of Living. Let's continue empowering lives together.",
+    "signature": "Made with ❤️ Essensa Naturale Family"
   }
 };
 
@@ -262,13 +280,118 @@ function App() {
     return () => clearInterval(interval);
   }, []);
 
-  // Social handles helper
-  const socialHandles = [
-    { icon: <Facebook className="w-4 h-4" />, text: "@EssensaNaturaleOfficial" },
-    { icon: <Instagram className="w-4 h-4" />, text: "@essensanaturale" },
-    { icon: <Globe className="w-4 h-4" />, text: "www.essensanaturale.org" },
-    { icon: <Youtube className="w-4 h-4" />, text: "Essensa Naturale TV" }
-  ];
+  // Auto-hide handler for host nameplate
+  useEffect(() => {
+    if (state.main.hostVisible && state.main.hostAutoHide) {
+      const duration = (state.main.hostHideDuration || 8) * 1000;
+      const timer = setTimeout(() => {
+        setState(prev => {
+          const nextState = {
+            ...prev,
+            main: {
+              ...prev.main,
+              hostVisible: false
+            }
+          };
+          // Broadcast and save
+          const bc = new BroadcastChannel('essensa_overlay_channel');
+          bc.postMessage({ type: 'UPDATE_STATE', payload: nextState });
+          fetch('/api/state', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(nextState)
+          }).catch(() => {});
+          return nextState;
+        });
+      }, duration);
+      return () => clearTimeout(timer);
+    }
+  }, [state.main.hostVisible, state.main.hostAutoHide, state.main.hostHideDuration]);
+
+  // Auto-hide handler for multiple product flashcards
+  useEffect(() => {
+    const activeProducts = state.main.products?.filter(p => p.visible && !p.stayOnScreen) || [];
+    if (activeProducts.length === 0) return;
+
+    const timers = activeProducts.map(product => {
+      const duration = (product.hideDuration || 10) * 1000;
+      return setTimeout(() => {
+        setState(prev => {
+          const updatedProducts = prev.main.products.map(p => 
+            p.id === product.id ? { ...p, visible: false } : p
+          );
+          const nextState = {
+            ...prev,
+            main: {
+              ...prev.main,
+              products: updatedProducts
+            }
+          };
+          // Broadcast and save
+          const bc = new BroadcastChannel('essensa_overlay_channel');
+          bc.postMessage({ type: 'UPDATE_STATE', payload: nextState });
+          fetch('/api/state', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(nextState)
+          }).catch(() => {});
+          return nextState;
+        });
+      }, duration);
+    });
+
+    return () => timers.forEach(clearTimeout);
+  }, [state.main.products]);
+
+  // Social handles helpers
+  const getSocialIcon = (platform) => {
+    switch (platform?.toLowerCase()) {
+      case 'facebook': return <Facebook className="w-6 h-6 text-brand-green shrink-0" />;
+      case 'instagram': return <Instagram className="w-6 h-6 text-brand-green shrink-0" />;
+      case 'youtube': return <Youtube className="w-6 h-6 text-brand-green shrink-0" />;
+      default: return <Globe className="w-6 h-6 text-brand-green shrink-0" />;
+    }
+  };
+
+  const renderGlobalSocials = (isDarkBg = false) => {
+    const textClass = isDarkBg 
+      ? "text-white/80 group-hover:text-brand-gold" 
+      : "text-brand-charcoal/80 group-hover:text-brand-green";
+    
+    const bgClass = isDarkBg
+      ? "bg-brand-charcoal/40 border-white/10"
+      : "bg-brand-cream border-black/10";
+
+    const layoutClass = state.socialsStyle?.layout === 'row'
+      ? "flex flex-wrap items-center justify-center gap-6"
+      : "grid grid-cols-2 gap-6";
+
+    const showIcon = state.socialsStyle?.format !== 'text-only';
+    const showText = state.socialsStyle?.format !== 'icon-only';
+
+    return (
+      <div className={`${layoutClass} w-full`}>
+        {state.socials.map((handle, idx) => {
+          const icon = getSocialIcon(handle.platform);
+          return (
+            <div 
+              key={idx} 
+              className={`flex items-center gap-4 ${bgClass} border px-6 py-4 rounded-2xl transition-all duration-300 hover:border-brand-green/30 group shadow-md shrink-0`}
+            >
+              {showIcon && React.cloneElement(icon, { 
+                className: `w-6 h-6 ${isDarkBg ? "text-brand-gold group-hover:text-white" : "text-brand-green group-hover:text-brand-gold"} transition-colors duration-300 shrink-0` 
+              })}
+              {showText && (
+                <span className={`text-lg font-bold ${textClass} transition-colors duration-300 truncate`}>
+                  {handle.text}
+                </span>
+              )}
+            </div>
+          );
+        })}
+      </div>
+    );
+  };
 
   // Render individual views
   switch (currentView) {
@@ -298,7 +421,7 @@ function App() {
 
               {/* Brand Logo */}
               <div className="relative z-10">
-                <Logo showText={true} light={true} className="scale-[1.6] origin-left" />
+                <Logo showText={true} light={true} logoUrl={state.globalLogoUrl} className="scale-[1.6] origin-left" />
               </div>
 
               {/* Elegant Title */}
@@ -307,7 +430,7 @@ function App() {
                   {state['intermission-banner'].welcomeText}
                 </span>
                 <h1 className="font-display font-black text-5xl text-white tracking-wide uppercase leading-tight">
-                  Advocating the <span className="text-brand-green block">Organic Way</span> of Living
+                  {state['intermission-banner'].announcement}
                 </h1>
               </div>
 
@@ -325,26 +448,22 @@ function App() {
               {/* Welcome Notice in the center */}
               <div className="flex flex-col items-center justify-center gap-6 py-8 relative z-10 text-center px-12">
                 <h2 className="text-3xl font-black text-brand-gold uppercase tracking-wider">
-                  Live Stream Starting Soon
+                  {state['intermission-banner'].rightHeader || "Live Stream Starting Soon"}
                 </h2>
                 <div className="w-24 h-1 bg-brand-green rounded-full" />
                 <p className="text-zinc-600 text-lg font-bold max-w-[400px] leading-relaxed">
-                  {state['intermission-banner'].announcement}
+                  {state['intermission-banner'].rightBody}
                 </p>
+                {state['intermission-banner'].alertText && (
+                  <div className="mt-4 bg-red-600 border border-red-700 text-white font-black uppercase text-xs tracking-widest px-6 py-3.5 rounded-2xl animate-pulse shadow-md">
+                    {state['intermission-banner'].alertText}
+                  </div>
+                )}
               </div>
 
               {/* Social Media Grid */}
               <div className="w-full border-t border-black/10 pt-8 mt-4 relative z-10">
-                <div className="grid grid-cols-2 gap-6">
-                  {socialHandles.map((handle, idx) => (
-                    <div key={idx} className="flex items-center gap-4 bg-brand-cream border border-black/10 px-6 py-4 rounded-2xl transition-all duration-300 hover:border-brand-green/30 group">
-                      {React.cloneElement(handle.icon, { className: "w-6 h-6 text-brand-charcoal group-hover:text-brand-green transition-colors duration-300" })}
-                      <span className="text-lg font-bold text-brand-charcoal/80 group-hover:text-brand-green transition-colors duration-300 truncate">
-                        {handle.text}
-                      </span>
-                    </div>
-                  ))}
-                </div>
+                {renderGlobalSocials(false)}
               </div>
             </div>
           </div>
@@ -365,7 +484,7 @@ function App() {
 
               {/* Brand Logo */}
               <div className="relative z-10">
-                <Logo showText={true} light={true} className="scale-[1.6] origin-left" />
+                <Logo showText={true} light={true} logoUrl={state.globalLogoUrl} className="scale-[1.6] origin-left" />
               </div>
 
               {/* Elegant Title */}
@@ -385,7 +504,7 @@ function App() {
             </div>
 
             {/* Right Half: Pure White */}
-            <div className="w-[960px] h-[1080px] bg-[#FFFFFF] flex flex-col justify-between p-24 text-brand-charcoal relative">
+            <div className="w-[960px] h-[1080px] bg-[#FFFFFF] flex flex-col justify-between p-24 text-brand-charcoal relative pb-32">
               {/* Top spacing */}
               <div className="hidden md:block" />
 
@@ -409,17 +528,12 @@ function App() {
 
               {/* Social Media Grid */}
               <div className="w-full border-t border-black/10 pt-8 mt-4 relative z-10">
-                <div className="grid grid-cols-2 gap-6">
-                  {socialHandles.map((handle, idx) => (
-                    <div key={idx} className="flex items-center gap-4 bg-brand-cream border border-black/10 px-6 py-4 rounded-2xl transition-all duration-300 hover:border-brand-green/30 group">
-                      {React.cloneElement(handle.icon, { className: "w-6 h-6 text-brand-charcoal group-hover:text-brand-green transition-colors duration-300" })}
-                      <span className="text-lg font-bold text-brand-charcoal/80 group-hover:text-brand-green transition-colors duration-300 truncate">
-                        {handle.text}
-                      </span>
-                    </div>
-                  ))}
-                </div>
+                {renderGlobalSocials(false)}
               </div>
+            </div>
+
+            {/* Scrolling Ticker at bottom */}
+            <Ticker items={state.starting.tickerItems} logoUrl={state.globalLogoUrl} />
             </div>
           </div>
         </OverlayWrapper>
@@ -437,7 +551,7 @@ function App() {
 
             {/* Centered BRB Card */}
             <div className="flex flex-col items-center gap-10 text-center relative z-10 w-[900px] bg-white p-16 rounded-[32px] border border-brand-sage shadow-2xl">
-              <Logo showText={true} light={false} className="scale-150 mb-6" />
+              <Logo showText={true} light={false} logoUrl={state.globalLogoUrl} className="scale-150 mb-6" />
 
               <div className="flex flex-col items-center gap-4">
                 <h2 className="font-display font-black text-6xl text-brand-charcoal tracking-widest uppercase">
@@ -456,22 +570,20 @@ function App() {
                 </span>
               </div>
 
-              {/* Social Grid */}
-              <div className="flex flex-wrap items-center gap-8 mt-8 border-t border-brand-sage pt-8 w-full justify-center">
-                {state.brb.announcements.map((text, idx) => {
-                  let icon = <Globe className="w-6 h-6 text-brand-green shrink-0" />;
-                  if (text.includes('@')) {
-                    icon = <Facebook className="w-6 h-6 text-brand-green shrink-0" />;
-                  } else if (text.includes('TV')) {
-                    icon = <Youtube className="w-6 h-6 text-brand-green shrink-0" />;
-                  }
-                  return (
-                    <div key={idx} className="flex items-center gap-3 text-lg font-black text-brand-charcoal/75">
-                      {icon}
-                      <span className="truncate">{text}</span>
+              {/* Dynamic Notification / Status fields */}
+              {state.brb.announcements && state.brb.announcements.length > 0 && (
+                <div className="flex flex-col gap-3 w-full max-w-[600px] mt-2">
+                  {state.brb.announcements.map((text, idx) => (
+                    <div key={idx} className="bg-brand-cream border border-brand-sage/40 px-6 py-3.5 rounded-2xl text-base font-bold text-brand-charcoal/80 shadow-sm">
+                      {text}
                     </div>
-                  );
-                })}
+                  ))}
+                </div>
+              )}
+
+              {/* Social Grid */}
+              <div className="w-full border-t border-brand-sage pt-8 mt-4">
+                {renderGlobalSocials(false)}
               </div>
             </div>
           </div>
@@ -495,7 +607,7 @@ function App() {
                 animate={{ scale: 1.3, opacity: 1 }}
                 transition={{ duration: 1.2, ease: "easeOut" }}
               >
-                <Logo showText={true} light={false} className="scale-[1.8] origin-center mb-10" />
+                <Logo showText={true} light={false} logoUrl={state.globalLogoUrl} className="scale-[1.8] origin-center mb-10" />
               </motion.div>
 
               <div className="flex flex-col gap-4">
@@ -508,21 +620,8 @@ function App() {
               </div>
 
               {/* Outro Social handles block */}
-              <div className="flex flex-wrap items-center justify-center gap-6 mt-8 border-t border-brand-sage pt-8 w-full">
-                {state.ending.socialHandles.map((text, idx) => {
-                  let icon = <Globe className="w-5 h-5 text-brand-green shrink-0" />;
-                  if (text.includes('@')) {
-                    icon = <Facebook className="w-5 h-5 text-brand-green shrink-0" />;
-                  } else if (text.includes('TV')) {
-                    icon = <Youtube className="w-5 h-5 text-brand-green shrink-0" />;
-                  }
-                  return (
-                    <div key={idx} className="flex items-center gap-3 bg-brand-cream border border-brand-sage/60 px-6 py-3 rounded-2xl text-base font-black text-brand-charcoal/85 shadow-md">
-                      {icon}
-                      <span className="truncate">{text}</span>
-                    </div>
-                  );
-                })}
+              <div className="w-full border-t border-brand-sage pt-8 mt-4">
+                {renderGlobalSocials(false)}
               </div>
               
               {/* Heart signature */}
@@ -567,19 +666,25 @@ function App() {
               }))}
             />
 
-            {/* Product Flashcard template */}
-            <ProductCard 
-              isOpen={state.main.productVisible}
-              name={state.main.productName}
-              price={state.main.productPrice}
-              promoText={state.main.productPromo}
-              imageUrl={state.main.productImage}
-            />
+            {/* Multiple Product Flashcards (Stacked Vertically) */}
+            <div className="absolute bottom-[130px] right-[80px] z-30 flex flex-col-reverse gap-6 items-end select-none">
+              {state.main.products && state.main.products.map(product => (
+                <ProductCard 
+                  key={product.id}
+                  isOpen={product.visible}
+                  name={product.name}
+                  price={product.price}
+                  imageUrl={product.imageUrl}
+                  promoText={product.promoText}
+                  className="relative !bottom-auto !right-auto"
+                />
+              ))}
+            </div>
 
             {/* Bottom News Ticker */}
             <AnimatePresence>
               {state.main.tickerVisible && (
-                <Ticker items={state.main.tickerItems} />
+                <Ticker items={state.main.tickerItems} logoUrl={state.globalLogoUrl} />
               )}
             </AnimatePresence>
 
