@@ -534,7 +534,6 @@ function App() {
 
             {/* Scrolling Ticker at bottom */}
             <Ticker items={state.starting.tickerItems} logoUrl={state.globalLogoUrl} />
-            </div>
           </div>
         </OverlayWrapper>
       );
