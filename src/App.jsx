@@ -13,8 +13,39 @@ import { Countdown } from './components/Countdown';
 import { OperatorPanel } from './components/OperatorPanel';
 import { CommentsWidget } from './components/CommentsWidget';
 
+const renderSplitToneText = (text, defaultClass = "text-white", greenClass = "keyword-green", goldClass = "gold-sunray-text") => {
+  if (!text) return null;
+  const parts = text.split(/(\[gold\].*?\[\/gold\]|\[green\].*?\[\/green\]|<b>.*?<\/b>|<gold>.*?<\/gold>)/gi);
+  return parts.map((part, idx) => {
+    const partLower = part.toLowerCase();
+    if (partLower.startsWith('[gold]') && partLower.endsWith('[/gold]')) {
+      const clean = part.substring(6, part.length - 7);
+      return <span key={idx} className={goldClass}>{clean}</span>;
+    }
+    if (partLower.startsWith('[green]') && partLower.endsWith('[/green]')) {
+      const clean = part.substring(7, part.length - 8);
+      return <span key={idx} className={greenClass}>{clean}</span>;
+    }
+    if (partLower.startsWith('<b>') && partLower.endsWith('</b>')) {
+      const clean = part.substring(3, part.length - 4);
+      return <span key={idx} className={greenClass}>{clean}</span>;
+    }
+    if (partLower.startsWith('<gold>') && partLower.endsWith('</gold>')) {
+      const clean = part.substring(6, part.length - 7);
+      return <span key={idx} className={goldClass}>{clean}</span>;
+    }
+    return <span key={idx} className={defaultClass}>{part}</span>;
+  });
+};
+
 const defaultState = {
   "globalLogoUrl": "",
+  "globalSettings": {
+    "typographyColor": "#FFFFFF",
+    "bannerBgColor": "#1A1A1A",
+    "sunraySpeed": 4,
+    "sunrayIntensity": 0.3
+  },
   "socials": [
     { "platform": "facebook", "text": "@EssensaNaturaleOfficial" },
     { "platform": "instagram", "text": "@essensanaturale" },
@@ -30,31 +61,35 @@ const defaultState = {
     "brb": [300, 600, 900, 1800, 3600] // 5m, 10m, 15m, 30m, 60m
   },
   "intermission-banner": {
-    "welcomeText": "Anniversary Live Stream",
-    "announcement": "Advocating the Organic Way of Living",
+    "welcomeText": "Anniversary [gold]Live Stream[/gold]",
+    "announcement": "Advocating the [green]Organic Way[/green] of Living",
     "tagline": "16 Years of Wellness & Prosperity",
-    "rightHeader": "Live Stream Starting Soon",
+    "rightHeader": "Live Stream [gold]Starting Soon[/gold]",
     "rightBody": "Our broadcast will begin shortly. Sit back, relax, and get ready for an organic way of living!",
     "alertText": "ALERT: Special anniversary promo packages will be revealed during the live show!",
     "logoUrl": "",
-    "socials": []
+    "socials": [],
+    "sunraySpeed": 4,
+    "sunrayIntensity": 0.3
   },
   "starting": {
-    "announcement": "Advocating the Organic Way of Living",
+    "announcement": "Advocating the [green]Organic Way[/green] of Living",
     "tagline": "16 Years of Wellness & Prosperity",
-    "superTitle": "Anniversary Live Stream",
-    "subTitle": "Stream Starting Soon",
+    "superTitle": "Anniversary [gold]Live Stream[/gold]",
+    "subTitle": "Stream Starting [gold]Soon[/gold]",
     "countdownSeconds": 300,
     "countdownRunning": false,
     "logoUrl": "",
     "tickerItems": [
       "Essensa Naturale: 16 Years of Organic Way of Living",
       "Celebrating 16 Years of Wellness, Credibility, and Prosperity"
-    ]
+    ],
+    "sunraySpeed": 4,
+    "sunrayIntensity": 0.3
   },
   "main": {
     "headerVisible": true,
-    "segmentName": "Revitalizing Health Anytime, Anywhere.",
+    "segmentName": "Revitalizing Health [gold]Anytime, Anywhere[/gold].",
     "startTime": Date.now(),
     "showClock": true,
     "tickerVisible": true,
@@ -66,8 +101,8 @@ const defaultState = {
       "Celebrating 16 Years of Wellness, Credibility, and Prosperity"
     ],
     "hostVisible": false,
-    "hostName": "Juan Dela Cruz",
-    "hostTitle": "Entrepreneurial Coach",
+    "hostName": "Juan [gold]Dela Cruz[/gold]",
+    "hostTitle": "Entrepreneurial [green]Coach[/green]",
     "hostAutoHide": true,
     "hostHideDuration": 8,
     "products": [
@@ -81,29 +116,35 @@ const defaultState = {
         "stayOnScreen": true,
         "hideDuration": 10
       }
-    ]
+    ],
+    "sunraySpeed": 4,
+    "sunrayIntensity": 0.3
   },
   "brb": {
-    "bannerText": "Be Right Back",
+    "bannerText": "Be Right [gold]Back[/gold]",
     "countdownSeconds": 300,
     "countdownRunning": false,
     "logoUrl": "",
     "announcements": [
       "Taking a short 5 minute break.",
       "Stay tuned for the awarding ceremony next!"
-    ]
+    ],
+    "sunraySpeed": 4,
+    "sunrayIntensity": 0.3
   },
   "ending": {
-    "title": "Thank you for joining us!",
+    "title": "Thank you for [gold]joining us[/gold]!",
     "description": "Celebrating the Organic Way of Living. Let's continue empowering lives together.",
     "signature": "Made with ❤️ Essensa Naturale Family",
-    "logoUrl": ""
+    "logoUrl": "",
+    "sunraySpeed": 4,
+    "sunrayIntensity": 0.3
   }
 };
 
 // OverlayWrapper allows layouts to stretch natively to fill the browser viewport fluidly,
 // aligning elements nicely on all device sizes and custom OBS overlay dimensions.
-function OverlayWrapper({ children, currentView }) {
+function OverlayWrapper({ children, currentView, style }) {
   const searchParams = new URLSearchParams(window.location.search);
   const isChromaKey = searchParams.get('chromakey') === 'true';
 
@@ -117,7 +158,7 @@ function OverlayWrapper({ children, currentView }) {
   }
 
   return (
-    <div className={`w-full min-h-screen ${bgClass} relative overflow-hidden flex flex-col`}>
+    <div className={`w-full min-h-screen ${bgClass} relative overflow-hidden flex flex-col`} style={style}>
       {children}
     </div>
   );
@@ -422,10 +463,13 @@ function App() {
     case 'intermission-banner':
     case 'intermission':
       return (
-        <OverlayWrapper currentView={currentView}>
+        <OverlayWrapper currentView={currentView} style={{
+          '--sunray-speed': `${state['intermission-banner']?.sunraySpeed || 4}s`,
+          '--sunray-glow': state['intermission-banner']?.sunrayIntensity ?? 0.3
+        }}>
           <div className="canvas-1080p flex flex-row bg-white select-none">
             {/* Left Half: Charcoal Black */}
-            <div className="w-[960px] h-[1080px] bg-brand-charcoal flex flex-col justify-between p-24 text-white relative overflow-hidden">
+            <div className="w-[960px] h-[1080px] bg-brand-charcoal flex flex-col justify-between p-24 text-white relative overflow-hidden" style={{ backgroundColor: state.globalSettings?.bannerBgColor }}>
               {/* Rotating sunburst backdrop */}
               <div className="absolute inset-0 flex items-center justify-center scale-150 opacity-15 pointer-events-none">
                 <LogoSunburst className="w-[800px] h-[800px]" />
@@ -437,12 +481,12 @@ function App() {
               </div>
 
               {/* Elegant Title */}
-              <div className="flex flex-col gap-4 mt-8 relative z-10 text-reveal-active">
-                <span className="font-sans text-sm font-black text-brand-gold tracking-[0.4em] uppercase">
-                  {state['intermission-banner'].welcomeText}
+              <div className="flex flex-col gap-4 mt-8 relative z-10 text-reveal-active brand-text-glow">
+                <span className="font-sans text-sm font-black text-white/90 tracking-[0.4em] uppercase">
+                  {renderSplitToneText(state['intermission-banner'].welcomeText, "text-white/90", "keyword-green", "keyword-gold")}
                 </span>
-                <h1 className="font-display font-black text-5xl text-white tracking-wide uppercase leading-tight gold-text-glow">
-                  {state['intermission-banner'].announcement}
+                <h1 className="font-display font-black text-5xl text-white tracking-wide uppercase leading-tight">
+                  {renderSplitToneText(state['intermission-banner'].announcement, "text-white", "keyword-green", "keyword-gold")}
                 </h1>
               </div>
 
@@ -459,8 +503,8 @@ function App() {
 
               {/* Welcome Notice in the center */}
               <div className="flex flex-col items-center justify-center gap-6 py-8 relative z-10 text-center px-12">
-                <h2 className="text-3xl font-black text-brand-gold uppercase tracking-wider">
-                  {state['intermission-banner'].rightHeader || "Live Stream Starting Soon"}
+                <h2 className="text-3xl font-black text-brand-charcoal uppercase tracking-wider">
+                  {renderSplitToneText(state['intermission-banner'].rightHeader || "Live Stream <b>Starting Soon</b>", "text-brand-charcoal", "keyword-green", "keyword-gold")}
                 </h2>
                 <div className="w-24 h-1 bg-brand-green rounded-full" />
                 <p className="text-zinc-600 text-lg font-bold max-w-[400px] leading-relaxed">
@@ -485,10 +529,13 @@ function App() {
     // View 3: Starting Soon Screen
     case 'starting':
       return (
-        <OverlayWrapper currentView={currentView}>
+        <OverlayWrapper currentView={currentView} style={{
+          '--sunray-speed': `${state.starting?.sunraySpeed || 4}s`,
+          '--sunray-glow': state.starting?.sunrayIntensity ?? 0.3
+        }}>
           <div className="canvas-1080p flex flex-row bg-white select-none">
             {/* Left Half: Charcoal Black */}
-            <div className="w-[960px] h-[1080px] bg-brand-charcoal flex flex-col justify-between p-24 text-white relative overflow-hidden">
+            <div className="w-[960px] h-[1080px] bg-brand-charcoal flex flex-col justify-between p-24 text-white relative overflow-hidden" style={{ backgroundColor: state.globalSettings?.bannerBgColor }}>
               {/* Rotating sunburst backdrop */}
               <div className="absolute inset-0 flex items-center justify-center scale-150 opacity-15 pointer-events-none">
                 <LogoSunburst className="w-[800px] h-[800px]" />
@@ -500,12 +547,12 @@ function App() {
               </div>
 
               {/* Elegant Title */}
-              <div className="flex flex-col gap-4 mt-8 relative z-10 text-reveal-active">
-                <span className="font-sans text-sm font-black text-brand-gold tracking-[0.4em] uppercase">
-                  {state.starting.superTitle || "Anniversary Live Stream"}
+              <div className="flex flex-col gap-4 mt-8 relative z-10 text-reveal-active brand-text-glow">
+                <span className="font-sans text-sm font-black text-white/90 tracking-[0.4em] uppercase">
+                  {renderSplitToneText(state.starting.superTitle || "Anniversary <b>Live Stream</b>", "text-white/90", "keyword-green", "keyword-gold")}
                 </span>
-                <h1 className="font-display font-black text-5xl text-white tracking-wide uppercase leading-tight gold-text-glow">
-                  {state.starting.announcement}
+                <h1 className="font-display font-black text-5xl text-white tracking-wide uppercase leading-tight">
+                  {renderSplitToneText(state.starting.announcement, "text-white", "keyword-green", "keyword-gold")}
                 </h1>
               </div>
 
@@ -523,7 +570,7 @@ function App() {
               {/* Countdown in the center */}
               <div className="flex flex-col items-center justify-center gap-4 py-8 relative z-10">
                 <span className="text-zinc-400 text-xs font-black uppercase tracking-[0.3em] mb-2 text-reveal-active">
-                  {state.starting.subTitle || "Stream Starting Soon"}
+                  {renderSplitToneText(state.starting.subTitle || "Stream Starting <b>Soon</b>", "text-zinc-400", "keyword-green", "keyword-gold")}
                 </span>
                 <Countdown 
                   secondsLeft={state.starting.countdownSeconds} 
@@ -537,7 +584,7 @@ function App() {
                       }
                     }));
                   }}
-                  textColor="text-brand-gold"
+                  textColor="text-brand-green"
                 />
               </div>
 
@@ -546,9 +593,6 @@ function App() {
                 {renderGlobalSocials(false)}
               </div>
             </div>
-
-            {/* Scrolling Ticker at bottom */}
-            <Ticker items={state.starting.tickerItems} logoUrl={state.starting.logoUrl || state.globalLogoUrl} />
           </div>
         </OverlayWrapper>
       );
@@ -556,7 +600,10 @@ function App() {
     // View 4: Be Right Back (BRB)
     case 'brb':
       return (
-        <OverlayWrapper currentView={currentView}>
+        <OverlayWrapper currentView={currentView} style={{
+          '--sunray-speed': `${state.brb?.sunraySpeed || 4}s`,
+          '--sunray-glow': state.brb?.sunrayIntensity ?? 0.3
+        }}>
           <div className="canvas-1080p bg-brand-cream flex flex-col items-center justify-center relative select-none">
             {/* Rotating sunburst backdrop */}
             <div className="absolute inset-0 flex items-center justify-center scale-150 opacity-15 pointer-events-none">
@@ -568,8 +615,8 @@ function App() {
               <Logo showText={true} light={false} logoUrl={state.brb.logoUrl || state.globalLogoUrl} className="scale-150 mb-6" />
 
               <div className="flex flex-col items-center gap-4">
-                <h2 className="font-display font-black text-6xl text-brand-charcoal tracking-widest uppercase gold-text-glow">
-                  {state.brb.bannerText}
+                <h2 className="font-display font-black text-6xl text-brand-charcoal tracking-widest uppercase">
+                  {renderSplitToneText(state.brb.bannerText, "text-brand-charcoal", "keyword-green", "keyword-gold")}
                 </h2>
                 {/* Thin forest green highlight line */}
                 <div className="w-36 h-2 bg-brand-green rounded-full" />
@@ -607,7 +654,10 @@ function App() {
     // View 5: Stream Ending Outro
     case 'ending':
       return (
-        <OverlayWrapper currentView={currentView}>
+        <OverlayWrapper currentView={currentView} style={{
+          '--sunray-speed': `${state.ending?.sunraySpeed || 4}s`,
+          '--sunray-glow': state.ending?.sunrayIntensity ?? 0.3
+        }}>
           <div className="canvas-1080p bg-brand-cream flex flex-col items-center justify-center relative select-none">
             {/* Rotating sunburst backdrop */}
             <div className="absolute inset-0 flex items-center justify-center scale-150 opacity-15 pointer-events-none">
@@ -625,8 +675,8 @@ function App() {
               </motion.div>
 
               <div className="flex flex-col gap-4">
-                <h2 className="font-display font-black text-4xl text-brand-charcoal uppercase tracking-wider gold-text-glow">
-                  {state.ending.title}
+                <h2 className="font-display font-black text-4xl text-brand-charcoal uppercase tracking-wider">
+                  {renderSplitToneText(state.ending.title, "text-brand-charcoal", "keyword-green", "keyword-gold")}
                 </h2>
                 <p className="font-sans text-brand-charcoal/80 text-xl max-w-[700px] leading-relaxed mx-auto font-bold">
                   {state.ending.description}
@@ -651,14 +701,17 @@ function App() {
     case 'main':
     default:
       return (
-        <OverlayWrapper currentView={currentView}>
+        <OverlayWrapper currentView={currentView} style={{
+          '--sunray-speed': `${state.main?.sunraySpeed || 4}s`,
+          '--sunray-glow': state.main?.sunrayIntensity ?? 0.3
+        }}>
           <div className="canvas-1080p bg-transparent overflow-hidden">
             
             {/* Top Banner Header */}
             <AnimatePresence>
               {state.main.headerVisible && (
                 <Header 
-                  segmentName={state.main.segmentName} 
+                  segmentName={renderSplitToneText(state.main.segmentName, "text-brand-charcoal", "keyword-green", "keyword-gold")} 
                   startTime={state.main.startTime} 
                   showClock={state.main.showClock} 
                 />
@@ -668,8 +721,8 @@ function App() {
             {/* Lower Third (Host Nameplate) */}
             <LowerThird 
               isOpen={state.main.hostVisible} 
-              name={state.main.hostName} 
-              title={state.main.hostTitle}
+              name={renderSplitToneText(state.main.hostName, "text-white", "keyword-green", "keyword-gold")} 
+              title={renderSplitToneText(state.main.hostTitle, "text-white/80", "keyword-green", "keyword-gold")}
               autoHide={state.main.hostAutoHide}
               onClose={() => setState(prev => ({
                 ...prev,

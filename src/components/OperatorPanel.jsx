@@ -207,6 +207,116 @@ export function OperatorPanel({ initialState, onStateChange }) {
     }));
   };
 
+  // Keyword split-tone tag formatting helpers
+  const wrapSelectionWithTag = (tab, field, tagOpen, tagClose, inputId) => {
+    const input = document.getElementById(inputId);
+    const text = draftState[tab]?.[field] || "";
+    
+    if (input) {
+      const start = input.selectionStart;
+      const end = input.selectionEnd;
+      if (start !== end && start !== null && end !== null) {
+        // Selection exists! Wrap it
+        const selectedText = text.substring(start, end);
+        const newText = text.substring(0, start) + `${tagOpen}${selectedText}${tagClose}` + text.substring(end);
+        updateDraft(tab, field, newText);
+        // Put focus back and keep selection
+        setTimeout(() => {
+          input.focus();
+          input.setSelectionRange(start + tagOpen.length, end + tagOpen.length);
+        }, 50);
+        return;
+      }
+    }
+    
+    // No selection, wrap the last word as a smart fallback
+    const clean = text.replace(/\[\/?gold\]|\[\/?green\]|<\/?b>|<\/?gold>/gi, "");
+    const words = clean.trim().split(/\s+/);
+    if (words.length > 0 && words[0] !== "") {
+      words[words.length - 1] = `${tagOpen}${words[words.length - 1]}${tagClose}`;
+      updateDraft(tab, field, words.join(" "));
+    }
+  };
+
+  const clearInputTags = (tab, field, inputId) => {
+    const input = document.getElementById(inputId);
+    const text = input ? input.value : (draftState[tab]?.[field] || "");
+    const clean = text.replace(/\[\/?gold\]|\[\/?green\]|<\/?b>|<\/?gold>/gi, "");
+    updateDraft(tab, field, clean);
+  };
+
+  const renderFormatterButtons = (tab, field, inputId) => (
+    <div className="flex gap-2 mt-1 select-none">
+      <button
+        type="button"
+        onClick={() => wrapSelectionWithTag(tab, field, '[green]', '[/green]', inputId)}
+        className="text-[9px] bg-brand-green/20 hover:bg-brand-green/30 border border-brand-green/30 text-emerald-400 font-bold px-2 py-0.5 rounded cursor-pointer transition active:scale-95"
+        title="Highlights selection in Essensa Green or wraps the last word if no text is selected"
+      >
+        Wrap Green
+      </button>
+      <button
+        type="button"
+        onClick={() => wrapSelectionWithTag(tab, field, '[gold]', '[/gold]', inputId)}
+        className="text-[9px] bg-brand-gold/25 hover:bg-brand-gold/30 border border-brand-gold/30 text-amber-300 font-bold px-2 py-0.5 rounded cursor-pointer transition active:scale-95"
+        title="Highlights selection in Gold Sunray or wraps the last word if no text is selected"
+      >
+        Wrap Gold
+      </button>
+      <button
+        type="button"
+        onClick={() => clearInputTags(tab, field, inputId)}
+        className="text-[9px] bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 text-zinc-400 font-bold px-2 py-0.5 rounded cursor-pointer transition active:scale-95"
+        title="Clears all gold and green style tags from this input field"
+      >
+        Clear Format
+      </button>
+      <span className="text-[8px] text-zinc-500 font-normal self-center ml-2">
+        Tip: Highlight text in input and click Wrap
+      </span>
+    </div>
+  );
+
+  const renderSunraySliders = (tab) => (
+    <div className="flex flex-col gap-2 bg-zinc-950 p-4 rounded-xl border border-zinc-850">
+      <span className="text-[10px] uppercase font-black text-brand-gold">Gold Sunray Text Animation Settings</span>
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div className="flex flex-col gap-1">
+          <div className="flex justify-between text-[9px] uppercase font-black text-zinc-400">
+            <span>Speed (seconds)</span>
+            <span className="text-zinc-200 font-bold">{draftState[tab]?.sunraySpeed || 4}s</span>
+          </div>
+          <input 
+            type="range" 
+            min="1" 
+            max="15" 
+            step="0.5"
+            value={draftState[tab]?.sunraySpeed || 4} 
+            onChange={(e) => updateDraft(tab, 'sunraySpeed', parseFloat(e.target.value))}
+            className="w-full accent-brand-gold bg-zinc-900 border border-zinc-800 rounded h-2 cursor-pointer"
+          />
+        </div>
+        <div className="flex flex-col gap-1">
+          <div className="flex justify-between text-[9px] uppercase font-black text-zinc-400">
+            <span>Glow Intensity</span>
+            <span className="text-zinc-200 font-bold">{(draftState[tab]?.sunrayIntensity ?? 0.3).toFixed(2)}</span>
+          </div>
+          <input 
+            type="range" 
+            min="0" 
+            max="1" 
+            step="0.05"
+            value={draftState[tab]?.sunrayIntensity ?? 0.3} 
+            onChange={(e) => updateDraft(tab, 'sunrayIntensity', parseFloat(e.target.value))}
+            className="w-full accent-brand-gold bg-zinc-900 border border-zinc-800 rounded h-2 cursor-pointer"
+          />
+        </div>
+      </div>
+    </div>
+  );
+
+
+
   // Direct Time controls bypassing the save buffer
   const triggerStartingCountdownAction = (action, val) => {
     setState(prev => {
@@ -527,10 +637,12 @@ export function OperatorPanel({ initialState, onStateChange }) {
                 <label className="text-[10px] uppercase font-black tracking-wider text-zinc-400">Left-side Header Welcome Text</label>
                 <input
                   type="text"
+                  id="intermission_welcomeText"
                   value={draftState['intermission-banner'].welcomeText}
                   onChange={(e) => updateDraft('intermission-banner', 'welcomeText', e.target.value)}
                   className="bg-zinc-950 border border-zinc-800 rounded-lg px-3 py-2 text-sm text-zinc-200 focus:outline-none focus:border-brand-green font-bold"
                 />
+                {renderFormatterButtons('intermission-banner', 'welcomeText', 'intermission_welcomeText')}
               </div>
               <div className="flex flex-col gap-1.5">
                 <label className="text-[10px] uppercase font-black tracking-wider text-zinc-400">Left-side Tagline Description</label>
@@ -545,20 +657,24 @@ export function OperatorPanel({ initialState, onStateChange }) {
                 <label className="text-[10px] uppercase font-black tracking-wider text-zinc-400">Left-side Notice Announcement</label>
                 <textarea
                   rows="2"
+                  id="intermission_announcement"
                   value={draftState['intermission-banner'].announcement}
                   onChange={(e) => updateDraft('intermission-banner', 'announcement', e.target.value)}
                   className="bg-zinc-950 border border-zinc-800 rounded-lg px-3 py-2 text-sm text-zinc-200 focus:outline-none focus:border-brand-green font-bold resize-none"
                 />
+                {renderFormatterButtons('intermission-banner', 'announcement', 'intermission_announcement')}
               </div>
               
               <div className="flex flex-col gap-1.5">
                 <label className="text-[10px] uppercase font-black tracking-wider text-zinc-400">Right-side Banner Header</label>
                 <input
                   type="text"
+                  id="intermission_rightHeader"
                   value={draftState['intermission-banner'].rightHeader || ''}
                   onChange={(e) => updateDraft('intermission-banner', 'rightHeader', e.target.value)}
                   className="bg-zinc-950 border border-zinc-800 rounded-lg px-3 py-2 text-sm text-zinc-200 focus:outline-none focus:border-brand-green font-bold"
                 />
+                {renderFormatterButtons('intermission-banner', 'rightHeader', 'intermission_rightHeader')}
               </div>
               <div className="flex flex-col gap-1.5">
                 <label className="text-[10px] uppercase font-black tracking-wider text-zinc-400">Right-side Dynamic Alert Message (Optional)</label>
@@ -669,6 +785,11 @@ export function OperatorPanel({ initialState, onStateChange }) {
               </button>
             </div>
 
+            {/* Sunray sliders */}
+            <div className="mt-4">
+              {renderSunraySliders('intermission-banner')}
+            </div>
+
             {/* Individual Save Button */}
             <div className="flex justify-end border-t border-zinc-800 pt-4 mt-2">
               <button
@@ -695,28 +816,34 @@ export function OperatorPanel({ initialState, onStateChange }) {
                     <label className="text-[10px] uppercase font-black tracking-wider text-zinc-400">Supertitle Header</label>
                     <input
                       type="text"
+                      id="starting_superTitle"
                       value={draftState.starting.superTitle || ''}
                       onChange={(e) => updateDraft('starting', 'superTitle', e.target.value)}
                       className="bg-zinc-950 border border-zinc-800 rounded-lg px-3 py-2 text-sm text-zinc-200 focus:outline-none focus:border-brand-green font-bold"
                     />
+                    {renderFormatterButtons('starting', 'superTitle', 'starting_superTitle')}
                   </div>
                   <div className="flex flex-col gap-1.5">
                     <label className="text-[10px] uppercase font-black tracking-wider text-zinc-400">Header Announcement</label>
                     <input
                       type="text"
+                      id="starting_announcement"
                       value={draftState.starting.announcement}
                       onChange={(e) => updateDraft('starting', 'announcement', e.target.value)}
                       className="bg-zinc-950 border border-zinc-800 rounded-lg px-3 py-2 text-sm text-zinc-200 focus:outline-none focus:border-brand-green font-bold"
                     />
+                    {renderFormatterButtons('starting', 'announcement', 'starting_announcement')}
                   </div>
                   <div className="flex flex-col gap-1.5">
                     <label className="text-[10px] uppercase font-black tracking-wider text-zinc-400">Core Subtitle Layer</label>
                     <input
                       type="text"
+                      id="starting_subTitle"
                       value={draftState.starting.subTitle || ''}
                       onChange={(e) => updateDraft('starting', 'subTitle', e.target.value)}
                       className="bg-zinc-950 border border-zinc-800 rounded-lg px-3 py-2 text-sm text-zinc-200 focus:outline-none focus:border-brand-green font-bold"
                     />
+                    {renderFormatterButtons('starting', 'subTitle', 'starting_subTitle')}
                   </div>
                   <div className="flex flex-col gap-1.5">
                     <label className="text-[10px] uppercase font-black tracking-wider text-zinc-400">Tagline Description</label>
@@ -867,33 +994,6 @@ export function OperatorPanel({ initialState, onStateChange }) {
               </div>
             </div>
 
-            {/* Scrolling Ticker Card */}
-            <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-6 shadow-xl flex flex-col gap-4">
-              <h3 className="text-sm font-black text-brand-gold uppercase tracking-widest flex items-center gap-2 border-b border-zinc-800 pb-3">
-                <List className="w-4 h-4" /> Scrolling Announcement Ticker Items
-              </h3>
-              <div className="flex flex-col gap-3">
-                <label className="text-[10px] uppercase font-black tracking-wider text-zinc-400">One statement per line</label>
-                <textarea
-                  rows="4"
-                  value={draftState.starting.tickerItems.join('\n')}
-                  onChange={(e) => {
-                    const lines = e.target.value.split('\n');
-                    updateDraft('starting', 'tickerItems', lines);
-                  }}
-                  className="bg-zinc-950 border border-zinc-800 rounded-lg px-3 py-2 text-xs font-mono text-zinc-200 focus:outline-none focus:border-brand-green font-bold resize-none"
-                />
-              </div>
-              <div className="flex justify-end border-t border-zinc-800 pt-3 mt-1">
-                <button
-                  onClick={() => commitSection('starting')}
-                  className="flex items-center gap-2 bg-brand-green hover:bg-brand-green/90 text-white font-black uppercase tracking-wider text-xs py-2 px-4 rounded-lg border border-brand-gold/45 shadow-sm active:scale-95"
-                >
-                  <Save className="w-3.5 h-3.5 text-brand-gold" />
-                  Save Ticker Items
-                </button>
-              </div>
-            </div>
           </div>
         )}
 
@@ -926,10 +1026,12 @@ export function OperatorPanel({ initialState, onStateChange }) {
                     <label className="text-[10px] uppercase font-black tracking-wider text-zinc-400">Show Title</label>
                     <input
                       type="text"
+                      id="main_segmentName"
                       value={draftState.main.segmentName}
                       onChange={(e) => updateDraft('main', 'segmentName', e.target.value)}
                       className="bg-zinc-950 border border-zinc-800 rounded-lg px-3 py-2 text-sm text-zinc-200 focus:outline-none focus:border-brand-green font-bold"
                     />
+                    {renderFormatterButtons('main', 'segmentName', 'main_segmentName')}
                   </div>
 
                   {/* Standalone Logo Uploader for Ticker branding */}
@@ -1093,19 +1195,23 @@ export function OperatorPanel({ initialState, onStateChange }) {
                     <label className="text-[10px] uppercase font-black tracking-wider text-zinc-400">Host Name</label>
                     <input
                       type="text"
+                      id="main_hostName"
                       value={draftState.main.hostName}
                       onChange={(e) => updateDraft('main', 'hostName', e.target.value)}
                       className="bg-zinc-950 border border-zinc-800 rounded-lg px-3 py-2 text-sm text-zinc-200 focus:outline-none focus:border-brand-green font-bold"
                     />
+                    {renderFormatterButtons('main', 'hostName', 'main_hostName')}
                   </div>
                   <div className="flex flex-col gap-1.5">
                     <label className="text-[10px] uppercase font-black tracking-wider text-zinc-400">Credentials Title</label>
                     <input
                       type="text"
+                      id="main_hostTitle"
                       value={draftState.main.hostTitle}
                       onChange={(e) => updateDraft('main', 'hostTitle', e.target.value)}
                       className="bg-zinc-950 border border-zinc-800 rounded-lg px-3 py-2 text-sm text-zinc-200 focus:outline-none focus:border-brand-green font-bold"
                     />
+                    {renderFormatterButtons('main', 'hostTitle', 'main_hostTitle')}
                   </div>
 
                   {/* Host visibility timer parameters */}
@@ -1414,10 +1520,12 @@ export function OperatorPanel({ initialState, onStateChange }) {
                   <label className="text-[10px] uppercase font-black tracking-wider text-zinc-400">BRB Banner Header Text</label>
                   <input
                     type="text"
+                    id="brb_bannerText"
                     value={draftState.brb.bannerText}
                     onChange={(e) => updateDraft('brb', 'bannerText', e.target.value)}
                     className="bg-zinc-950 border border-zinc-800 rounded-lg px-3 py-2 text-sm text-zinc-200 focus:outline-none focus:border-brand-green font-bold"
                   />
+                  {renderFormatterButtons('brb', 'bannerText', 'brb_bannerText')}
                 </div>
                 <div className="flex flex-col gap-1.5">
                   <label className="text-[10px] uppercase font-black tracking-wider text-zinc-400">Notices / Status Box Statements (One statement per line)</label>
@@ -1450,6 +1558,10 @@ export function OperatorPanel({ initialState, onStateChange }) {
                       Loaded URL: {draftState.brb.logoUrl}
                     </span>
                   )}
+                </div>
+
+                <div className="mt-4">
+                  {renderSunraySliders('brb')}
                 </div>
 
                 <div className="flex justify-end mt-2">
@@ -1568,6 +1680,9 @@ export function OperatorPanel({ initialState, onStateChange }) {
                   </div>
                 </div>
               </div>
+              <div className="mt-4 border-t border-zinc-800 pt-4">
+                {renderSunraySliders('starting')}
+              </div>
             </div>
           </div>
         )}
@@ -1583,10 +1698,12 @@ export function OperatorPanel({ initialState, onStateChange }) {
                 <label className="text-[10px] uppercase font-black tracking-wider text-zinc-400">Closing Main Title</label>
                 <input
                   type="text"
+                  id="ending_title"
                   value={draftState.ending.title}
                   onChange={(e) => updateDraft('ending', 'title', e.target.value)}
                   className="bg-zinc-950 border border-zinc-800 rounded-lg px-3 py-2 text-sm text-zinc-200 focus:outline-none focus:border-brand-green font-bold"
                 />
+                {renderFormatterButtons('ending', 'title', 'ending_title')}
               </div>
               <div className="flex flex-col gap-1.5">
                 <label className="text-[10px] uppercase font-black tracking-wider text-zinc-400">Credits Signature</label>
@@ -1626,6 +1743,10 @@ export function OperatorPanel({ initialState, onStateChange }) {
                   </span>
                 )}
               </div>
+            </div>
+
+            <div className="mt-4">
+              {renderSunraySliders('ending')}
             </div>
 
             {/* Individual Save Button */}
@@ -1692,6 +1813,90 @@ export function OperatorPanel({ initialState, onStateChange }) {
                 </button>
               </div>
             </div>
+
+            {/* Typography & Background Theme Swatches */}
+            <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-6 shadow-xl flex flex-col gap-5">
+              <h2 className="text-sm font-black text-brand-gold uppercase tracking-widest flex items-center gap-2 border-b border-zinc-800 pb-3">
+                <Settings className="w-4 h-4" /> Typography & Banner Theme Styles
+              </h2>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {/* Typography color picker */}
+                <div className="flex flex-col gap-2">
+                  <span className="text-[10px] uppercase font-black text-zinc-400">Typography Base Color</span>
+                  <div className="flex items-center gap-2">
+                    <input 
+                      type="color" 
+                      value={draftState.globalSettings?.typographyColor || '#FFFFFF'} 
+                      onChange={(e) => updateDraft('globalSettings', 'typographyColor', e.target.value)}
+                      className="w-8 h-8 rounded border border-zinc-800 cursor-pointer"
+                    />
+                    <input 
+                      type="text" 
+                      value={draftState.globalSettings?.typographyColor || '#FFFFFF'} 
+                      onChange={(e) => updateDraft('globalSettings', 'typographyColor', e.target.value)}
+                      className="bg-zinc-950 border border-zinc-800 rounded px-2.5 py-1 text-xs w-24 font-bold text-zinc-200"
+                    />
+                  </div>
+                  <div className="flex gap-1.5 mt-1.5">
+                    {['#1B7339', '#4CAF50', '#D4AF37', '#1A1A1A', '#F8F9FA'].map(hex => (
+                      <button
+                        key={hex}
+                        type="button"
+                        onClick={() => updateDraft('globalSettings', 'typographyColor', hex)}
+                        className="w-5 h-5 rounded border border-zinc-800 cursor-pointer hover:scale-105 transition"
+                        style={{ backgroundColor: hex }}
+                        title={hex}
+                      />
+                    ))}
+                  </div>
+                </div>
+
+                {/* Banner background color picker */}
+                <div className="flex flex-col gap-2">
+                  <span className="text-[10px] uppercase font-black text-zinc-400">Banner Background Color</span>
+                  <div className="flex items-center gap-2">
+                    <input 
+                      type="color" 
+                      value={draftState.globalSettings?.bannerBgColor || '#1A1A1A'} 
+                      onChange={(e) => updateDraft('globalSettings', 'bannerBgColor', e.target.value)}
+                      className="w-8 h-8 rounded border border-zinc-800 cursor-pointer"
+                    />
+                    <input 
+                      type="text" 
+                      value={draftState.globalSettings?.bannerBgColor || '#1A1A1A'} 
+                      onChange={(e) => updateDraft('globalSettings', 'bannerBgColor', e.target.value)}
+                      className="bg-zinc-950 border border-zinc-800 rounded px-2.5 py-1 text-xs w-24 font-bold text-zinc-200"
+                    />
+                  </div>
+                  <div className="flex gap-1.5 mt-1.5">
+                    {['#1B7339', '#4CAF50', '#D4AF37', '#1A1A1A', '#F8F9FA'].map(hex => (
+                      <button
+                        key={hex}
+                        type="button"
+                        onClick={() => updateDraft('globalSettings', 'bannerBgColor', hex)}
+                        className="w-5 h-5 rounded border border-zinc-800 cursor-pointer hover:scale-105 transition"
+                        style={{ backgroundColor: hex }}
+                        title={hex}
+                      />
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+
+
+              <div className="flex justify-end border-t border-zinc-800 pt-3 mt-1">
+                <button
+                  onClick={() => commitSection('globalSettings')}
+                  className="flex items-center gap-2 bg-brand-green hover:bg-brand-green/90 text-white font-black uppercase tracking-wider text-xs py-2 px-4 rounded-lg border border-brand-gold/45 shadow-sm active:scale-95"
+                >
+                  <Save className="w-3.5 h-3.5 text-brand-gold" />
+                  Save Style Theme
+                </button>
+              </div>
+            </div>
+
 
             {/* Global Timer Presets setup */}
             <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-6 shadow-xl flex flex-col gap-4">
@@ -1766,6 +1971,9 @@ export function OperatorPanel({ initialState, onStateChange }) {
                     })}
                   </div>
                 </div>
+              </div>
+              <div className="mt-4 border-t border-zinc-850 pt-4">
+                {renderSunraySliders('main')}
               </div>
 
               <div className="flex justify-end border-t border-zinc-800 pt-3 mt-1">

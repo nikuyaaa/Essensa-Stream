@@ -187,23 +187,57 @@ body {
 
 /* Broadcast Polish Styles */
 
-/* Subtle ambient gold glow */
+/* Subtle ambient brand-green glow */
 .gold-ambient-glow {
-  box-shadow: 0 0 25px rgba(212, 175, 55, 0.15), inset 0 0 15px rgba(212, 175, 55, 0.05);
-  border: 1px solid rgba(212, 175, 55, 0.3) !important;
-  background: linear-gradient(135deg, rgba(20, 20, 20, 0.98) 0%, rgba(30, 30, 30, 0.95) 100%) !important;
+  box-shadow: 0 0 25px rgba(27, 115, 57, 0.12), inset 0 0 15px rgba(27, 115, 57, 0.05);
+  border: 1px solid rgba(27, 115, 57, 0.25) !important;
+  background: linear-gradient(135deg, rgba(16, 22, 18, 0.98) 0%, rgba(24, 32, 26, 0.96) 100%) !important;
 }
 
 .gold-ambient-glow-soft {
-  filter: drop-shadow(0 0 10px rgba(212, 175, 55, 0.25));
+  filter: drop-shadow(0 0 10px rgba(27, 115, 57, 0.18));
 }
 
-/* Soft golden text illumination */
-.gold-text-glow {
-  text-shadow: 0 0 8px rgba(212, 175, 55, 0.4), 0 0 20px rgba(212, 175, 55, 0.15);
-  background: linear-gradient(to right, #FFE082 0%, #D4AF37 50%, #B29124 100%);
+/* Base text shadow for split-tone layouts */
+.brand-text-glow {
+  text-shadow: 0 0 12px rgba(255, 255, 255, 0.08);
+}
+
+/* Split-tone text keyword accent styles */
+.keyword-green {
+  color: #4CAF50 !important;
+  text-shadow: 0 0 8px rgba(76, 175, 80, 0.45);
+  font-weight: 900;
+}
+
+/* Looping hardware-accelerated Golden Sunray text sweep animation */
+@keyframes gold-sunray-shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.gold-sunray-text, .keyword-gold {
+  background: linear-gradient(
+    120deg, 
+    #b8860b 0%, 
+    #e6c875 25%, 
+    #ffe89c 45%, 
+    #ffffff 50%, 
+    #ffe89c 55%, 
+    #e6c875 75%, 
+    #b8860b 100%
+  );
+  background-size: 200% auto;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
+  animation: gold-sunray-shimmer var(--sunray-speed, 4s) infinite linear;
+  filter: drop-shadow(0 0 10px rgba(230, 200, 117, var(--sunray-glow, 0.3)));
+  font-weight: 900;
+  display: inline-block;
 }
 
 /* Smooth text reveal tracking animation */
@@ -224,7 +258,7 @@ body {
   animation: text-reveal-slide 1.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
-/* Color-Corrected Sweeping Shimmer Alert Banner */
+/* Color-Corrected Sweeping Shimmer Alert Banner (Essensa Naturale Green Theme) */
 @keyframes alert-shimmer-sweep {
   0% {
     background-position: -200% 0;
@@ -235,12 +269,13 @@ body {
 }
 
 .alert-banner-premium {
-  background: linear-gradient(90deg, #1C150A 0%, #2A1D0D 25%, #4A3515 50%, #2A1D0D 75%, #1C150A 100%);
+  background: linear-gradient(90deg, #0A1C0E 0%, #12331A 25%, #246634 50%, #12331A 75%, #0A1C0E 100%);
   background-size: 200% 100%;
   animation: alert-shimmer-sweep 6s infinite linear;
-  border: 1px solid rgba(212, 175, 55, 0.35) !important;
-  box-shadow: 0 0 25px rgba(212, 175, 55, 0.15);
-  color: #FFE082 !important;
-  text-shadow: 0 0 6px rgba(212, 175, 55, 0.3);
+  border: 1px solid rgba(76, 175, 80, 0.35) !important;
+  box-shadow: 0 0 25px rgba(76, 175, 80, 0.15);
+  color: #E2ECE9 !important;
+  text-shadow: 0 0 6px rgba(76, 175, 80, 0.3);
 }
+
 

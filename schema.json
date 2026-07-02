@@ -1,0 +1,39 @@
+{
+  "globalLogoUrl": "",
+  "globalSettings": {
+    "typographyColor": "#FFFFFF",
+    "bannerBgColor": "#1A1A1A"
+  },
+  "intermission-banner": {
+    "welcomeText": "Anniversary [gold]Live Stream[/gold]",
+    "announcement": "Advocating the [green]Organic Way[/green] of Living",
+    "tagline": "16 Years of Wellness & Prosperity",
+    "rightHeader": "Live Stream [gold]Starting Soon[/gold]",
+    "sunraySpeed": 4.0,
+    "sunrayIntensity": 0.30
+  },
+  "starting": {
+    "superTitle": "Anniversary [gold]Live Stream[/gold]",
+    "announcement": "Advocating the [green]Organic Way[/green] of Living",
+    "subTitle": "Stream Starting [gold]Soon[/gold]",
+    "sunraySpeed": 4.0,
+    "sunrayIntensity": 0.30
+  },
+  "main": {
+    "segmentName": "Revitalizing Health [gold]Anytime, Anywhere[/gold].",
+    "hostName": "Juan [gold]Dela Cruz[/gold]",
+    "hostTitle": "Entrepreneurial [green]Coach[/green]",
+    "sunraySpeed": 4.0,
+    "sunrayIntensity": 0.30
+  },
+  "brb": {
+    "bannerText": "Be Right [gold]Back[/gold]",
+    "sunraySpeed": 4.0,
+    "sunrayIntensity": 0.30
+  },
+  "ending": {
+    "title": "Thank you for [gold]joining us[/gold]!",
+    "sunraySpeed": 4.0,
+    "sunrayIntensity": 0.30
+  }
+}
