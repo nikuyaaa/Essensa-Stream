@@ -26,8 +26,8 @@ const defaultState = {
     "layout": "grid"
   },
   "timerPresets": {
-    "starting": [60, 180, 300, 600],
-    "brb": [60, 180, 300, 600]
+    "starting": [300, 600, 900, 1800, 3600], // 5m, 10m, 15m, 30m, 60m
+    "brb": [300, 600, 900, 1800, 3600] // 5m, 10m, 15m, 30m, 60m
   },
   "intermission-banner": {
     "welcomeText": "Anniversary Live Stream",
@@ -35,13 +35,18 @@ const defaultState = {
     "tagline": "16 Years of Wellness & Prosperity",
     "rightHeader": "Live Stream Starting Soon",
     "rightBody": "Our broadcast will begin shortly. Sit back, relax, and get ready for an organic way of living!",
-    "alertText": "ALERT: Special anniversary promo packages will be revealed during the live show!"
+    "alertText": "ALERT: Special anniversary promo packages will be revealed during the live show!",
+    "logoUrl": "",
+    "socials": []
   },
   "starting": {
     "announcement": "Advocating the Organic Way of Living",
     "tagline": "16 Years of Wellness & Prosperity",
+    "superTitle": "Anniversary Live Stream",
+    "subTitle": "Stream Starting Soon",
     "countdownSeconds": 300,
     "countdownRunning": false,
+    "logoUrl": "",
     "tickerItems": [
       "Essensa Naturale: 16 Years of Organic Way of Living",
       "Celebrating 16 Years of Wellness, Credibility, and Prosperity"
@@ -53,6 +58,7 @@ const defaultState = {
     "startTime": Date.now(),
     "showClock": true,
     "tickerVisible": true,
+    "logoUrl": "",
     "tickerItems": [
       "Essensa Naturale: 16 Years of Organic Way of Living",
       "Empowering Filipino Networker-Entrepreneurs Worldwide",
@@ -81,6 +87,7 @@ const defaultState = {
     "bannerText": "Be Right Back",
     "countdownSeconds": 300,
     "countdownRunning": false,
+    "logoUrl": "",
     "announcements": [
       "Taking a short 5 minute break.",
       "Stay tuned for the awarding ceremony next!"
@@ -89,7 +96,8 @@ const defaultState = {
   "ending": {
     "title": "Thank you for joining us!",
     "description": "Celebrating the Organic Way of Living. Let's continue empowering lives together.",
-    "signature": "Made with ❤️ Essensa Naturale Family"
+    "signature": "Made with ❤️ Essensa Naturale Family",
+    "logoUrl": ""
   }
 };
 
@@ -353,7 +361,7 @@ function App() {
     }
   };
 
-  const renderGlobalSocials = (isDarkBg = false) => {
+  const renderGlobalSocials = (isDarkBg = false, customSocials = null) => {
     const textClass = isDarkBg 
       ? "text-white/80 group-hover:text-brand-gold" 
       : "text-brand-charcoal/80 group-hover:text-brand-green";
@@ -369,9 +377,13 @@ function App() {
     const showIcon = state.socialsStyle?.format !== 'text-only';
     const showText = state.socialsStyle?.format !== 'icon-only';
 
+    const activeSocials = customSocials && customSocials.length > 0
+      ? customSocials
+      : state.socials;
+
     return (
       <div className={`${layoutClass} w-full`}>
-        {state.socials.map((handle, idx) => {
+        {activeSocials.map((handle, idx) => {
           const icon = getSocialIcon(handle.platform);
           return (
             <div 
@@ -421,15 +433,15 @@ function App() {
 
               {/* Brand Logo */}
               <div className="relative z-10">
-                <Logo showText={true} light={true} logoUrl={state.globalLogoUrl} className="scale-[1.6] origin-left" />
+                <Logo showText={true} light={true} logoUrl={state['intermission-banner'].logoUrl || state.globalLogoUrl} className="scale-[1.6] origin-left" />
               </div>
 
               {/* Elegant Title */}
-              <div className="flex flex-col gap-4 mt-8 relative z-10">
+              <div className="flex flex-col gap-4 mt-8 relative z-10 text-reveal-active">
                 <span className="font-sans text-sm font-black text-brand-gold tracking-[0.4em] uppercase">
                   {state['intermission-banner'].welcomeText}
                 </span>
-                <h1 className="font-display font-black text-5xl text-white tracking-wide uppercase leading-tight">
+                <h1 className="font-display font-black text-5xl text-white tracking-wide uppercase leading-tight gold-text-glow">
                   {state['intermission-banner'].announcement}
                 </h1>
               </div>
@@ -455,7 +467,7 @@ function App() {
                   {state['intermission-banner'].rightBody}
                 </p>
                 {state['intermission-banner'].alertText && (
-                  <div className="mt-4 bg-red-600 border border-red-700 text-white font-black uppercase text-xs tracking-widest px-6 py-3.5 rounded-2xl animate-pulse shadow-md">
+                  <div className="mt-4 alert-banner-premium font-black uppercase text-xs tracking-widest px-8 py-4 rounded-2xl shadow-lg">
                     {state['intermission-banner'].alertText}
                   </div>
                 )}
@@ -463,7 +475,7 @@ function App() {
 
               {/* Social Media Grid */}
               <div className="w-full border-t border-black/10 pt-8 mt-4 relative z-10">
-                {renderGlobalSocials(false)}
+                {renderGlobalSocials(false, state['intermission-banner'].socials)}
               </div>
             </div>
           </div>
@@ -484,15 +496,15 @@ function App() {
 
               {/* Brand Logo */}
               <div className="relative z-10">
-                <Logo showText={true} light={true} logoUrl={state.globalLogoUrl} className="scale-[1.6] origin-left" />
+                <Logo showText={true} light={true} logoUrl={state.starting.logoUrl || state.globalLogoUrl} className="scale-[1.6] origin-left" />
               </div>
 
               {/* Elegant Title */}
-              <div className="flex flex-col gap-4 mt-8 relative z-10">
+              <div className="flex flex-col gap-4 mt-8 relative z-10 text-reveal-active">
                 <span className="font-sans text-sm font-black text-brand-gold tracking-[0.4em] uppercase">
-                  Anniversary Live Stream
+                  {state.starting.superTitle || "Anniversary Live Stream"}
                 </span>
-                <h1 className="font-display font-black text-5xl text-white tracking-wide uppercase leading-tight">
+                <h1 className="font-display font-black text-5xl text-white tracking-wide uppercase leading-tight gold-text-glow">
                   {state.starting.announcement}
                 </h1>
               </div>
@@ -510,6 +522,9 @@ function App() {
 
               {/* Countdown in the center */}
               <div className="flex flex-col items-center justify-center gap-4 py-8 relative z-10">
+                <span className="text-zinc-400 text-xs font-black uppercase tracking-[0.3em] mb-2 text-reveal-active">
+                  {state.starting.subTitle || "Stream Starting Soon"}
+                </span>
                 <Countdown 
                   secondsLeft={state.starting.countdownSeconds} 
                   isRunning={state.starting.countdownRunning} 
@@ -533,7 +548,7 @@ function App() {
             </div>
 
             {/* Scrolling Ticker at bottom */}
-            <Ticker items={state.starting.tickerItems} logoUrl={state.globalLogoUrl} />
+            <Ticker items={state.starting.tickerItems} logoUrl={state.starting.logoUrl || state.globalLogoUrl} />
           </div>
         </OverlayWrapper>
       );
@@ -549,11 +564,11 @@ function App() {
             </div>
 
             {/* Centered BRB Card */}
-            <div className="flex flex-col items-center gap-10 text-center relative z-10 w-[900px] bg-white p-16 rounded-[32px] border border-brand-sage shadow-2xl">
-              <Logo showText={true} light={false} logoUrl={state.globalLogoUrl} className="scale-150 mb-6" />
+            <div className="flex flex-col items-center gap-10 text-center relative z-10 w-[900px] bg-white p-16 rounded-[32px] border border-brand-sage shadow-2xl gold-ambient-glow-soft">
+              <Logo showText={true} light={false} logoUrl={state.brb.logoUrl || state.globalLogoUrl} className="scale-150 mb-6" />
 
               <div className="flex flex-col items-center gap-4">
-                <h2 className="font-display font-black text-6xl text-brand-charcoal tracking-widest uppercase">
+                <h2 className="font-display font-black text-6xl text-brand-charcoal tracking-widest uppercase gold-text-glow">
                   {state.brb.bannerText}
                 </h2>
                 {/* Thin forest green highlight line */}
@@ -599,18 +614,18 @@ function App() {
               <LogoSunburst className="w-[800px] h-[800px]" />
             </div>
 
-            <div className="flex flex-col items-center gap-10 text-center relative z-10 w-[960px] bg-white p-16 rounded-[32px] border border-brand-sage shadow-2xl">
+            <div className="flex flex-col items-center gap-10 text-center relative z-10 w-[960px] bg-white p-16 rounded-[32px] border border-brand-sage shadow-2xl gold-ambient-glow-soft">
               {/* Centered Brand Logo */}
               <motion.div
                 initial={{ scale: 0.9, opacity: 0 }}
                 animate={{ scale: 1.3, opacity: 1 }}
                 transition={{ duration: 1.2, ease: "easeOut" }}
               >
-                <Logo showText={true} light={false} logoUrl={state.globalLogoUrl} className="scale-[1.8] origin-center mb-10" />
+                <Logo showText={true} light={false} logoUrl={state.ending.logoUrl || state.globalLogoUrl} className="scale-[1.8] origin-center mb-10" />
               </motion.div>
 
               <div className="flex flex-col gap-4">
-                <h2 className="font-display font-black text-4xl text-brand-charcoal uppercase tracking-wider">
+                <h2 className="font-display font-black text-4xl text-brand-charcoal uppercase tracking-wider gold-text-glow">
                   {state.ending.title}
                 </h2>
                 <p className="font-sans text-brand-charcoal/80 text-xl max-w-[700px] leading-relaxed mx-auto font-bold">

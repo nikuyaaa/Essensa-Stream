@@ -21,16 +21,19 @@ export function OperatorPanel({ initialState, onStateChange }) {
 
   // Sync states when initialState updates (e.g., from network response)
   useEffect(() => {
-    // Determine if any core text/layout configurations changed (ignoring live timers)
     const hasConfigChanged = !state ||
       JSON.stringify(initialState['intermission-banner']) !== JSON.stringify(state['intermission-banner']) ||
       initialState.starting.announcement !== state.starting.announcement ||
       initialState.starting.tagline !== state.starting.tagline ||
+      initialState.starting.superTitle !== state.starting.superTitle ||
+      initialState.starting.subTitle !== state.starting.subTitle ||
+      initialState.starting.logoUrl !== state.starting.logoUrl ||
       JSON.stringify(initialState.starting.tickerItems) !== JSON.stringify(state.starting.tickerItems) ||
       initialState.main.headerVisible !== state.main.headerVisible ||
       initialState.main.segmentName !== state.main.segmentName ||
       initialState.main.showClock !== state.main.showClock ||
       initialState.main.tickerVisible !== state.main.tickerVisible ||
+      initialState.main.logoUrl !== state.main.logoUrl ||
       JSON.stringify(initialState.main.tickerItems) !== JSON.stringify(state.main.tickerItems) ||
       initialState.main.hostVisible !== state.main.hostVisible ||
       initialState.main.hostName !== state.main.hostName ||
@@ -38,10 +41,12 @@ export function OperatorPanel({ initialState, onStateChange }) {
       initialState.main.hostAutoHide !== state.main.hostAutoHide ||
       JSON.stringify(initialState.main.products) !== JSON.stringify(state.main.products) ||
       initialState.brb.bannerText !== state.brb.bannerText ||
+      initialState.brb.logoUrl !== state.brb.logoUrl ||
       JSON.stringify(initialState.brb.announcements) !== JSON.stringify(state.brb.announcements) ||
       initialState.ending.title !== state.ending.title ||
       initialState.ending.description !== state.ending.description ||
       initialState.ending.signature !== state.ending.signature ||
+      initialState.ending.logoUrl !== state.ending.logoUrl ||
       JSON.stringify(initialState.socials) !== JSON.stringify(state.socials) ||
       JSON.stringify(initialState.socialsStyle) !== JSON.stringify(state.socialsStyle) ||
       JSON.stringify(initialState.timerPresets) !== JSON.stringify(state.timerPresets) ||
@@ -434,6 +439,13 @@ export function OperatorPanel({ initialState, onStateChange }) {
     return `${hrs}:${mins}:${secs}`;
   };
 
+  const formatSecondsHMS = (totalSecs) => {
+    const hrs = Math.floor(totalSecs / 3600).toString().padStart(2, '0');
+    const mins = Math.floor((totalSecs % 3600) / 60).toString().padStart(2, '0');
+    const secs = (totalSecs % 60).toString().padStart(2, '0');
+    return `${hrs}:${mins}:${secs}`;
+  };
+
   return (
     <div className="w-full h-full min-h-screen bg-zinc-950 text-zinc-100 flex flex-col font-sans select-none pb-12">
       {/* 1. Header Bar */}
@@ -555,7 +567,7 @@ export function OperatorPanel({ initialState, onStateChange }) {
                   placeholder="e.g. SPECIAL PROMO REVEAL AT 8PM!"
                   value={draftState['intermission-banner'].alertText || ''}
                   onChange={(e) => updateDraft('intermission-banner', 'alertText', e.target.value)}
-                  className="bg-zinc-950 border border-zinc-850 border-red-900/30 rounded-lg px-3 py-2 text-sm text-red-400 focus:outline-none focus:border-red-500 font-bold"
+                  className="bg-zinc-950 border border-zinc-850 rounded-lg px-3 py-2 text-sm text-red-400 focus:outline-none focus:border-brand-green font-bold"
                 />
               </div>
               <div className="flex flex-col gap-1.5 md:col-span-2">
@@ -567,6 +579,94 @@ export function OperatorPanel({ initialState, onStateChange }) {
                   className="bg-zinc-950 border border-zinc-800 rounded-lg px-3 py-2 text-sm text-zinc-200 focus:outline-none focus:border-brand-green font-bold resize-none"
                 />
               </div>
+
+              {/* Standalone Brand Logo Form */}
+              <div className="flex flex-col gap-1.5 md:col-span-2 bg-zinc-950 p-4 rounded-xl border border-zinc-850">
+                <label className="text-[10px] uppercase font-black tracking-wider text-zinc-400">Scene Brand Logo (Image/Video Loop)</label>
+                <input
+                  type="file"
+                  accept="image/*,video/*"
+                  onChange={(e) => {
+                    handleFileUpload(e, (url) => {
+                      updateDraft('intermission-banner', 'logoUrl', url);
+                    });
+                  }}
+                  className="bg-zinc-900 border border-zinc-800 rounded px-2.5 py-1.5 text-xs text-zinc-300 w-full cursor-pointer focus:outline-none"
+                />
+                {draftState['intermission-banner'].logoUrl && (
+                  <span className="text-[9px] text-brand-gold font-bold truncate max-w-[400px] mt-1.5">
+                    Loaded URL: {draftState['intermission-banner'].logoUrl}
+                  </span>
+                )}
+              </div>
+            </div>
+
+            {/* Intermission Specific Social Media handles config */}
+            <div className="bg-zinc-950 p-6 rounded-2xl border border-zinc-850 flex flex-col gap-4 mt-2">
+              <h3 className="text-xs font-black text-brand-gold uppercase tracking-widest flex items-center gap-2 border-b border-zinc-900 pb-2">
+                <Globe className="w-3.5 h-3.5" /> Intermission-Specific Social Media Handles
+              </h3>
+              <div className="flex flex-col gap-3">
+                {(draftState['intermission-banner'].socials || []).map((handle, idx) => (
+                  <div key={idx} className="flex gap-4 items-center bg-zinc-900 p-3 rounded-xl border border-zinc-800">
+                    <div className="flex flex-col gap-1 w-36">
+                      <label className="text-[8px] uppercase font-black text-zinc-500">Platform</label>
+                      <select
+                        value={handle.platform}
+                        onChange={(e) => {
+                          const val = e.target.value;
+                          const arr = [...draftState['intermission-banner'].socials];
+                          arr[idx] = { ...arr[idx], platform: val };
+                          updateDraft('intermission-banner', 'socials', arr);
+                        }}
+                        className="bg-zinc-950 border border-zinc-800 text-xs rounded p-1.5 font-bold text-zinc-350 cursor-pointer"
+                      >
+                        <option value="facebook">Facebook</option>
+                        <option value="instagram">Instagram</option>
+                        <option value="youtube">YouTube</option>
+                        <option value="globe">Website (Globe)</option>
+                      </select>
+                    </div>
+
+                    <div className="flex-1 flex flex-col gap-1">
+                      <label className="text-[8px] uppercase font-black text-zinc-500">Display Handle text</label>
+                      <input
+                        type="text"
+                        value={handle.text}
+                        onChange={(e) => {
+                          const val = e.target.value;
+                          const arr = [...draftState['intermission-banner'].socials];
+                          arr[idx] = { ...arr[idx], text: val };
+                          updateDraft('intermission-banner', 'socials', arr);
+                        }}
+                        className="bg-zinc-950 border border-zinc-850 rounded px-2 py-1 text-xs font-bold text-zinc-200 focus:outline-none w-full"
+                      />
+                    </div>
+
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const arr = draftState['intermission-banner'].socials.filter((s, sIdx) => sIdx !== idx);
+                        updateDraft('intermission-banner', 'socials', arr);
+                      }}
+                      className="bg-red-500/10 hover:bg-red-500/20 border border-red-500/30 text-red-400 p-2 rounded mt-3 transition shrink-0"
+                    >
+                      <Trash className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+                ))}
+              </div>
+
+              <button
+                type="button"
+                onClick={() => {
+                  const arr = [...(draftState['intermission-banner'].socials || []), { platform: 'facebook', text: '@MyHandle' }];
+                  updateDraft('intermission-banner', 'socials', arr);
+                }}
+                className="py-2 bg-zinc-900 hover:bg-zinc-850 border border-zinc-800 rounded-xl text-2xs font-black uppercase text-brand-gold tracking-widest flex items-center justify-center gap-1.5 mt-1 transition"
+              >
+                <Plus className="w-3 h-3" /> Add Custom Intermission Handle
+              </button>
             </div>
 
             {/* Individual Save Button */}
@@ -592,11 +692,29 @@ export function OperatorPanel({ initialState, onStateChange }) {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="flex flex-col gap-4">
                   <div className="flex flex-col gap-1.5">
+                    <label className="text-[10px] uppercase font-black tracking-wider text-zinc-400">Supertitle Header</label>
+                    <input
+                      type="text"
+                      value={draftState.starting.superTitle || ''}
+                      onChange={(e) => updateDraft('starting', 'superTitle', e.target.value)}
+                      className="bg-zinc-950 border border-zinc-800 rounded-lg px-3 py-2 text-sm text-zinc-200 focus:outline-none focus:border-brand-green font-bold"
+                    />
+                  </div>
+                  <div className="flex flex-col gap-1.5">
                     <label className="text-[10px] uppercase font-black tracking-wider text-zinc-400">Header Announcement</label>
                     <input
                       type="text"
                       value={draftState.starting.announcement}
                       onChange={(e) => updateDraft('starting', 'announcement', e.target.value)}
+                      className="bg-zinc-950 border border-zinc-800 rounded-lg px-3 py-2 text-sm text-zinc-200 focus:outline-none focus:border-brand-green font-bold"
+                    />
+                  </div>
+                  <div className="flex flex-col gap-1.5">
+                    <label className="text-[10px] uppercase font-black tracking-wider text-zinc-400">Core Subtitle Layer</label>
+                    <input
+                      type="text"
+                      value={draftState.starting.subTitle || ''}
+                      onChange={(e) => updateDraft('starting', 'subTitle', e.target.value)}
                       className="bg-zinc-950 border border-zinc-800 rounded-lg px-3 py-2 text-sm text-zinc-200 focus:outline-none focus:border-brand-green font-bold"
                     />
                   </div>
@@ -609,6 +727,27 @@ export function OperatorPanel({ initialState, onStateChange }) {
                       className="bg-zinc-950 border border-zinc-800 rounded-lg px-3 py-2 text-sm text-zinc-200 focus:outline-none focus:border-brand-green font-bold"
                     />
                   </div>
+
+                  {/* Standalone Logo Uploader */}
+                  <div className="flex flex-col gap-1.5 bg-zinc-950 p-4 rounded-xl border border-zinc-855">
+                    <label className="text-[10px] uppercase font-black tracking-wider text-zinc-400">Scene Brand Logo (Image/Video Loop)</label>
+                    <input
+                      type="file"
+                      accept="image/*,video/*"
+                      onChange={(e) => {
+                        handleFileUpload(e, (url) => {
+                          updateDraft('starting', 'logoUrl', url);
+                        });
+                      }}
+                      className="bg-zinc-900 border border-zinc-800 rounded px-2.5 py-1.5 text-xs text-zinc-300 w-full cursor-pointer focus:outline-none"
+                    />
+                    {draftState.starting.logoUrl && (
+                      <span className="text-[9px] text-brand-gold font-bold truncate max-w-[400px] mt-1.5">
+                        Loaded URL: {draftState.starting.logoUrl}
+                      </span>
+                    )}
+                  </div>
+
                   <div className="flex justify-end mt-2">
                     <button
                       onClick={() => commitSection('starting')}
@@ -625,8 +764,7 @@ export function OperatorPanel({ initialState, onStateChange }) {
                   <span className="text-[10px] uppercase font-black tracking-wider text-zinc-500">Live countdown clock setup</span>
                   <div className="flex items-center justify-between">
                     <div className="text-brand-gold font-mono text-3xl font-black tracking-widest tabular-nums">
-                      {Math.floor(state.starting.countdownSeconds / 60).toString().padStart(2, '0')}:
-                      {(state.starting.countdownSeconds % 60).toString().padStart(2, '0')}
+                      {formatSecondsHMS(state.starting.countdownSeconds)}
                     </div>
                     <div className="flex gap-2">
                       <button
@@ -640,10 +778,10 @@ export function OperatorPanel({ initialState, onStateChange }) {
                         {state.starting.countdownRunning ? 'PAUSE LIVE' : 'START LIVE'}
                       </button>
                       <button
-                        onClick={() => triggerStartingCountdownAction('reset', (state.timerPresets?.starting?.[2] || 5) * 60)}
+                        onClick={() => triggerStartingCountdownAction('reset', (state.timerPresets?.starting?.[2] || 900))}
                         className="bg-zinc-850 hover:bg-zinc-800 border border-zinc-750 px-3 py-2 rounded-lg text-xs font-black tracking-wider text-zinc-300 transition-all"
                       >
-                        RESET (5M)
+                        RESET (15M)
                       </button>
                     </div>
                   </div>
@@ -651,39 +789,79 @@ export function OperatorPanel({ initialState, onStateChange }) {
                   {/* Preset quick actions dynamic grid */}
                   <div className="flex flex-col gap-2 border-t border-zinc-800/60 pt-3">
                     <span className="text-[9px] uppercase font-black text-zinc-500">Duration Presets</span>
-                    <div className="grid grid-cols-4 gap-2">
-                      {(state.timerPresets?.starting || [1, 3, 5, 10]).map((m) => (
-                        <button
-                          key={m}
-                          onClick={() => triggerStartingCountdownAction('reset', m * 60)}
-                          className="bg-zinc-900 hover:bg-zinc-850 border border-zinc-800/80 text-[10px] font-black py-2 rounded-lg text-zinc-350 hover:text-brand-gold transition"
-                        >
-                          {m} Min
-                        </button>
-                      ))}
+                    <div className="grid grid-cols-5 gap-1.5">
+                      {(state.timerPresets?.starting || [300, 600, 900, 1800, 3600]).map((seconds) => {
+                        const mins = Math.floor(seconds / 60);
+                        return (
+                          <button
+                            key={seconds}
+                            onClick={() => triggerStartingCountdownAction('reset', seconds)}
+                            className="bg-zinc-900 hover:bg-zinc-850 border border-zinc-800/80 text-[10px] font-black py-2 rounded-lg text-zinc-350 hover:text-brand-gold transition-all"
+                          >
+                            {mins} Min
+                          </button>
+                        );
+                      })}
                     </div>
                   </div>
 
-                  {/* Custom duration loader */}
-                  <div className="flex items-center gap-2 border-t border-zinc-800/60 pt-3">
-                    <input 
-                      type="number" 
-                      placeholder="Min" 
-                      min="1"
-                      id="starting_custom_min"
-                      className="bg-zinc-900 border border-zinc-800 rounded px-2.5 py-1.5 text-xs w-16 text-center font-bold text-zinc-100 focus:outline-none focus:border-brand-green"
-                    />
-                    <button
-                      onClick={() => {
-                        const val = parseInt(document.getElementById('starting_custom_min').value);
-                        if (val > 0) {
-                          triggerStartingCountdownAction('reset', val * 60);
-                        }
-                      }}
-                      className="bg-brand-green/20 hover:bg-brand-green/30 border border-brand-green/30 text-brand-gold text-[10px] font-black uppercase py-1.5 px-3.5 rounded-lg transition-all"
-                    >
-                      Apply Custom Time
-                    </button>
+                  {/* HMS Custom duration loader */}
+                  <div className="flex flex-col gap-2 border-t border-zinc-800/60 pt-3">
+                    <span className="text-[9px] uppercase font-black text-zinc-500">Set Custom Temporal Time</span>
+                    <div className="flex items-center gap-2">
+                      <div className="flex flex-col items-center">
+                        <label className="text-[8px] uppercase text-zinc-500 font-bold mb-1">HH</label>
+                        <input 
+                          type="number" 
+                          placeholder="00" 
+                          min="0"
+                          max="23"
+                          id="starting_custom_hh"
+                          defaultValue="0"
+                          className="bg-zinc-900 border border-zinc-800 rounded px-1.5 py-1 text-xs w-12 text-center font-bold text-zinc-100 focus:outline-none focus:border-brand-green"
+                        />
+                      </div>
+                      <span className="text-zinc-600 font-bold mt-4">:</span>
+                      <div className="flex flex-col items-center">
+                        <label className="text-[8px] uppercase text-zinc-500 font-bold mb-1">MM</label>
+                        <input 
+                          type="number" 
+                          placeholder="05" 
+                          min="0"
+                          max="59"
+                          id="starting_custom_mm"
+                          defaultValue="5"
+                          className="bg-zinc-900 border border-zinc-800 rounded px-1.5 py-1 text-xs w-12 text-center font-bold text-zinc-100 focus:outline-none focus:border-brand-green"
+                        />
+                      </div>
+                      <span className="text-zinc-600 font-bold mt-4">:</span>
+                      <div className="flex flex-col items-center">
+                        <label className="text-[8px] uppercase text-zinc-500 font-bold mb-1">SS</label>
+                        <input 
+                          type="number" 
+                          placeholder="00" 
+                          min="0"
+                          max="59"
+                          id="starting_custom_ss"
+                          defaultValue="0"
+                          className="bg-zinc-900 border border-zinc-800 rounded px-1.5 py-1 text-xs w-12 text-center font-bold text-zinc-100 focus:outline-none focus:border-brand-green"
+                        />
+                      </div>
+                      <button
+                        onClick={() => {
+                          const hh = parseInt(document.getElementById('starting_custom_hh').value) || 0;
+                          const mm = parseInt(document.getElementById('starting_custom_mm').value) || 0;
+                          const ss = parseInt(document.getElementById('starting_custom_ss').value) || 0;
+                          const totalSeconds = (hh * 3600) + (mm * 60) + ss;
+                          if (totalSeconds > 0) {
+                            triggerStartingCountdownAction('reset', totalSeconds);
+                          }
+                        }}
+                        className="bg-brand-green/20 hover:bg-brand-green/30 border border-brand-green/30 text-brand-gold text-[10px] font-black uppercase py-2 px-3.5 rounded-lg transition-all mt-4"
+                      >
+                        Apply
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -753,7 +931,28 @@ export function OperatorPanel({ initialState, onStateChange }) {
                       className="bg-zinc-950 border border-zinc-800 rounded-lg px-3 py-2 text-sm text-zinc-200 focus:outline-none focus:border-brand-green font-bold"
                     />
                   </div>
-                  <div className="flex items-center justify-between border-t border-zinc-850 pt-3">
+
+                  {/* Standalone Logo Uploader for Ticker branding */}
+                  <div className="flex flex-col gap-1.5 bg-zinc-950 p-4 rounded-xl border border-zinc-850">
+                    <label className="text-[10px] uppercase font-black tracking-wider text-zinc-400">News Ticker Brand Logo (Image/Video Loop)</label>
+                    <input
+                      type="file"
+                      accept="image/*,video/*"
+                      onChange={(e) => {
+                        handleFileUpload(e, (url) => {
+                          updateDraft('main', 'logoUrl', url);
+                        });
+                      }}
+                      className="bg-zinc-900 border border-zinc-800 rounded px-2.5 py-1.5 text-xs text-zinc-350 w-full cursor-pointer focus:outline-none"
+                    />
+                    {draftState.main.logoUrl && (
+                      <span className="text-[9px] text-brand-gold font-bold truncate max-w-[400px] mt-1.5">
+                        Loaded URL: {draftState.main.logoUrl}
+                      </span>
+                    )}
+                  </div>
+
+                  <div className="flex items-center justify-between border-t border-zinc-855 pt-3">
                     <span className="text-xs text-zinc-400 font-bold">Show clock uptime capsule</span>
                     <input 
                       type="checkbox"
@@ -1007,7 +1206,7 @@ export function OperatorPanel({ initialState, onStateChange }) {
                           <label className="text-[9px] uppercase font-black text-zinc-400">Product Name</label>
                           <input
                             type="text"
-                            value={product.name}
+                            value={product.name || ''}
                             onChange={(e) => {
                               const val = e.target.value;
                               setDraftState(prev => {
@@ -1022,7 +1221,7 @@ export function OperatorPanel({ initialState, onStateChange }) {
                           <label className="text-[9px] uppercase font-black text-zinc-400">Price Pill</label>
                           <input
                             type="text"
-                            value={product.price}
+                            value={product.price || ''}
                             onChange={(e) => {
                               const val = e.target.value;
                               setDraftState(prev => {
@@ -1039,7 +1238,7 @@ export function OperatorPanel({ initialState, onStateChange }) {
                         <label className="text-[9px] uppercase font-black text-zinc-400">Promo Scrolling Banner</label>
                         <input
                           type="text"
-                          value={product.promoText}
+                          value={product.promoText || ''}
                           onChange={(e) => {
                             const val = e.target.value;
                             setDraftState(prev => {
@@ -1150,7 +1349,7 @@ export function OperatorPanel({ initialState, onStateChange }) {
                                   return { ...prev, main: { ...prev.main, products: updated } };
                                 });
                               }}
-                              className="text-left p-1.5 bg-zinc-900 border border-zinc-850 hover:bg-zinc-850 rounded text-[9px] font-semibold flex items-center justify-between transition"
+                              className="text-left p-1.5 bg-zinc-900 border border-zinc-855 hover:bg-zinc-850 rounded text-[9px] font-semibold flex items-center justify-between transition"
                             >
                               <span className="truncate pr-1 font-bold text-zinc-400">{pr.name}</span>
                               <span className="text-brand-gold font-mono shrink-0 font-bold">{pr.price}</span>
@@ -1232,6 +1431,27 @@ export function OperatorPanel({ initialState, onStateChange }) {
                     className="bg-zinc-950 border border-zinc-800 rounded-lg px-3 py-2 text-xs font-mono text-zinc-200 focus:outline-none focus:border-brand-green font-bold resize-none"
                   />
                 </div>
+
+                {/* Standalone Logo Uploader */}
+                <div className="flex flex-col gap-1.5 bg-zinc-950 p-4 rounded-xl border border-zinc-850">
+                  <label className="text-[10px] uppercase font-black tracking-wider text-zinc-400">Scene Brand Logo (Image/Video Loop)</label>
+                  <input
+                    type="file"
+                    accept="image/*,video/*"
+                    onChange={(e) => {
+                      handleFileUpload(e, (url) => {
+                        updateDraft('brb', 'logoUrl', url);
+                      });
+                    }}
+                    className="bg-zinc-900 border border-zinc-800 rounded px-2.5 py-1.5 text-xs text-zinc-350 w-full cursor-pointer focus:outline-none"
+                  />
+                  {draftState.brb.logoUrl && (
+                    <span className="text-[9px] text-brand-gold font-bold truncate max-w-[400px] mt-1.5">
+                      Loaded URL: {draftState.brb.logoUrl}
+                    </span>
+                  )}
+                </div>
+
                 <div className="flex justify-end mt-2">
                   <button
                     onClick={() => commitSection('brb')}
@@ -1248,8 +1468,7 @@ export function OperatorPanel({ initialState, onStateChange }) {
                 <span className="text-[10px] uppercase font-black tracking-wider text-zinc-500">Return Timer setup</span>
                 <div className="flex items-center justify-between">
                   <div className="text-brand-gold font-mono text-3xl font-black tracking-widest tabular-nums">
-                    {Math.floor(state.brb.countdownSeconds / 60).toString().padStart(2, '0')}:
-                    {(state.brb.countdownSeconds % 60).toString().padStart(2, '0')}
+                    {formatSecondsHMS(state.brb.countdownSeconds)}
                   </div>
                   <div className="flex gap-2">
                     <button
@@ -1263,10 +1482,10 @@ export function OperatorPanel({ initialState, onStateChange }) {
                       {state.brb.countdownRunning ? 'PAUSE LIVE' : 'START LIVE'}
                     </button>
                     <button
-                      onClick={() => triggerBrbCountdownAction('reset', (state.timerPresets?.brb?.[2] || 5) * 60)}
+                      onClick={() => triggerBrbCountdownAction('reset', (state.timerPresets?.brb?.[2] || 900))}
                       className="bg-zinc-850 hover:bg-zinc-800 border border-zinc-750 px-3 py-2 rounded-lg text-xs font-black tracking-wider text-zinc-300 transition"
                     >
-                      RESET (5M)
+                      RESET (15M)
                     </button>
                   </div>
                 </div>
@@ -1274,39 +1493,79 @@ export function OperatorPanel({ initialState, onStateChange }) {
                 {/* Presets loops */}
                 <div className="flex flex-col gap-2 border-t border-zinc-800/60 pt-3">
                   <span className="text-[9px] uppercase font-black text-zinc-500">Duration Presets</span>
-                  <div className="grid grid-cols-4 gap-2">
-                    {(state.timerPresets?.brb || [1, 3, 5, 10]).map((m) => (
-                      <button
-                        key={m}
-                        onClick={() => triggerBrbCountdownAction('reset', m * 60)}
-                        className="bg-zinc-900 hover:bg-zinc-850 border border-zinc-800/80 text-[10px] font-black py-2 rounded-lg text-zinc-350 hover:text-brand-gold transition"
-                      >
-                        {m} Min
-                      </button>
-                    ))}
+                  <div className="grid grid-cols-5 gap-1.5">
+                    {(state.timerPresets?.brb || [300, 600, 900, 1800, 3600]).map((seconds) => {
+                      const mins = Math.floor(seconds / 60);
+                      return (
+                        <button
+                          key={seconds}
+                          onClick={() => triggerBrbCountdownAction('reset', seconds)}
+                          className="bg-zinc-900 hover:bg-zinc-850 border border-zinc-800/80 text-[10px] font-black py-2 rounded-lg text-zinc-350 hover:text-brand-gold transition"
+                        >
+                          {mins} Min
+                        </button>
+                      );
+                    })}
                   </div>
                 </div>
 
-                {/* Custom Time */}
-                <div className="flex items-center gap-2 border-t border-zinc-800/60 pt-3">
-                  <input 
-                    type="number" 
-                    placeholder="Min" 
-                    min="1"
-                    id="brb_custom_min"
-                    className="bg-zinc-900 border border-zinc-800 rounded px-2.5 py-1.5 text-xs w-16 text-center font-bold text-zinc-100 focus:outline-none focus:border-brand-green"
-                  />
-                  <button
-                    onClick={() => {
-                      const val = parseInt(document.getElementById('brb_custom_min').value);
-                      if (val > 0) {
-                        triggerBrbCountdownAction('reset', val * 60);
-                      }
-                    }}
-                    className="bg-brand-green/20 hover:bg-brand-green/30 border border-brand-green/30 text-brand-gold text-[10px] font-black uppercase py-1.5 px-3.5 rounded-lg transition-all"
-                  >
-                    Apply Custom Time
-                  </button>
+                {/* HMS Custom Time Setup */}
+                <div className="flex flex-col gap-2 border-t border-zinc-800/60 pt-3">
+                  <span className="text-[9px] uppercase font-black text-zinc-500">Set Custom Temporal Time</span>
+                  <div className="flex items-center gap-2">
+                    <div className="flex flex-col items-center">
+                      <label className="text-[8px] uppercase text-zinc-500 font-bold mb-1">HH</label>
+                      <input 
+                        type="number" 
+                        placeholder="00" 
+                        min="0"
+                        max="23"
+                        id="brb_custom_hh"
+                        defaultValue="0"
+                        className="bg-zinc-900 border border-zinc-800 rounded px-1.5 py-1 text-xs w-12 text-center font-bold text-zinc-100 focus:outline-none focus:border-brand-green"
+                      />
+                    </div>
+                    <span className="text-zinc-600 font-bold mt-4">:</span>
+                    <div className="flex flex-col items-center">
+                      <label className="text-[8px] uppercase text-zinc-500 font-bold mb-1">MM</label>
+                      <input 
+                        type="number" 
+                        placeholder="05" 
+                        min="0"
+                        max="59"
+                        id="brb_custom_mm"
+                        defaultValue="5"
+                        className="bg-zinc-900 border border-zinc-800 rounded px-1.5 py-1 text-xs w-12 text-center font-bold text-zinc-100 focus:outline-none focus:border-brand-green"
+                      />
+                    </div>
+                    <span className="text-zinc-600 font-bold mt-4">:</span>
+                    <div className="flex flex-col items-center">
+                      <label className="text-[8px] uppercase text-zinc-500 font-bold mb-1">SS</label>
+                      <input 
+                        type="number" 
+                        placeholder="00" 
+                        min="0"
+                        max="59"
+                        id="brb_custom_ss"
+                        defaultValue="0"
+                        className="bg-zinc-900 border border-zinc-800 rounded px-1.5 py-1 text-xs w-12 text-center font-bold text-zinc-100 focus:outline-none focus:border-brand-green"
+                      />
+                    </div>
+                    <button
+                      onClick={() => {
+                        const hh = parseInt(document.getElementById('brb_custom_hh').value) || 0;
+                        const mm = parseInt(document.getElementById('brb_custom_mm').value) || 0;
+                        const ss = parseInt(document.getElementById('brb_custom_ss').value) || 0;
+                        const totalSeconds = (hh * 3600) + (mm * 60) + ss;
+                        if (totalSeconds > 0) {
+                          triggerBrbCountdownAction('reset', totalSeconds);
+                        }
+                      }}
+                      className="bg-brand-green/20 hover:bg-brand-green/30 border border-brand-green/30 text-brand-gold text-[10px] font-black uppercase py-2 px-3.5 rounded-lg transition-all mt-4"
+                    >
+                      Apply
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
@@ -1347,6 +1606,26 @@ export function OperatorPanel({ initialState, onStateChange }) {
                   className="bg-zinc-950 border border-zinc-800 rounded-lg px-3 py-2 text-sm text-zinc-200 focus:outline-none focus:border-brand-green font-bold resize-none"
                 />
               </div>
+
+              {/* Standalone Logo Uploader */}
+              <div className="flex flex-col gap-1.5 md:col-span-2 bg-zinc-950 p-4 rounded-xl border border-zinc-850">
+                <label className="text-[10px] uppercase font-black tracking-wider text-zinc-400">Ending Outro Logo Asset (Image/Video Loop)</label>
+                <input
+                  type="file"
+                  accept="image/*,video/*"
+                  onChange={(e) => {
+                    handleFileUpload(e, (url) => {
+                      updateDraft('ending', 'logoUrl', url);
+                    });
+                  }}
+                  className="bg-zinc-900 border border-zinc-800 rounded px-2.5 py-1.5 text-xs text-zinc-350 w-full cursor-pointer focus:outline-none"
+                />
+                {draftState.ending.logoUrl && (
+                  <span className="text-[9px] text-brand-gold font-bold truncate max-w-[400px] mt-1.5">
+                    Loaded URL: {draftState.ending.logoUrl}
+                  </span>
+                )}
+              </div>
             </div>
 
             {/* Individual Save Button */}
@@ -1369,10 +1648,10 @@ export function OperatorPanel({ initialState, onStateChange }) {
             {/* Global Logo Upload Card */}
             <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-6 shadow-xl flex flex-col gap-4">
               <h2 className="text-sm font-black text-brand-gold uppercase tracking-widest flex items-center gap-2 border-b border-zinc-800 pb-3">
-                <Layers className="w-4 h-4" /> Global Logo Customization
+                <Layers className="w-4 h-4" /> Default Fallback Logo Customization
               </h2>
               <div className="flex flex-col gap-3">
-                <label className="text-[10px] uppercase font-black text-zinc-400">Global Logo (static image or animated/video loop)</label>
+                <label className="text-[10px] uppercase font-black text-zinc-400">Fallback Brand Logo (static image or animated/video loop)</label>
                 <input 
                   type="file" 
                   accept="image/*,video/*"
@@ -1417,58 +1696,74 @@ export function OperatorPanel({ initialState, onStateChange }) {
             {/* Global Timer Presets setup */}
             <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-6 shadow-xl flex flex-col gap-4">
               <h2 className="text-sm font-black text-brand-gold uppercase tracking-widest flex items-center gap-2 border-b border-zinc-800 pb-3">
-                <Clock className="w-4 h-4" /> Quick Timer Presets (Minutes)
+                <Clock className="w-4 h-4" /> Quick Timer Presets (Minutes, max 60m)
               </h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="flex flex-col gap-3">
-                  <span className="text-[10px] uppercase font-black text-brand-gold tracking-wider">Starting Screen Presets</span>
-                  <div className="grid grid-cols-4 gap-2">
-                    {[0, 1, 2, 3].map(i => (
-                      <input
-                        key={i}
-                        type="number"
-                        min="1"
-                        value={draftState.timerPresets?.starting?.[i] || ''}
-                        onChange={(e) => {
-                          const val = parseInt(e.target.value) || 1;
-                          setDraftState(prev => {
-                            const arr = [...(prev.timerPresets?.starting || [1, 3, 5, 10])];
-                            arr[i] = val;
-                            return {
-                              ...prev,
-                              timerPresets: { ...prev.timerPresets, starting: arr }
-                            };
-                          });
-                        }}
-                        className="bg-zinc-950 border border-zinc-800 rounded px-1 py-2 text-center text-xs font-bold text-zinc-100 focus:outline-none focus:border-brand-green"
-                      />
-                    ))}
+                  <span className="text-[10px] uppercase font-black text-brand-gold tracking-wider">Starting Presets</span>
+                  <div className="grid grid-cols-5 gap-1.5">
+                    {[0, 1, 2, 3, 4].map(i => {
+                      const mins = draftState.timerPresets?.starting?.[i]
+                        ? Math.floor(draftState.timerPresets.starting[i] / 60)
+                        : 5;
+                      return (
+                        <div key={i} className="flex flex-col gap-1 items-center">
+                          <input
+                            type="number"
+                            min="1"
+                            max="60"
+                            value={mins}
+                            onChange={(e) => {
+                              const val = Math.min(60, Math.max(1, parseInt(e.target.value) || 1));
+                              setDraftState(prev => {
+                                const arr = [...(prev.timerPresets?.starting || [300, 600, 900, 1800, 3600])];
+                                arr[i] = val * 60;
+                                return {
+                                  ...prev,
+                                  timerPresets: { ...prev.timerPresets, starting: arr }
+                                };
+                              });
+                            }}
+                            className="bg-zinc-950 border border-zinc-800 rounded px-1 py-1.5 text-center text-xs font-bold text-zinc-100 w-11 focus:outline-none focus:border-brand-green"
+                          />
+                          <span className="text-[8px] text-zinc-500 font-bold">P{i+1}</span>
+                        </div>
+                      );
+                    })}
                   </div>
                 </div>
 
                 <div className="flex flex-col gap-3">
-                  <span className="text-[10px] uppercase font-black text-brand-gold tracking-wider">BRB Screen Presets</span>
-                  <div className="grid grid-cols-4 gap-2">
-                    {[0, 1, 2, 3].map(i => (
-                      <input
-                        key={i}
-                        type="number"
-                        min="1"
-                        value={draftState.timerPresets?.brb?.[i] || ''}
-                        onChange={(e) => {
-                          const val = parseInt(e.target.value) || 1;
-                          setDraftState(prev => {
-                            const arr = [...(prev.timerPresets?.brb || [1, 3, 5, 10])];
-                            arr[i] = val;
-                            return {
-                              ...prev,
-                              timerPresets: { ...prev.timerPresets, brb: arr }
-                            };
-                          });
-                        }}
-                        className="bg-zinc-950 border border-zinc-800 rounded px-1 py-2 text-center text-xs font-bold text-zinc-100 focus:outline-none focus:border-brand-green"
-                      />
-                    ))}
+                  <span className="text-[10px] uppercase font-black text-brand-gold tracking-wider">BRB Presets</span>
+                  <div className="grid grid-cols-5 gap-1.5">
+                    {[0, 1, 2, 3, 4].map(i => {
+                      const mins = draftState.timerPresets?.brb?.[i]
+                        ? Math.floor(draftState.timerPresets.brb[i] / 60)
+                        : 5;
+                      return (
+                        <div key={i} className="flex flex-col gap-1 items-center">
+                          <input
+                            type="number"
+                            min="1"
+                            max="60"
+                            value={mins}
+                            onChange={(e) => {
+                              const val = Math.min(60, Math.max(1, parseInt(e.target.value) || 1));
+                              setDraftState(prev => {
+                                const arr = [...(prev.timerPresets?.brb || [300, 600, 900, 1800, 3600])];
+                                arr[i] = val * 60;
+                                return {
+                                  ...prev,
+                                  timerPresets: { ...prev.timerPresets, brb: arr }
+                                };
+                              });
+                            }}
+                            className="bg-zinc-950 border border-zinc-800 rounded px-1 py-1.5 text-center text-xs font-bold text-zinc-100 w-11 focus:outline-none focus:border-brand-green"
+                          />
+                          <span className="text-[8px] text-zinc-500 font-bold">P{i+1}</span>
+                        </div>
+                      );
+                    })}
                   </div>
                 </div>
               </div>
@@ -1545,7 +1840,7 @@ export function OperatorPanel({ initialState, onStateChange }) {
                             return { ...prev, socials: updated };
                           });
                         }}
-                        className="bg-zinc-900 border border-zinc-800 text-xs rounded p-1.5 font-bold text-zinc-350 cursor-pointer"
+                        className="bg-zinc-900 border border-zinc-800 text-xs rounded p-1.5 font-bold text-zinc-355 cursor-pointer"
                       >
                         <option value="facebook">Facebook</option>
                         <option value="instagram">Instagram</option>
@@ -1566,7 +1861,7 @@ export function OperatorPanel({ initialState, onStateChange }) {
                             return { ...prev, socials: updated };
                           });
                         }}
-                        className="bg-zinc-900 border border-zinc-800 rounded px-2.5 py-1.5 text-xs font-bold text-zinc-200 focus:outline-none focus:border-brand-green w-full"
+                        className="bg-zinc-900 border border-zinc-800 rounded px-2.5 py-1.5 text-xs font-bold text-zinc-200 focus:outline-none w-full"
                       />
                     </div>
 

@@ -184,3 +184,63 @@ body {
 .cream-bg {
   background-color: var(--color-brand-cream);
 }
+
+/* Broadcast Polish Styles */
+
+/* Subtle ambient gold glow */
+.gold-ambient-glow {
+  box-shadow: 0 0 25px rgba(212, 175, 55, 0.15), inset 0 0 15px rgba(212, 175, 55, 0.05);
+  border: 1px solid rgba(212, 175, 55, 0.3) !important;
+  background: linear-gradient(135deg, rgba(20, 20, 20, 0.98) 0%, rgba(30, 30, 30, 0.95) 100%) !important;
+}
+
+.gold-ambient-glow-soft {
+  filter: drop-shadow(0 0 10px rgba(212, 175, 55, 0.25));
+}
+
+/* Soft golden text illumination */
+.gold-text-glow {
+  text-shadow: 0 0 8px rgba(212, 175, 55, 0.4), 0 0 20px rgba(212, 175, 55, 0.15);
+  background: linear-gradient(to right, #FFE082 0%, #D4AF37 50%, #B29124 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Smooth text reveal tracking animation */
+@keyframes text-reveal-slide {
+  0% {
+    opacity: 0;
+    transform: translateY(15px);
+    letter-spacing: 0.1em;
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+    letter-spacing: 0.3em;
+  }
+}
+
+.text-reveal-active {
+  animation: text-reveal-slide 1.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Color-Corrected Sweeping Shimmer Alert Banner */
+@keyframes alert-shimmer-sweep {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.alert-banner-premium {
+  background: linear-gradient(90deg, #1C150A 0%, #2A1D0D 25%, #4A3515 50%, #2A1D0D 75%, #1C150A 100%);
+  background-size: 200% 100%;
+  animation: alert-shimmer-sweep 6s infinite linear;
+  border: 1px solid rgba(212, 175, 55, 0.35) !important;
+  box-shadow: 0 0 25px rgba(212, 175, 55, 0.15);
+  color: #FFE082 !important;
+  text-shadow: 0 0 6px rgba(212, 175, 55, 0.3);
+}
+
