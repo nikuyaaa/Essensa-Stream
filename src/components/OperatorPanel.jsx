@@ -21,8 +21,37 @@ export function OperatorPanel({ initialState, onStateChange }) {
 
   // Sync states when initialState updates (e.g., from network response)
   useEffect(() => {
+    // Determine if any core text/layout configurations changed (ignoring live timers)
+    const hasConfigChanged = !state ||
+      JSON.stringify(initialState['intermission-banner']) !== JSON.stringify(state['intermission-banner']) ||
+      initialState.starting.announcement !== state.starting.announcement ||
+      initialState.starting.tagline !== state.starting.tagline ||
+      JSON.stringify(initialState.starting.tickerItems) !== JSON.stringify(state.starting.tickerItems) ||
+      initialState.main.headerVisible !== state.main.headerVisible ||
+      initialState.main.segmentName !== state.main.segmentName ||
+      initialState.main.showClock !== state.main.showClock ||
+      initialState.main.tickerVisible !== state.main.tickerVisible ||
+      JSON.stringify(initialState.main.tickerItems) !== JSON.stringify(state.main.tickerItems) ||
+      initialState.main.hostVisible !== state.main.hostVisible ||
+      initialState.main.hostName !== state.main.hostName ||
+      initialState.main.hostTitle !== state.main.hostTitle ||
+      initialState.main.hostAutoHide !== state.main.hostAutoHide ||
+      initialState.main.productVisible !== state.main.productVisible ||
+      initialState.main.productName !== state.main.productName ||
+      initialState.main.productPrice !== state.main.productPrice ||
+      initialState.main.productPromo !== state.main.productPromo ||
+      initialState.main.productImage !== state.main.productImage ||
+      initialState.brb.bannerText !== state.brb.bannerText ||
+      JSON.stringify(initialState.brb.announcements) !== JSON.stringify(state.brb.announcements) ||
+      initialState.ending.title !== state.ending.title ||
+      initialState.ending.description !== state.ending.description ||
+      initialState.ending.signature !== state.ending.signature ||
+      JSON.stringify(initialState.ending.socialHandles) !== JSON.stringify(state.ending.socialHandles);
+
     setState(initialState);
-    setDraftState(initialState);
+    if (hasConfigChanged) {
+      setDraftState(initialState);
+    }
   }, [initialState]);
 
   // Keep a ref to latest committed state to prevent closure issues in network hooks
