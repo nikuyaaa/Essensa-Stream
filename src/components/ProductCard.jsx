@@ -94,23 +94,28 @@ export function ProductCard({
             </div>
 
             {/* Bottom Marquee Promo Tag - Solid Black */}
-            <div className="bg-brand-charcoal text-white py-3 border-t border-brand-charcoal flex items-center relative overflow-hidden h-[38px] rounded-b-2xl">
-              <div className="absolute left-3 z-10 bg-brand-charcoal pr-2 text-brand-gold">
-                <Tag className="w-4 h-4 shrink-0" />
+            <div className="bg-brand-charcoal text-white border-t border-zinc-800 flex items-center relative overflow-hidden h-[44px] rounded-b-2xl select-none">
+              {/* 1. Left static tag icon block (mimics main ticker logo block) */}
+              <div className="h-full bg-brand-charcoal flex items-center px-4 relative z-20 shrink-0 border-r border-zinc-800/65 text-brand-gold">
+                <Tag className="w-4 h-4" />
               </div>
-              <div className="marquee-container text-xs font-black uppercase tracking-wider pl-10 text-white">
-                {/* Duplicate scrolling text for smooth infinite loop */}
-                <div className="marquee-content gap-12 flex items-center pr-12 animate-shimmer" style={{ animationDuration: '25s' }}>
-                  <span>{promoText}</span>
-                  <span>•</span>
-                  <span>{promoText}</span>
-                  <span>•</span>
-                </div>
-                <div className="marquee-content gap-12 flex items-center pr-12 animate-shimmer" style={{ animationDuration: '25s' }} aria-hidden="true">
-                  <span>{promoText}</span>
-                  <span>•</span>
-                  <span>{promoText}</span>
-                  <span>•</span>
+
+              {/* 2. Scrolling Marquee Area */}
+              <div className="flex-1 h-full flex items-center overflow-hidden bg-brand-charcoal relative">
+                <div className="marquee-container text-xs font-black uppercase tracking-wider text-white flex items-center">
+                  {/* Duplicate scrolling text for smooth infinite loop */}
+                  <div className="marquee-content gap-12 flex items-center pr-12 animate-shimmer" style={{ animationDuration: '25s' }}>
+                    <span>{promoText}</span>
+                    <span>•</span>
+                    <span>{promoText}</span>
+                    <span>•</span>
+                  </div>
+                  <div className="marquee-content gap-12 flex items-center pr-12 animate-shimmer" style={{ animationDuration: '25s' }} aria-hidden="true">
+                    <span>{promoText}</span>
+                    <span>•</span>
+                    <span>{promoText}</span>
+                    <span>•</span>
+                  </div>
                 </div>
               </div>
             </div>
