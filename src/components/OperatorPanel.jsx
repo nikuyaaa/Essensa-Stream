@@ -21,6 +21,10 @@ export function OperatorPanel({ initialState, onStateChange }) {
   // Elapsed time state for main stream clock
   const [elapsedSeconds, setElapsedSeconds] = useState(0);
 
+  // Formatting state for dynamic text token builder
+  const [formatColor, setFormatColor] = useState('#D4AF37');
+  const [formatEffect, setFormatEffect] = useState('none');
+
   // Sync states when initialState updates (e.g., from network response)
   useEffect(() => {
     const hasConfigChanged = !state ||
@@ -190,7 +194,21 @@ export function OperatorPanel({ initialState, onStateChange }) {
   };
 
   // Keyword split-tone tag formatting helpers
-  const wrapSelectionWithTag = (tab, field, tagOpen, tagClose, inputId) => {
+  const applyDynamicTag = (tab, field, inputId) => {
+    const colorVal = formatColor;
+    const effectVal = formatEffect;
+    
+    let tagOpen = "";
+    let tagClose = "";
+    
+    if (effectVal === 'none') {
+      tagOpen = `[color=${colorVal}]`;
+      tagClose = `[/color]`;
+    } else {
+      tagOpen = `[effect=${effectVal} color=${colorVal}]`;
+      tagClose = `[/effect]`;
+    }
+    
     const input = document.getElementById(inputId);
     const text = draftState[tab]?.[field] || "";
     
@@ -198,11 +216,9 @@ export function OperatorPanel({ initialState, onStateChange }) {
       const start = input.selectionStart;
       const end = input.selectionEnd;
       if (start !== end && start !== null && end !== null) {
-        // Selection exists! Wrap it
         const selectedText = text.substring(start, end);
         const newText = text.substring(0, start) + `${tagOpen}${selectedText}${tagClose}` + text.substring(end);
         updateDraft(tab, field, newText);
-        // Put focus back and keep selection
         setTimeout(() => {
           input.focus();
           input.setSelectionRange(start + tagOpen.length, end + tagOpen.length);
@@ -211,8 +227,8 @@ export function OperatorPanel({ initialState, onStateChange }) {
       }
     }
     
-    // No selection, wrap the last word as a smart fallback
-    const clean = text.replace(/\[\/?gold\]|\[\/?green\]|<\/?b>|<\/?gold>/gi, "");
+    // Fallback: wrap the last word
+    const clean = text.replace(/\[\/?gold\]|\[\/?green\]|<\/?b>|<\/?gold>|\[color=[^\]]+\]|\[\/color\]|\[effect=[^\]]+\]|\[\/effect\]/gi, "");
     const words = clean.trim().split(/\s+/);
     if (words.length > 0 && words[0] !== "") {
       words[words.length - 1] = `${tagOpen}${words[words.length - 1]}${tagClose}`;
@@ -223,41 +239,84 @@ export function OperatorPanel({ initialState, onStateChange }) {
   const clearInputTags = (tab, field, inputId) => {
     const input = document.getElementById(inputId);
     const text = input ? input.value : (draftState[tab]?.[field] || "");
-    const clean = text.replace(/\[\/?gold\]|\[\/?green\]|<\/?b>|<\/?gold>/gi, "");
+    const clean = text.replace(/\[\/?gold\]|\[\/?green\]|<\/?b>|<\/?gold>|\[color=[^\]]+\]|\[\/color\]|\[effect=[^\]]+\]|\[\/effect\]/gi, "");
     updateDraft(tab, field, clean);
   };
 
-  const renderFormatterButtons = (tab, field, inputId) => (
-    <div className="flex gap-2 mt-1 select-none">
-      <button
-        type="button"
-        onClick={() => wrapSelectionWithTag(tab, field, '[green]', '[/green]', inputId)}
-        className="text-[9px] bg-brand-green/20 hover:bg-brand-green/30 border border-brand-green/30 text-emerald-400 font-bold px-2 py-0.5 rounded cursor-pointer transition active:scale-95"
-        title="Highlights selection in Essensa Green or wraps the last word if no text is selected"
-      >
-        Wrap Green
-      </button>
-      <button
-        type="button"
-        onClick={() => wrapSelectionWithTag(tab, field, '[gold]', '[/gold]', inputId)}
-        className="text-[9px] bg-brand-gold/25 hover:bg-brand-gold/30 border border-brand-gold/30 text-amber-300 font-bold px-2 py-0.5 rounded cursor-pointer transition active:scale-95"
-        title="Highlights selection in Gold Sunray or wraps the last word if no text is selected"
-      >
-        Wrap Gold
-      </button>
-      <button
-        type="button"
-        onClick={() => clearInputTags(tab, field, inputId)}
-        className="text-[9px] bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 text-zinc-400 font-bold px-2 py-0.5 rounded cursor-pointer transition active:scale-95"
-        title="Clears all gold and green style tags from this input field"
-      >
-        Clear Format
-      </button>
-      <span className="text-[8px] text-zinc-500 font-normal self-center ml-2">
-        Tip: Highlight text in input and click Wrap
-      </span>
-    </div>
-  );
+  const renderFormatterButtons = (tab, field, inputId) => {
+    const swatches = [
+      { name: 'Gold', value: '#D4AF37' },
+      { name: 'Green', value: '#1B7339' },
+      { name: 'Red', value: '#EF5350' },
+      { name: 'Cyan', value: '#26C6DA' },
+      { name: 'Orange', value: '#FF9800' }
+    ];
+
+    return (
+      <div className="flex flex-wrap items-center gap-3 bg-zinc-950 px-3 py-1.5 rounded-xl border border-zinc-850 select-none mt-1 text-[10px]">
+        <div className="flex items-center gap-1.5">
+          <span className="font-black text-zinc-500 uppercase tracking-wider">Color:</span>
+          <div className="flex items-center gap-1">
+            {swatches.map(swatch => (
+              <button
+                key={swatch.value}
+                type="button"
+                onClick={() => setFormatColor(swatch.value)}
+                className={`w-3.5 h-3.5 rounded-full border transition active:scale-90 ${
+                  formatColor === swatch.value ? 'border-white scale-110 shadow-sm' : 'border-zinc-800'
+                }`}
+                style={{ backgroundColor: swatch.value }}
+                title={swatch.name}
+              />
+            ))}
+            <div className="relative w-3.5 h-3.5 rounded-full border border-zinc-800 overflow-hidden cursor-pointer active:scale-90" title="Custom Color">
+              <input
+                type="color"
+                value={formatColor}
+                onChange={(e) => setFormatColor(e.target.value)}
+                className="absolute inset-0 opacity-0 cursor-pointer w-full h-full"
+              />
+              <div className="w-full h-full" style={{ backgroundColor: formatColor }} />
+            </div>
+          </div>
+        </div>
+
+        <div className="flex items-center gap-1.5">
+          <span className="font-black text-zinc-500 uppercase tracking-wider">Effect:</span>
+          <select
+            value={formatEffect}
+            onChange={(e) => setFormatEffect(e.target.value)}
+            className="bg-zinc-900 border border-zinc-800 text-zinc-300 font-bold px-1.5 py-0.5 rounded text-[9px] outline-none cursor-pointer focus:border-brand-green"
+          >
+            <option value="none">Solid Color</option>
+            <option value="sunray">Metallic Sunray</option>
+            <option value="glow">Neon Glow</option>
+            <option value="gradient">Metallic Gradient</option>
+            <option value="glitch">Glitch Aberration</option>
+          </select>
+        </div>
+
+        <div className="flex items-center gap-1.5 ml-auto">
+          <button
+            type="button"
+            onClick={() => applyDynamicTag(tab, field, inputId)}
+            className="bg-brand-green/20 hover:bg-brand-green/30 border border-brand-green/35 text-brand-gold font-black uppercase tracking-wider text-[9px] px-2.5 py-0.5 rounded cursor-pointer transition active:scale-95"
+            title="Wrap text with selected color & effect"
+          >
+            Wrap Text
+          </button>
+          <button
+            type="button"
+            onClick={() => clearInputTags(tab, field, inputId)}
+            className="bg-zinc-900 hover:bg-zinc-850 border border-zinc-800 text-zinc-400 font-black uppercase tracking-wider text-[9px] px-2 py-0.5 rounded cursor-pointer transition active:scale-95"
+            title="Clear format tags"
+          >
+            Clear
+          </button>
+        </div>
+      </div>
+    );
+  };
 
   const renderSunraySliders = (tab) => (
     <div className="flex flex-col gap-2 bg-zinc-950 p-4 rounded-xl border border-zinc-850">

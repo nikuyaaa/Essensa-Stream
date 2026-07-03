@@ -15,25 +15,128 @@ import { CommentsWidget } from './components/CommentsWidget';
 
 const renderSplitToneText = (text, defaultClass = "text-white", greenClass = "keyword-green", goldClass = "gold-sunray-text") => {
   if (!text) return null;
-  const parts = text.split(/(\[gold\].*?\[\/gold\]|\[green\].*?\[\/green\]|<b>.*?<\/b>|<gold>.*?<\/gold>)/gi);
+  
+  // Match tokens: [color=...][/color], [effect=...][/effect], and legacy split-tone tags
+  const regex = /(\[color=[^\]]+\].*?\[\/color\]|\[effect=[^\]]+\].*?\[\/effect\]|\[gold\].*?\[\/gold\]|\[green\].*?\[\/green\]|<b>.*?<\/b>|<gold>.*?<\/gold>)/gi;
+  const parts = text.split(regex);
+  
   return parts.map((part, idx) => {
     const partLower = part.toLowerCase();
+    
+    // 1. Dynamic tag: [color=...]...[/color]
+    if (partLower.startsWith('[color=') && partLower.endsWith('[/color]')) {
+      const openTagMatch = part.match(/^\[color=([^\]]+)\]/i);
+      const openTag = openTagMatch ? openTagMatch[1] : '';
+      const content = part.replace(/^\[color=[^\]]+\]/i, '').replace(/\[\/color\]$/i, '');
+      
+      let color = '';
+      let effect = 'none';
+      
+      const attrs = openTag.split(/\s+/);
+      if (attrs.length > 0) {
+        const firstAttr = attrs[0];
+        if (!firstAttr.includes('=')) {
+          color = firstAttr;
+        }
+      }
+      
+      const colorAttr = openTag.match(/color=([^\]\s]+)/i);
+      if (colorAttr) color = colorAttr[1];
+      
+      const effectAttr = openTag.match(/effect=([a-zA-Z0-9_-]+)/i);
+      if (effectAttr) effect = effectAttr[1].toLowerCase();
+      
+      if (color && /^[0-9a-fA-F]{3,6}$/.test(color)) {
+        color = `#${color}`;
+      }
+      
+      const style = {};
+      if (color) {
+        style['--text-effect-color'] = color;
+      }
+      
+      let className = '';
+      if (effect === 'sunray') className = 'dynamic-effect-sunray';
+      else if (effect === 'glow') className = 'dynamic-effect-glow';
+      else if (effect === 'gradient') className = 'dynamic-effect-gradient';
+      else if (effect === 'glitch') className = 'dynamic-effect-glitch';
+      else {
+        style.color = color || '#FFFFFF';
+      }
+      
+      return (
+        <span key={idx} className={className} style={style} data-text={content}>
+          {content}
+        </span>
+      );
+    }
+    
+    // 2. Dynamic tag: [effect=...]...[/effect]
+    if (partLower.startsWith('[effect=') && partLower.endsWith('[/effect]')) {
+      const openTagMatch = part.match(/^\[effect=([^\]]+)\]/i);
+      const openTag = openTagMatch ? openTagMatch[1] : '';
+      const content = part.replace(/^\[effect=[^\]]+\]/i, '').replace(/\[\/effect\]$/i, '');
+      
+      let color = '';
+      let effect = 'none';
+      
+      const attrs = openTag.split(/\s+/);
+      if (attrs.length > 0) {
+        const firstAttr = attrs[0];
+        if (!firstAttr.includes('=')) {
+          effect = firstAttr.toLowerCase();
+        }
+      }
+      
+      const effectAttr = openTag.match(/effect=([a-zA-Z0-9_-]+)/i);
+      if (effectAttr) effect = effectAttr[1].toLowerCase();
+      
+      const colorAttr = openTag.match(/color=([^\]\s]+)/i);
+      if (colorAttr) color = colorAttr[1];
+      
+      if (color && /^[0-9a-fA-F]{3,6}$/.test(color)) {
+        color = `#${color}`;
+      }
+      
+      const style = {};
+      if (color) {
+        style['--text-effect-color'] = color;
+      }
+      
+      let className = '';
+      if (effect === 'sunray') className = 'dynamic-effect-sunray';
+      else if (effect === 'glow') className = 'dynamic-effect-glow';
+      else if (effect === 'gradient') className = 'dynamic-effect-gradient';
+      else if (effect === 'glitch') className = 'dynamic-effect-glitch';
+      else {
+        style.color = color || '#FFFFFF';
+      }
+      
+      return (
+        <span key={idx} className={className} style={style} data-text={content}>
+          {content}
+        </span>
+      );
+    }
+    
+    // 3. Backwards compatibility legacy tags
     if (partLower.startsWith('[gold]') && partLower.endsWith('[/gold]')) {
       const clean = part.substring(6, part.length - 7);
-      return <span key={idx} className={goldClass}>{clean}</span>;
-    }
-    if (partLower.startsWith('[green]') && partLower.endsWith('[/green]')) {
-      const clean = part.substring(7, part.length - 8);
-      return <span key={idx} className={greenClass}>{clean}</span>;
-    }
-    if (partLower.startsWith('<b>') && partLower.endsWith('</b>')) {
-      const clean = part.substring(3, part.length - 4);
-      return <span key={idx} className={greenClass}>{clean}</span>;
+      return <span key={idx} className={goldClass} data-text={clean}>{clean}</span>;
     }
     if (partLower.startsWith('<gold>') && partLower.endsWith('</gold>')) {
       const clean = part.substring(6, part.length - 7);
-      return <span key={idx} className={goldClass}>{clean}</span>;
+      return <span key={idx} className={goldClass} data-text={clean}>{clean}</span>;
     }
+    if (partLower.startsWith('[green]') && partLower.endsWith('[/green]')) {
+      const clean = part.substring(7, part.length - 8);
+      return <span key={idx} className={greenClass} data-text={clean}>{clean}</span>;
+    }
+    if (partLower.startsWith('<b>') && partLower.endsWith('</b>')) {
+      const clean = part.substring(3, part.length - 4);
+      return <span key={idx} className={greenClass} data-text={clean}>{clean}</span>;
+    }
+    
     return <span key={idx} className={defaultClass}>{part}</span>;
   });
 };
