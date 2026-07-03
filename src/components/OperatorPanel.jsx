@@ -244,40 +244,19 @@ export function OperatorPanel({ initialState, onStateChange }) {
   };
 
   const renderFormatterButtons = (tab, field, inputId) => {
-    const swatches = [
-      { name: 'Gold', value: '#D4AF37' },
-      { name: 'Green', value: '#1B7339' },
-      { name: 'Red', value: '#EF5350' },
-      { name: 'Cyan', value: '#26C6DA' },
-      { name: 'Orange', value: '#FF9800' }
-    ];
-
     return (
       <div className="flex flex-wrap items-center gap-3 bg-zinc-950 px-3 py-1.5 rounded-xl border border-zinc-850 select-none mt-1 text-[10px]">
         <div className="flex items-center gap-1.5">
-          <span className="font-black text-zinc-500 uppercase tracking-wider">Color:</span>
-          <div className="flex items-center gap-1">
-            {swatches.map(swatch => (
-              <button
-                key={swatch.value}
-                type="button"
-                onClick={() => setFormatColor(swatch.value)}
-                className={`w-3.5 h-3.5 rounded-full border transition active:scale-90 ${
-                  formatColor === swatch.value ? 'border-white scale-110 shadow-sm' : 'border-zinc-800'
-                }`}
-                style={{ backgroundColor: swatch.value }}
-                title={swatch.name}
-              />
-            ))}
-            <div className="relative w-3.5 h-3.5 rounded-full border border-zinc-800 overflow-hidden cursor-pointer active:scale-90" title="Custom Color">
-              <input
-                type="color"
-                value={formatColor}
-                onChange={(e) => setFormatColor(e.target.value)}
-                className="absolute inset-0 opacity-0 cursor-pointer w-full h-full"
-              />
-              <div className="w-full h-full" style={{ backgroundColor: formatColor }} />
-            </div>
+          <span className="font-black text-zinc-500 uppercase tracking-wider font-sans">Color:</span>
+          <div className="flex items-center gap-2 bg-zinc-900 border border-zinc-800 rounded px-2 py-0.5 relative cursor-pointer active:scale-[0.98] transition hover:border-zinc-700" title="Select custom color">
+            <input
+              type="color"
+              value={formatColor}
+              onChange={(e) => setFormatColor(e.target.value)}
+              className="absolute inset-0 opacity-0 cursor-pointer w-full h-full"
+            />
+            <div className="w-3.5 h-3.5 rounded border border-black/40 shadow-inner" style={{ backgroundColor: formatColor }} />
+            <span className="text-[9px] text-zinc-300 font-mono font-bold uppercase tracking-wider">{formatColor}</span>
           </div>
         </div>
 
