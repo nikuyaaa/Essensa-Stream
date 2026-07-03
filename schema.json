@@ -10,30 +10,60 @@
     "tagline": "16 Years of Wellness & Prosperity",
     "rightHeader": "Live Stream [gold]Starting Soon[/gold]",
     "sunraySpeed": 4.0,
-    "sunrayIntensity": 0.30
+    "sunrayIntensity": 0.30,
+    "glowSpeed": 2.5,
+    "glowIntensity": 0.30,
+    "gradientSpeed": 6.0,
+    "gradientIntensity": 0.45,
+    "glitchSpeed": 3.0,
+    "glitchIntensity": 0.75
   },
   "starting": {
     "superTitle": "Anniversary [gold]Live Stream[/gold]",
     "announcement": "Advocating the [green]Organic Way[/green] of Living",
     "subTitle": "Stream Starting [gold]Soon[/gold]",
     "sunraySpeed": 4.0,
-    "sunrayIntensity": 0.30
+    "sunrayIntensity": 0.30,
+    "glowSpeed": 2.5,
+    "glowIntensity": 0.30,
+    "gradientSpeed": 6.0,
+    "gradientIntensity": 0.45,
+    "glitchSpeed": 3.0,
+    "glitchIntensity": 0.75
   },
   "main": {
     "segmentName": "Revitalizing Health [gold]Anytime, Anywhere[/gold].",
     "hostName": "Juan [gold]Dela Cruz[/gold]",
     "hostTitle": "Entrepreneurial [green]Coach[/green]",
     "sunraySpeed": 4.0,
-    "sunrayIntensity": 0.30
+    "sunrayIntensity": 0.30,
+    "glowSpeed": 2.5,
+    "glowIntensity": 0.30,
+    "gradientSpeed": 6.0,
+    "gradientIntensity": 0.45,
+    "glitchSpeed": 3.0,
+    "glitchIntensity": 0.75
   },
   "brb": {
     "bannerText": "Be Right [gold]Back[/gold]",
     "sunraySpeed": 4.0,
-    "sunrayIntensity": 0.30
+    "sunrayIntensity": 0.30,
+    "glowSpeed": 2.5,
+    "glowIntensity": 0.30,
+    "gradientSpeed": 6.0,
+    "gradientIntensity": 0.45,
+    "glitchSpeed": 3.0,
+    "glitchIntensity": 0.75
   },
   "ending": {
     "title": "Thank you for [gold]joining us[/gold]!",
     "sunraySpeed": 4.0,
-    "sunrayIntensity": 0.30
+    "sunrayIntensity": 0.30,
+    "glowSpeed": 2.5,
+    "glowIntensity": 0.30,
+    "gradientSpeed": 6.0,
+    "gradientIntensity": 0.45,
+    "glitchSpeed": 3.0,
+    "glitchIntensity": 0.75
   }
 }

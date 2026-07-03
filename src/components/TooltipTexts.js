@@ -62,9 +62,12 @@ export const TooltipTexts = {
   "brb.durationPresets": "Quick select duration presets to instantly reset the Be Right Back countdown duration (e.g. 5m, 10m, 15m).",
   "main.productPresets": "Click a pre-configured product preset (e.g., Buah Merah Mix, Barley, etc.) to instantly populate the product showcase details.",
 
-  // Speed & Glow Sliders (General mapping per tab)
-  "animation.goldSpeed": "Adjusts the scroll speed of the sweeping Gold Sunray gradient animation. Lower values increase speed, higher values slow it down.",
-  "animation.goldGlow": "Configures the drop-shadow glowing intensity of gold-highlighted text. Range is from 0.0 (no glow) to 1.0 (bright glow).",
-  "animation.greenSpeed": "Controls the sweep frequency of the hardware-accelerated Green Sunray gradient wave on green-highlighted text.",
-  "animation.greenGlow": "Adjusts the drop-shadow neon glow strength around green-highlighted text elements from 0.0 to 1.0."
+  "animation.sunraySpeed": "Adjusts the sweep shimmer duration in seconds of the Metallic Sunray gradient animation. Lower is faster, higher is slower.",
+  "animation.sunrayIntensity": "Configures the ambient drop-shadow blur strength of the Metallic Sunray highlight effect.",
+  "animation.glowSpeed": "Controls the pulse frequency cycle in seconds of the Neon Glow animation.",
+  "animation.glowIntensity": "Adjusts the neon drop-shadow blur radius multiplier of the Neon Glow effect.",
+  "animation.gradientSpeed": "Sets the duration in seconds for a full color transition cycle of the Metallic Gradient animation.",
+  "animation.gradientIntensity": "Configures the opacity of the white shifting sheen highlights inside the Metallic Gradient text.",
+  "animation.glitchSpeed": "Controls the frequency in seconds of the Chromatic Aberration (Glitch) animation.",
+  "animation.glitchIntensity": "Adjusts the pixel offset width of the channel split chromatic aberration for the Glitch effect."
 };

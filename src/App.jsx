@@ -174,6 +174,12 @@ const defaultState = {
     "socials": [],
     "sunraySpeed": 4,
     "sunrayIntensity": 0.3,
+    "glowSpeed": 2.5,
+    "glowIntensity": 0.3,
+    "gradientSpeed": 6,
+    "gradientIntensity": 0.45,
+    "glitchSpeed": 3,
+    "glitchIntensity": 0.75,
     "greenSpeed": 4,
     "greenIntensity": 0.45
   },
@@ -191,6 +197,12 @@ const defaultState = {
     ],
     "sunraySpeed": 4,
     "sunrayIntensity": 0.3,
+    "glowSpeed": 2.5,
+    "glowIntensity": 0.3,
+    "gradientSpeed": 6,
+    "gradientIntensity": 0.45,
+    "glitchSpeed": 3,
+    "glitchIntensity": 0.75,
     "greenSpeed": 4,
     "greenIntensity": 0.45
   },
@@ -227,6 +239,12 @@ const defaultState = {
     ],
     "sunraySpeed": 4,
     "sunrayIntensity": 0.3,
+    "glowSpeed": 2.5,
+    "glowIntensity": 0.3,
+    "gradientSpeed": 6,
+    "gradientIntensity": 0.45,
+    "glitchSpeed": 3,
+    "glitchIntensity": 0.75,
     "greenSpeed": 4,
     "greenIntensity": 0.45,
     "tickerSpeed": 60
@@ -242,6 +260,12 @@ const defaultState = {
     ],
     "sunraySpeed": 4,
     "sunrayIntensity": 0.3,
+    "glowSpeed": 2.5,
+    "glowIntensity": 0.3,
+    "gradientSpeed": 6,
+    "gradientIntensity": 0.45,
+    "glitchSpeed": 3,
+    "glitchIntensity": 0.75,
     "greenSpeed": 4,
     "greenIntensity": 0.45
   },
@@ -252,6 +276,12 @@ const defaultState = {
     "logoUrl": "",
     "sunraySpeed": 4,
     "sunrayIntensity": 0.3,
+    "glowSpeed": 2.5,
+    "glowIntensity": 0.3,
+    "gradientSpeed": 6,
+    "gradientIntensity": 0.45,
+    "glitchSpeed": 3,
+    "glitchIntensity": 0.75,
     "greenSpeed": 4,
     "greenIntensity": 0.45
   }
@@ -581,14 +611,20 @@ function App() {
         <OverlayWrapper currentView={currentView} style={{
           '--sunray-speed': `${state['intermission-banner']?.sunraySpeed || 4}s`,
           '--sunray-glow': state['intermission-banner']?.sunrayIntensity ?? 0.3,
+          '--glow-speed': `${state['intermission-banner']?.glowSpeed || 2.5}s`,
+          '--glow-intensity': state['intermission-banner']?.glowIntensity ?? 0.3,
+          '--gradient-speed': `${state['intermission-banner']?.gradientSpeed || 6}s`,
+          '--gradient-intensity': state['intermission-banner']?.gradientIntensity ?? 0.45,
+          '--glitch-speed': `${state['intermission-banner']?.glitchSpeed || 3}s`,
+          '--glitch-intensity': state['intermission-banner']?.glitchIntensity ?? 0.75,
           '--green-speed': `${state['intermission-banner']?.greenSpeed || 4}s`,
           '--green-glow': state['intermission-banner']?.greenIntensity ?? 0.45
         }}>
-          <div className="canvas-1080p flex flex-row bg-white select-none">
-            {/* Left Half: Charcoal Black */}
-            <div className="w-[960px] h-[1080px] bg-brand-charcoal flex flex-col justify-between p-24 text-white relative overflow-hidden" style={{ backgroundColor: state.globalSettings?.bannerBgColor }}>
+          <div className="canvas-1080p flex flex-row bg-transparent select-none">
+            {/* Left Half: Transparent overlay with faint dark backdrop blur for readability */}
+            <div className="w-[960px] h-[1080px] bg-black/20 backdrop-blur-[6px] flex flex-col justify-between p-24 text-white relative overflow-hidden">
               {/* Rotating sunburst backdrop */}
-              <div className="absolute inset-0 flex items-center justify-center scale-150 opacity-15 pointer-events-none">
+              <div className="absolute inset-0 flex items-center justify-center scale-150 opacity-10 pointer-events-none">
                 <LogoSunburst className="w-[800px] h-[800px]" />
               </div>
 
@@ -598,7 +634,7 @@ function App() {
               </div>
 
               {/* Elegant Title */}
-              <div className="flex flex-col gap-4 mt-8 relative z-10 text-reveal-active brand-text-glow">
+              <div className="flex flex-col gap-4 mt-8 relative z-10 text-reveal-active brand-text-glow text-protected">
                 <span className="font-sans text-sm font-black text-white/90 tracking-[0.4em] uppercase">
                   {renderSplitToneText(state['intermission-banner'].welcomeText, "text-white/90", "keyword-green", "keyword-gold")}
                 </span>
@@ -608,7 +644,7 @@ function App() {
               </div>
 
               {/* Tagline */}
-              <div className="text-xs text-white/50 uppercase tracking-[0.3em] font-black mt-8 relative z-10">
+              <div className="text-xs text-white/90 uppercase tracking-[0.3em] font-black mt-8 relative z-10 text-protected">
                 {state['intermission-banner'].tagline}
               </div>
             </div>
@@ -649,14 +685,20 @@ function App() {
         <OverlayWrapper currentView={currentView} style={{
           '--sunray-speed': `${state.starting?.sunraySpeed || 4}s`,
           '--sunray-glow': state.starting?.sunrayIntensity ?? 0.3,
+          '--glow-speed': `${state.starting?.glowSpeed || 2.5}s`,
+          '--glow-intensity': state.starting?.glowIntensity ?? 0.3,
+          '--gradient-speed': `${state.starting?.gradientSpeed || 6}s`,
+          '--gradient-intensity': state.starting?.gradientIntensity ?? 0.45,
+          '--glitch-speed': `${state.starting?.glitchSpeed || 3}s`,
+          '--glitch-intensity': state.starting?.glitchIntensity ?? 0.75,
           '--green-speed': `${state.starting?.greenSpeed || 4}s`,
           '--green-glow': state.starting?.greenIntensity ?? 0.45
         }}>
-          <div className="canvas-1080p flex flex-row bg-white select-none">
-            {/* Left Half: Charcoal Black */}
-            <div className="w-[960px] h-[1080px] bg-brand-charcoal flex flex-col justify-between p-24 text-white relative overflow-hidden" style={{ backgroundColor: state.globalSettings?.bannerBgColor }}>
+          <div className="canvas-1080p flex flex-row bg-transparent select-none">
+            {/* Left Half: Transparent overlay with faint dark backdrop blur for readability */}
+            <div className="w-[960px] h-[1080px] bg-black/20 backdrop-blur-[6px] flex flex-col justify-between p-24 text-white relative overflow-hidden">
               {/* Rotating sunburst backdrop */}
-              <div className="absolute inset-0 flex items-center justify-center scale-150 opacity-15 pointer-events-none">
+              <div className="absolute inset-0 flex items-center justify-center scale-150 opacity-10 pointer-events-none">
                 <LogoSunburst className="w-[800px] h-[800px]" />
               </div>
 
@@ -666,7 +708,7 @@ function App() {
               </div>
 
               {/* Elegant Title */}
-              <div className="flex flex-col gap-4 mt-8 relative z-10 text-reveal-active brand-text-glow">
+              <div className="flex flex-col gap-4 mt-8 relative z-10 text-reveal-active brand-text-glow text-protected">
                 <span className="font-sans text-sm font-black text-white/90 tracking-[0.4em] uppercase">
                   {renderSplitToneText(state.starting.superTitle || "Anniversary <b>Live Stream</b>", "text-white/90", "keyword-green", "keyword-gold")}
                 </span>
@@ -676,7 +718,7 @@ function App() {
               </div>
 
               {/* Tagline */}
-              <div className="text-xs text-white/50 uppercase tracking-[0.3em] font-black mt-8 relative z-10">
+              <div className="text-xs text-white/90 uppercase tracking-[0.3em] font-black mt-8 relative z-10 text-protected">
                 {state.starting.tagline}
               </div>
             </div>
@@ -722,6 +764,12 @@ function App() {
         <OverlayWrapper currentView={currentView} style={{
           '--sunray-speed': `${state.brb?.sunraySpeed || 4}s`,
           '--sunray-glow': state.brb?.sunrayIntensity ?? 0.3,
+          '--glow-speed': `${state.brb?.glowSpeed || 2.5}s`,
+          '--glow-intensity': state.brb?.glowIntensity ?? 0.3,
+          '--gradient-speed': `${state.brb?.gradientSpeed || 6}s`,
+          '--gradient-intensity': state.brb?.gradientIntensity ?? 0.45,
+          '--glitch-speed': `${state.brb?.glitchSpeed || 3}s`,
+          '--glitch-intensity': state.brb?.glitchIntensity ?? 0.75,
           '--green-speed': `${state.brb?.greenSpeed || 4}s`,
           '--green-glow': state.brb?.greenIntensity ?? 0.45
         }}>
@@ -778,6 +826,12 @@ function App() {
         <OverlayWrapper currentView={currentView} style={{
           '--sunray-speed': `${state.ending?.sunraySpeed || 4}s`,
           '--sunray-glow': state.ending?.sunrayIntensity ?? 0.3,
+          '--glow-speed': `${state.ending?.glowSpeed || 2.5}s`,
+          '--glow-intensity': state.ending?.glowIntensity ?? 0.3,
+          '--gradient-speed': `${state.ending?.gradientSpeed || 6}s`,
+          '--gradient-intensity': state.ending?.gradientIntensity ?? 0.45,
+          '--glitch-speed': `${state.ending?.glitchSpeed || 3}s`,
+          '--glitch-intensity': state.ending?.glitchIntensity ?? 0.75,
           '--green-speed': `${state.ending?.greenSpeed || 4}s`,
           '--green-glow': state.ending?.greenIntensity ?? 0.45
         }}>
@@ -827,6 +881,12 @@ function App() {
         <OverlayWrapper currentView={currentView} style={{
           '--sunray-speed': `${state.main?.sunraySpeed || 4}s`,
           '--sunray-glow': state.main?.sunrayIntensity ?? 0.3,
+          '--glow-speed': `${state.main?.glowSpeed || 2.5}s`,
+          '--glow-intensity': state.main?.glowIntensity ?? 0.3,
+          '--gradient-speed': `${state.main?.gradientSpeed || 6}s`,
+          '--gradient-intensity': state.main?.gradientIntensity ?? 0.45,
+          '--glitch-speed': `${state.main?.glitchSpeed || 3}s`,
+          '--glitch-intensity': state.main?.glitchIntensity ?? 0.75,
           '--green-speed': `${state.main?.greenSpeed || 4}s`,
           '--green-glow': state.main?.greenIntensity ?? 0.45
         }}>

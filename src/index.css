@@ -329,47 +329,47 @@ body {
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   animation: sunray-shimmer var(--sunray-speed, 4s) infinite linear;
-  text-shadow: 0 0 8px rgba(255, 255, 255, 0.1);
+  text-shadow: 0 0 8px rgba(255, 255, 255, var(--sunray-glow, 0.1));
   display: inline-block;
 }
 
 .dynamic-effect-glow {
   color: #FFFFFF;
-  text-shadow: 0 0 4px var(--text-effect-color, #00FF00), 
-               0 0 10px var(--text-effect-color, #00FF00), 
-               0 0 20px var(--text-effect-color, #00FF00);
-  animation: neon-glow-pulse 2.5s infinite ease-in-out;
+  text-shadow: 0 0 calc(4px * var(--glow-intensity, 1)) var(--text-effect-color, #00FF00), 
+               0 0 calc(10px * var(--glow-intensity, 1)) var(--text-effect-color, #00FF00), 
+               0 0 calc(20px * var(--glow-intensity, 1)) var(--text-effect-color, #00FF00);
+  animation: neon-glow-pulse var(--glow-speed, 2.5s) infinite ease-in-out;
   display: inline-block;
 }
 
 @keyframes neon-glow-pulse {
   0%, 100% {
     opacity: 0.95;
-    text-shadow: 0 0 4px var(--text-effect-color, #00FF00), 
-                 0 0 8px var(--text-effect-color, #00FF00), 
-                 0 0 16px var(--text-effect-color, #00FF00);
+    text-shadow: 0 0 calc(4px * var(--glow-intensity, 1)) var(--text-effect-color, #00FF00), 
+                 0 0 calc(8px * var(--glow-intensity, 1)) var(--text-effect-color, #00FF00), 
+                 0 0 calc(16px * var(--glow-intensity, 1)) var(--text-effect-color, #00FF00);
   }
   50% {
     opacity: 1;
-    text-shadow: 0 0 6px var(--text-effect-color, #00FF00), 
-                 0 0 12px var(--text-effect-color, #00FF00), 
-                 0 0 24px var(--text-effect-color, #00FF00),
-                 0 0 32px var(--text-effect-color, #00FF00);
+    text-shadow: 0 0 calc(6px * var(--glow-intensity, 1)) var(--text-effect-color, #00FF00), 
+                 0 0 calc(12px * var(--glow-intensity, 1)) var(--text-effect-color, #00FF00), 
+                 0 0 calc(24px * var(--glow-intensity, 1)) var(--text-effect-color, #00FF00),
+                 0 0 calc(32px * var(--glow-intensity, 1)) var(--text-effect-color, #00FF00);
   }
 }
 
 .dynamic-effect-gradient {
   background: linear-gradient(135deg, 
     var(--text-effect-color, #D4AF37) 0%, 
-    #FFFFFF 25%, 
+    rgba(255, 255, 255, var(--gradient-intensity, 0.45)) 25%, 
     var(--text-effect-color, #D4AF37) 50%, 
-    #1B7339 75%,
+    rgba(27, 115, 57, var(--gradient-intensity, 0.45)) 75%,
     var(--text-effect-color, #D4AF37) 100%
   );
   background-size: 300% 300%;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  animation: fluid-gradient-move 6s infinite ease-in-out;
+  animation: fluid-gradient-move var(--gradient-speed, 6s) infinite ease-in-out;
   display: inline-block;
 }
 
@@ -401,17 +401,17 @@ body {
 }
 
 .dynamic-effect-glitch::before {
-  left: 2px;
-  text-shadow: -1.5px 0 #FF0000;
+  left: calc(2px * var(--glitch-intensity, 0.75));
+  text-shadow: calc(-1.5px * var(--glitch-intensity, 0.75)) 0 #FF0000;
   clip: rect(44px, 450px, 56px, 0);
-  animation: glitch-anim-1 3s infinite linear alternate-reverse;
+  animation: glitch-anim-1 var(--glitch-speed, 3s) infinite linear alternate-reverse;
 }
 
 .dynamic-effect-glitch::after {
-  left: -2px;
-  text-shadow: -1.5px 0 var(--text-effect-color, #00FF00);
+  left: calc(-2px * var(--glitch-intensity, 0.75));
+  text-shadow: calc(-1.5px * var(--glitch-intensity, 0.75)) 0 var(--text-effect-color, #00FF00);
   clip: rect(85px, 450px, 140px, 0);
-  animation: glitch-anim-2 3.5s infinite linear alternate-reverse;
+  animation: glitch-anim-2 calc(var(--glitch-speed, 3s) * 1.16) infinite linear alternate-reverse;
 }
 
 @keyframes glitch-anim-1 {
@@ -440,6 +440,14 @@ body {
   80% { clip: rect(50px, 9999px, 80px, 0); }
   90% { clip: rect(100px, 9999px, 120px, 0); }
   100% { clip: rect(30px, 9999px, 70px, 0); }
+}
+
+/* Alpha Transparency Text Readability Shield */
+.text-protected,
+.text-protected * {
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.9), 
+               0 4px 12px rgba(0, 0, 0, 0.6), 
+               0 8px 24px rgba(0, 0, 0, 0.4) !important;
 }
 
 

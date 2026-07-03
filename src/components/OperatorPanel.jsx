@@ -375,77 +375,156 @@ export function OperatorPanel({ initialState, onStateChange }) {
     );
   };
 
-  const renderSunraySliders = (tab) => (
-    <div className="flex flex-col gap-2 bg-zinc-950 p-4 rounded-xl border border-zinc-850">
-      <span className="text-[10px] uppercase font-black text-brand-gold">Gold Sunray Text Animation Settings</span>
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <div className="flex flex-col gap-1">
-          <div className="flex justify-between text-[9px] uppercase font-black text-zinc-400">
-            <span>Speed (seconds) <Tooltip text={TooltipTexts['animation.goldSpeed']} /></span>
-            <span className="text-zinc-200 font-bold">{draftState[tab]?.sunraySpeed || 4}s</span>
+  const renderEffectSliders = (tab) => (
+    <div className="flex flex-col gap-3">
+      <span className="text-[10px] uppercase font-black text-zinc-400 tracking-wider">Broadcast Text Effects Animation Settings</span>
+      <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
+        {/* 1. Metallic Sunray */}
+        <div className="flex flex-col gap-2 bg-zinc-950 p-4 rounded-xl border border-zinc-850">
+          <span className="text-[10px] uppercase font-black text-brand-gold">Metallic Sunray Animation Settings</span>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="flex flex-col gap-1">
+              <div className="flex justify-between text-[9px] uppercase font-black text-zinc-400">
+                <span>Speed (seconds) <Tooltip text={TooltipTexts['animation.sunraySpeed']} /></span>
+                <span className="text-zinc-200 font-bold">{draftState[tab]?.sunraySpeed || 4}s</span>
+              </div>
+              <input 
+                type="range" 
+                min="1" 
+                max="15" 
+                step="0.5"
+                value={draftState[tab]?.sunraySpeed || 4} 
+                onChange={(e) => updateDraft(tab, 'sunraySpeed', parseFloat(e.target.value))}
+                className="w-full accent-brand-gold bg-zinc-900 border border-zinc-800 rounded h-2 cursor-pointer"
+              />
+            </div>
+            <div className="flex flex-col gap-1">
+              <div className="flex justify-between text-[9px] uppercase font-black text-zinc-400">
+                <span>Glow Intensity <Tooltip text={TooltipTexts['animation.sunrayIntensity']} /></span>
+                <span className="text-zinc-200 font-bold">{(draftState[tab]?.sunrayIntensity ?? 0.3).toFixed(2)}</span>
+              </div>
+              <input 
+                type="range" 
+                min="0" 
+                max="1" 
+                step="0.05"
+                value={draftState[tab]?.sunrayIntensity ?? 0.3} 
+                onChange={(e) => updateDraft(tab, 'sunrayIntensity', parseFloat(e.target.value))}
+                className="w-full accent-brand-gold bg-zinc-900 border border-zinc-800 rounded h-2 cursor-pointer"
+              />
+            </div>
           </div>
-          <input 
-            type="range" 
-            min="1" 
-            max="15" 
-            step="0.5"
-            value={draftState[tab]?.sunraySpeed || 4} 
-            onChange={(e) => updateDraft(tab, 'sunraySpeed', parseFloat(e.target.value))}
-            className="w-full accent-brand-gold bg-zinc-900 border border-zinc-800 rounded h-2 cursor-pointer"
-          />
         </div>
-        <div className="flex flex-col gap-1">
-          <div className="flex justify-between text-[9px] uppercase font-black text-zinc-400">
-            <span>Glow Intensity <Tooltip text={TooltipTexts['animation.goldGlow']} /></span>
-            <span className="text-zinc-200 font-bold">{(draftState[tab]?.sunrayIntensity ?? 0.3).toFixed(2)}</span>
-          </div>
-          <input 
-            type="range" 
-            min="0" 
-            max="1" 
-            step="0.05"
-            value={draftState[tab]?.sunrayIntensity ?? 0.3} 
-            onChange={(e) => updateDraft(tab, 'sunrayIntensity', parseFloat(e.target.value))}
-            className="w-full accent-brand-gold bg-zinc-900 border border-zinc-800 rounded h-2 cursor-pointer"
-          />
-        </div>
-      </div>
-    </div>
-  );
 
-  const renderGreenSliders = (tab) => (
-    <div className="flex flex-col gap-2 bg-zinc-950 p-4 rounded-xl border border-zinc-850">
-      <span className="text-[10px] uppercase font-black text-brand-accent">Green Wrap Text Animation Settings</span>
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <div className="flex flex-col gap-1">
-          <div className="flex justify-between text-[9px] uppercase font-black text-zinc-400">
-            <span>Speed (seconds) <Tooltip text={TooltipTexts['animation.greenSpeed']} /></span>
-            <span className="text-zinc-200 font-bold">{draftState[tab]?.greenSpeed || 4}s</span>
+        {/* 2. Neon Glow */}
+        <div className="flex flex-col gap-2 bg-zinc-950 p-4 rounded-xl border border-zinc-850">
+          <span className="text-[10px] uppercase font-black text-brand-green">Neon Glow Animation Settings</span>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="flex flex-col gap-1">
+              <div className="flex justify-between text-[9px] uppercase font-black text-zinc-400">
+                <span>Speed (seconds) <Tooltip text={TooltipTexts['animation.glowSpeed']} /></span>
+                <span className="text-zinc-200 font-bold">{draftState[tab]?.glowSpeed || 2.5}s</span>
+              </div>
+              <input 
+                type="range" 
+                min="1" 
+                max="15" 
+                step="0.5"
+                value={draftState[tab]?.glowSpeed || 2.5} 
+                onChange={(e) => updateDraft(tab, 'glowSpeed', parseFloat(e.target.value))}
+                className="w-full accent-brand-green bg-zinc-900 border border-zinc-800 rounded h-2 cursor-pointer"
+              />
+            </div>
+            <div className="flex flex-col gap-1">
+              <div className="flex justify-between text-[9px] uppercase font-black text-zinc-400">
+                <span>Glow Intensity <Tooltip text={TooltipTexts['animation.glowIntensity']} /></span>
+                <span className="text-zinc-200 font-bold">{(draftState[tab]?.glowIntensity ?? 0.3).toFixed(2)}</span>
+              </div>
+              <input 
+                type="range" 
+                min="0" 
+                max="1" 
+                step="0.05"
+                value={draftState[tab]?.glowIntensity ?? 0.3} 
+                onChange={(e) => updateDraft(tab, 'glowIntensity', parseFloat(e.target.value))}
+                className="w-full accent-brand-green bg-zinc-900 border border-zinc-800 rounded h-2 cursor-pointer"
+              />
+            </div>
           </div>
-          <input 
-            type="range" 
-            min="1" 
-            max="15" 
-            step="0.5"
-            value={draftState[tab]?.greenSpeed || 4} 
-            onChange={(e) => updateDraft(tab, 'greenSpeed', parseFloat(e.target.value))}
-            className="w-full accent-brand-accent bg-zinc-900 border border-zinc-800 rounded h-2 cursor-pointer"
-          />
         </div>
-        <div className="flex flex-col gap-1">
-          <div className="flex justify-between text-[9px] uppercase font-black text-zinc-400">
-            <span>Glow Intensity <Tooltip text={TooltipTexts['animation.greenGlow']} /></span>
-            <span className="text-zinc-200 font-bold">{(draftState[tab]?.greenIntensity ?? 0.45).toFixed(2)}</span>
+
+        {/* 3. Metallic Gradient */}
+        <div className="flex flex-col gap-2 bg-zinc-950 p-4 rounded-xl border border-zinc-850">
+          <span className="text-[10px] uppercase font-black text-cyan-400">Metallic Gradient Animation Settings</span>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="flex flex-col gap-1">
+              <div className="flex justify-between text-[9px] uppercase font-black text-zinc-400">
+                <span>Speed (seconds) <Tooltip text={TooltipTexts['animation.gradientSpeed']} /></span>
+                <span className="text-zinc-200 font-bold">{draftState[tab]?.gradientSpeed || 6}s</span>
+              </div>
+              <input 
+                type="range" 
+                min="1" 
+                max="15" 
+                step="0.5"
+                value={draftState[tab]?.gradientSpeed || 6} 
+                onChange={(e) => updateDraft(tab, 'gradientSpeed', parseFloat(e.target.value))}
+                className="w-full accent-cyan-400 bg-zinc-900 border border-zinc-800 rounded h-2 cursor-pointer"
+              />
+            </div>
+            <div className="flex flex-col gap-1">
+              <div className="flex justify-between text-[9px] uppercase font-black text-zinc-400">
+                <span>Shimmer Intensity <Tooltip text={TooltipTexts['animation.gradientIntensity']} /></span>
+                <span className="text-zinc-200 font-bold">{(draftState[tab]?.gradientIntensity ?? 0.45).toFixed(2)}</span>
+              </div>
+              <input 
+                type="range" 
+                min="0" 
+                max="1" 
+                step="0.05"
+                value={draftState[tab]?.gradientIntensity ?? 0.45} 
+                onChange={(e) => updateDraft(tab, 'gradientIntensity', parseFloat(e.target.value))}
+                className="w-full accent-cyan-400 bg-zinc-900 border border-zinc-800 rounded h-2 cursor-pointer"
+              />
+            </div>
           </div>
-          <input 
-            type="range" 
-            min="0" 
-            max="1" 
-            step="0.05"
-            value={draftState[tab]?.greenIntensity ?? 0.45} 
-            onChange={(e) => updateDraft(tab, 'greenIntensity', parseFloat(e.target.value))}
-            className="w-full accent-brand-accent bg-zinc-900 border border-zinc-800 rounded h-2 cursor-pointer"
-          />
+        </div>
+
+        {/* 4. Glitch Aberration */}
+        <div className="flex flex-col gap-2 bg-zinc-950 p-4 rounded-xl border border-zinc-850">
+          <span className="text-[10px] uppercase font-black text-orange-400">Glitch Aberration Animation Settings</span>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="flex flex-col gap-1">
+              <div className="flex justify-between text-[9px] uppercase font-black text-zinc-400">
+                <span>Speed (seconds) <Tooltip text={TooltipTexts['animation.glitchSpeed']} /></span>
+                <span className="text-zinc-200 font-bold">{draftState[tab]?.glitchSpeed || 3}s</span>
+              </div>
+              <input 
+                type="range" 
+                min="1" 
+                max="15" 
+                step="0.5"
+                value={draftState[tab]?.glitchSpeed || 3} 
+                onChange={(e) => updateDraft(tab, 'glitchSpeed', parseFloat(e.target.value))}
+                className="w-full accent-orange-400 bg-zinc-900 border border-zinc-800 rounded h-2 cursor-pointer"
+              />
+            </div>
+            <div className="flex flex-col gap-1">
+              <div className="flex justify-between text-[9px] uppercase font-black text-zinc-400">
+                <span>Glitch Offset <Tooltip text={TooltipTexts['animation.glitchIntensity']} /></span>
+                <span className="text-zinc-200 font-bold">{(draftState[tab]?.glitchIntensity ?? 0.75).toFixed(2)}</span>
+              </div>
+              <input 
+                type="range" 
+                min="0" 
+                max="1" 
+                step="0.05"
+                value={draftState[tab]?.glitchIntensity ?? 0.75} 
+                onChange={(e) => updateDraft(tab, 'glitchIntensity', parseFloat(e.target.value))}
+                className="w-full accent-orange-400 bg-zinc-900 border border-zinc-800 rounded h-2 cursor-pointer"
+              />
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -924,10 +1003,9 @@ export function OperatorPanel({ initialState, onStateChange }) {
               </button>
             </div>
 
-            {/* Sunray sliders */}
-            <div className="mt-4 flex flex-col gap-4">
-              {renderSunraySliders('intermission-banner')}
-              {renderGreenSliders('intermission-banner')}
+            {/* Effect animation sliders */}
+            <div className="mt-4">
+              {renderEffectSliders('intermission-banner')}
             </div>
 
             {/* Individual Save Button */}
@@ -1018,10 +1096,9 @@ export function OperatorPanel({ initialState, onStateChange }) {
                     )}
                   </div>
 
-                  {/* Text Animation sliders */}
-                  <div className="mt-4 flex flex-col gap-4">
-                    {renderSunraySliders('starting')}
-                    {renderGreenSliders('starting')}
+                  {/* Effect animation sliders */}
+                  <div className="mt-4">
+                    {renderEffectSliders('starting')}
                   </div>
 
                   <div className="flex justify-end mt-2">
@@ -1340,9 +1417,8 @@ export function OperatorPanel({ initialState, onStateChange }) {
                 <h2 className="text-sm font-black text-brand-gold uppercase tracking-widest flex items-center gap-2 border-b border-zinc-800 pb-3">
                   <Sparkles className="w-4 h-4 text-brand-gold" /> Text Animation Settings
                 </h2>
-                <div className="flex flex-col gap-4">
-                  {renderSunraySliders('main')}
-                  {renderGreenSliders('main')}
+                <div>
+                  {renderEffectSliders('main')}
                 </div>
                 <div className="flex justify-end border-t border-zinc-800 pt-3 mt-1">
                   <button
@@ -1780,9 +1856,8 @@ export function OperatorPanel({ initialState, onStateChange }) {
                   )}
                 </div>
 
-                <div className="mt-4 flex flex-col gap-4">
-                  {renderSunraySliders('brb')}
-                  {renderGreenSliders('brb')}
+                <div className="mt-4">
+                  {renderEffectSliders('brb')}
                 </div>
 
                 <div className="flex justify-end mt-2">
@@ -1964,9 +2039,8 @@ export function OperatorPanel({ initialState, onStateChange }) {
               </div>
             </div>
 
-            <div className="mt-4 flex flex-col gap-4">
-              {renderSunraySliders('ending')}
-              {renderGreenSliders('ending')}
+            <div className="mt-4">
+              {renderEffectSliders('ending')}
             </div>
 
             {/* Individual Save Button */}
@@ -2192,9 +2266,8 @@ export function OperatorPanel({ initialState, onStateChange }) {
                   </div>
                 </div>
               </div>
-              <div className="mt-4 border-t border-zinc-850 pt-4 flex flex-col gap-4">
-                {renderSunraySliders('main')}
-                {renderGreenSliders('main')}
+              <div className="mt-4 border-t border-zinc-850 pt-4">
+                {renderEffectSliders('main')}
               </div>
 
               <div className="flex justify-end border-t border-zinc-800 pt-3 mt-1">
