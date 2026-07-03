@@ -52,6 +52,14 @@ export const TooltipTexts = {
   "settings.socialFormat": "Format social accounts: show icons and text side-by-side, show icon only, or show handle text only.",
   "settings.socialLayout": "Grid layout displays handles in columns (great for desktop), while Row layout fits them in a single horizontal row.",
   
+  // Additional missing mappings
+  "main.clockUptime": "Toggle this switch to render the live session duration clock badge at the bottom of the stream header overlay.",
+  "main.presetSegments": "Select one of these pre-configured segment names to instantly fill out the Show Title input field.",
+  "main.uptimeClock": "Operational stopwatch control deck. Start, pause, or reset the stream session timer badge displayed on the overlay.",
+  "starting.durationPresets": "Quick select duration presets to instantly reset the starting soon timer duration (e.g. 5m, 10m, 15m).",
+  "brb.durationPresets": "Quick select duration presets to instantly reset the Be Right Back countdown duration (e.g. 5m, 10m, 15m).",
+  "main.productPresets": "Click a pre-configured product preset (e.g., Buah Merah Mix, Barley, etc.) to instantly populate the product showcase details.",
+
   // Speed & Glow Sliders (General mapping per tab)
   "animation.goldSpeed": "Adjusts the scroll speed of the sweeping Gold Sunray gradient animation. Lower values increase speed, higher values slow it down.",
   "animation.goldGlow": "Configures the drop-shadow glowing intensity of gold-highlighted text. Range is from 0.0 (no glow) to 1.0 (bright glow).",

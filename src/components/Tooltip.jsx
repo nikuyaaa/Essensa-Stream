@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 
 export function Tooltip({ text }) {
   const [visible, setVisible] = useState(false);
-  const [placement, setPlacement] = useState('top');
+  const [coords, setCoords] = useState({ top: 0, left: 0 });
   const triggerRef = useRef(null);
 
   useEffect(() => {
@@ -11,19 +11,17 @@ export function Tooltip({ text }) {
       const viewportWidth = window.innerWidth;
       const viewportHeight = window.innerHeight;
 
-      // Tooltip dimensions are approx 256px wide (w-64) and 120px tall
-      const tooltipWidth = 256;
-      const tooltipHeight = 120;
+      // Tooltip dimensions are estimated at 260px wide and 100px tall
+      const tooltipWidth = 260;
+      const tooltipHeight = 90; 
 
       let bestPlacement = 'top';
 
-      // Check vertical space
-      const hasSpaceTop = rect.top > tooltipHeight;
-      const hasSpaceBottom = viewportHeight - rect.bottom > tooltipHeight;
-      
-      // Check horizontal space
-      const hasSpaceLeft = rect.left > tooltipWidth;
-      const hasSpaceRight = viewportWidth - rect.right > tooltipWidth;
+      // Determine vertical and horizontal spacing
+      const hasSpaceTop = rect.top > tooltipHeight + 15;
+      const hasSpaceBottom = viewportHeight - rect.bottom > tooltipHeight + 15;
+      const hasSpaceLeft = rect.left > tooltipWidth + 15;
+      const hasSpaceRight = viewportWidth - rect.right > tooltipWidth + 15;
 
       if (!hasSpaceTop && hasSpaceBottom) {
         bestPlacement = 'bottom';
@@ -33,21 +31,36 @@ export function Tooltip({ text }) {
         bestPlacement = 'right';
       }
 
-      setPlacement(bestPlacement);
+      // Compute fixed coordinates
+      let top = 0;
+      let left = 0;
+      const offset = 8;
+
+      if (bestPlacement === 'top') {
+        top = rect.top - tooltipHeight - offset;
+        left = rect.left + rect.width / 2 - tooltipWidth / 2;
+      } else if (bestPlacement === 'bottom') {
+        top = rect.bottom + offset;
+        left = rect.left + rect.width / 2 - tooltipWidth / 2;
+      } else if (bestPlacement === 'left') {
+        top = rect.top + rect.height / 2 - tooltipHeight / 2;
+        left = rect.left - tooltipWidth - offset;
+      } else {
+        top = rect.top + rect.height / 2 - tooltipHeight / 2;
+        left = rect.right + offset;
+      }
+
+      // Constrain within viewport safety margins
+      left = Math.max(10, Math.min(left, viewportWidth - tooltipWidth - 10));
+      top = Math.max(10, Math.min(top, viewportHeight - tooltipHeight - 10));
+
+      setCoords({ top, left });
     }
   }, [visible]);
 
-  // Position class names
-  const placementClasses = {
-    top: 'bottom-full left-1/2 -translate-x-1/2 mb-2',
-    bottom: 'top-full left-1/2 -translate-x-1/2 mt-2',
-    left: 'right-full top-1/2 -translate-y-1/2 mr-2',
-    right: 'left-full top-1/2 -translate-y-1/2 ml-2'
-  };
-
   return (
-    <div 
-      className="relative inline-flex items-center ml-1.5 group select-none"
+    <span 
+      className="inline-flex items-center ml-1.5 group select-none"
       onMouseEnter={() => setVisible(true)}
       onMouseLeave={() => setVisible(false)}
       ref={triggerRef}
@@ -60,25 +73,23 @@ export function Tooltip({ text }) {
         ?
       </button>
 
-      {/* Floating Tooltip Card */}
+      {/* Floating Tooltip Card positioned fixed in viewport */}
       {visible && (
-        <div 
-          className={`absolute z-[9999] w-64 p-3 bg-zinc-950/95 border border-brand-gold/35 rounded-xl shadow-2xl backdrop-blur-md pointer-events-none tooltip-fade-in ${placementClasses[placement]}`}
+        <span 
+          style={{
+            position: 'fixed',
+            top: `${coords.top}px`,
+            left: `${coords.left}px`,
+            width: '260px',
+            zIndex: 99999
+          }}
+          className="p-3 bg-zinc-950/98 border border-brand-gold/45 rounded-xl shadow-2xl backdrop-blur-md pointer-events-none tooltip-fade-in text-left block"
         >
-          <div className="text-[11px] font-medium text-zinc-300 leading-normal font-sans normal-case tracking-normal text-left">
+          <span className="text-[11px] font-medium text-zinc-300 leading-normal font-sans normal-case tracking-normal block">
             {text}
-          </div>
-          {/* Subtle Indicator Arrow */}
-          <div 
-            className={`absolute w-1.5 h-1.5 bg-zinc-950 border-brand-gold/35 rotate-45 ${
-              placement === 'top' ? 'top-full left-1/2 -translate-x-1/2 -translate-y-1/2 border-r border-b' :
-              placement === 'bottom' ? 'bottom-full left-1/2 -translate-x-1/2 translate-y-1/2 border-l border-t' :
-              placement === 'left' ? 'left-full top-1/2 -translate-y-1/2 -translate-x-1/2 border-r border-t' :
-              'right-full top-1/2 -translate-y-1/2 translate-x-1/2 border-l border-b'
-            }`}
-          />
-        </div>
+          </span>
+        </span>
       )}
-    </div>
+    </span>
   );
 }

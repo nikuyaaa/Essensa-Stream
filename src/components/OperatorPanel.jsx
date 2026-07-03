@@ -942,7 +942,7 @@ export function OperatorPanel({ initialState, onStateChange }) {
                   
                   {/* Preset quick actions dynamic grid */}
                   <div className="flex flex-col gap-2 border-t border-zinc-800/60 pt-3">
-                    <span className="text-[9px] uppercase font-black text-zinc-500">Duration Presets</span>
+                    <span className="text-[9px] uppercase font-black text-zinc-500">Duration Presets <Tooltip text={TooltipTexts['starting.durationPresets']} /></span>
                     <div className="grid grid-cols-5 gap-1.5">
                       {(state.timerPresets?.starting || [300, 600, 900, 1800, 3600]).map((seconds) => {
                         const mins = Math.floor(seconds / 60);
@@ -1082,7 +1082,7 @@ export function OperatorPanel({ initialState, onStateChange }) {
                   </div>
 
                   <div className="flex items-center justify-between border-t border-zinc-855 pt-3">
-                    <span className="text-xs text-zinc-400 font-bold">Show clock uptime capsule</span>
+                    <span className="text-xs text-zinc-400 font-bold">Show clock uptime capsule <Tooltip text={TooltipTexts['main.clockUptime']} /></span>
                     <input 
                       type="checkbox"
                       checked={draftState.main.showClock}
@@ -1094,7 +1094,7 @@ export function OperatorPanel({ initialState, onStateChange }) {
                   {/* Uptime clock controls (Direct instant execution) */}
                   <div className="bg-zinc-950 border border-zinc-800/80 p-4 rounded-xl flex flex-col gap-3">
                     <div className="flex justify-between items-center font-mono">
-                      <span className="text-zinc-500 text-[10px] uppercase font-black tracking-wider font-sans">Uptime Clock</span>
+                      <span className="text-zinc-500 text-[10px] uppercase font-black tracking-wider font-sans">Uptime Clock <Tooltip text={TooltipTexts['main.uptimeClock']} /></span>
                       <span className="text-brand-gold text-xl font-black tracking-widest tabular-nums">
                         {state.main.startTime ? formatElapsed(elapsedSeconds) : "00:00:00"}
                       </span>
@@ -1123,7 +1123,7 @@ export function OperatorPanel({ initialState, onStateChange }) {
 
                   {/* Segment presets */}
                   <div className="border-t border-zinc-850 pt-3">
-                    <span className="text-[10px] uppercase font-black tracking-wider text-zinc-500 block mb-2">Preset Segments</span>
+                    <span className="text-[10px] uppercase font-black tracking-wider text-zinc-500 block mb-2">Preset Segments <Tooltip text={TooltipTexts['main.presetSegments']} /></span>
                     <div className="flex flex-col gap-1.5 max-h-[140px] overflow-y-auto pr-1">
                       {segmentPresets.map((seg, idx) => (
                         <button
@@ -1486,7 +1486,7 @@ export function OperatorPanel({ initialState, onStateChange }) {
 
                       {/* Product Presets */}
                       <div className="border-t border-zinc-850 pt-2.5">
-                        <span className="text-[8px] uppercase font-black text-zinc-500 block mb-1.5">Apply Presets directly</span>
+                        <span className="text-[8px] uppercase font-black text-zinc-500 block mb-1.5">Apply Presets directly <Tooltip text={TooltipTexts['main.productPresets']} /></span>
                         <div className="grid grid-cols-2 gap-1.5">
                           {productPresets.map((pr, pIdx) => (
                             <button
@@ -1652,7 +1652,7 @@ export function OperatorPanel({ initialState, onStateChange }) {
                 
                 {/* Presets loops */}
                 <div className="flex flex-col gap-2 border-t border-zinc-800/60 pt-3">
-                  <span className="text-[9px] uppercase font-black text-zinc-500">Duration Presets</span>
+                  <span className="text-[9px] uppercase font-black text-zinc-500">Duration Presets <Tooltip text={TooltipTexts['brb.durationPresets']} /></span>
                   <div className="grid grid-cols-5 gap-1.5">
                     {(state.timerPresets?.brb || [300, 600, 900, 1800, 3600]).map((seconds) => {
                       const mins = Math.floor(seconds / 60);
