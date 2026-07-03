@@ -1372,18 +1372,24 @@ export function OperatorPanel({ initialState, onStateChange }) {
                         </div>
                         <div className="flex flex-col gap-1">
                           <label className="text-[9px] uppercase font-black text-zinc-400">Price Pill <Tooltip text={TooltipTexts['main.productPrice']} /></label>
-                          <input
-                            type="text"
-                            value={product.price || ''}
-                            onChange={(e) => {
-                              const val = e.target.value;
-                              setDraftState(prev => {
-                                const updated = prev.main.products.map(p => p.id === product.id ? { ...p, price: val } : p);
-                                return { ...prev, main: { ...prev.main, products: updated } };
-                              });
-                            }}
-                            className="bg-zinc-900 border border-zinc-800 rounded px-2.5 py-1.5 text-xs font-bold text-zinc-100 focus:outline-none focus:border-brand-green"
-                          />
+                          <div className="flex bg-zinc-900 border border-zinc-800 focus-within:border-brand-green rounded overflow-hidden">
+                            <span className="bg-zinc-950 px-2.5 py-1.5 text-xs text-brand-gold font-bold select-none border-r border-zinc-850 flex items-center">
+                              ₱
+                            </span>
+                            <input
+                              type="text"
+                              value={(product.price || '').replace(/^₱/, '')}
+                              onChange={(e) => {
+                                const rawVal = e.target.value.replace(/₱/g, '');
+                                const val = `₱${rawVal}`;
+                                setDraftState(prev => {
+                                  const updated = prev.main.products.map(p => p.id === product.id ? { ...p, price: val } : p);
+                                  return { ...prev, main: { ...prev.main, products: updated } };
+                                });
+                              }}
+                              className="bg-transparent px-2.5 py-1.5 text-xs font-bold text-zinc-100 focus:outline-none w-full"
+                            />
+                          </div>
                         </div>
                       </div>
 
