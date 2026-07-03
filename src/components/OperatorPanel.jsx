@@ -1183,6 +1183,24 @@ export function OperatorPanel({ initialState, onStateChange }) {
                     className="bg-zinc-950 border border-zinc-800 rounded-lg px-3 py-2 text-xs font-mono text-zinc-200 focus:outline-none focus:border-brand-green font-bold resize-none"
                   />
                 </div>
+                
+                {/* News Ticker Speed slider */}
+                <div className="flex flex-col gap-2 bg-zinc-950 p-4 rounded-xl border border-zinc-850">
+                  <div className="flex justify-between text-[9px] uppercase font-black text-zinc-400">
+                    <span>Ticker Scrolling Duration (Seconds) <Tooltip text={TooltipTexts['main.tickerSpeed']} /></span>
+                    <span className="text-zinc-200 font-bold">{draftState.main.tickerSpeed || 60}s</span>
+                  </div>
+                  <input 
+                    type="range" 
+                    min="10" 
+                    max="180" 
+                    step="5"
+                    value={draftState.main.tickerSpeed || 60} 
+                    onChange={(e) => updateDraft('main', 'tickerSpeed', parseInt(e.target.value) || 60)}
+                    className="w-full accent-brand-gold bg-zinc-900 border border-zinc-800 rounded h-2 cursor-pointer"
+                  />
+                </div>
+
                 <div className="flex justify-end border-t border-zinc-800 pt-3 mt-1">
                   <button
                     onClick={() => commitSection('main')}
@@ -1202,6 +1220,23 @@ export function OperatorPanel({ initialState, onStateChange }) {
                 <div className="flex flex-col gap-4">
                   {renderSunraySliders('main')}
                   {renderGreenSliders('main')}
+                  
+                  {/* Product Ticker Speed Slider */}
+                  <div className="flex flex-col gap-2 bg-zinc-950 p-4 rounded-xl border border-zinc-850">
+                    <div className="flex justify-between text-[9px] uppercase font-black text-zinc-400">
+                      <span>Product Marquee Ticker Speed (Seconds) <Tooltip text={TooltipTexts['main.productTickerSpeed']} /></span>
+                      <span className="text-zinc-200 font-bold">{draftState.main.productTickerSpeed || 25}s</span>
+                    </div>
+                    <input 
+                      type="range" 
+                      min="5" 
+                      max="100" 
+                      step="5"
+                      value={draftState.main.productTickerSpeed || 25} 
+                      onChange={(e) => updateDraft('main', 'productTickerSpeed', parseInt(e.target.value) || 25)}
+                      className="w-full accent-brand-gold bg-zinc-900 border border-zinc-800 rounded h-2 cursor-pointer"
+                    />
+                  </div>
                 </div>
                 <div className="flex justify-end border-t border-zinc-800 pt-3 mt-1">
                   <button

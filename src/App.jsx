@@ -124,7 +124,9 @@ const defaultState = {
     "sunraySpeed": 4,
     "sunrayIntensity": 0.3,
     "greenSpeed": 4,
-    "greenIntensity": 0.45
+    "greenIntensity": 0.45,
+    "tickerSpeed": 60,
+    "productTickerSpeed": 25
   },
   "brb": {
     "bannerText": "Be Right [gold]Back[/gold]",
@@ -763,6 +765,7 @@ function App() {
                   price={product.price}
                   imageUrl={product.imageUrl}
                   promoText={product.promoText}
+                  speed={state.main.productTickerSpeed || 25}
                   className="relative !bottom-auto !right-auto"
                 />
               ))}
@@ -771,7 +774,7 @@ function App() {
             {/* Bottom News Ticker */}
             <AnimatePresence>
               {state.main.tickerVisible && (
-                <Ticker items={state.main.tickerItems} logoUrl={state.globalLogoUrl} />
+                 <Ticker items={state.main.tickerItems} logoUrl={state.globalLogoUrl} speed={state.main.tickerSpeed || 60} />
               )}
             </AnimatePresence>
 

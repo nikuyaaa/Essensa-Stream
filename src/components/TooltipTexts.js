@@ -20,6 +20,8 @@ export const TooltipTexts = {
   "main.segmentName": "The title text displayed in the sliding header bar. Type text here and select 'Save Header Settings' to update the active segment name on the overlay.",
   "main.logoUrl": "Choose a brand logo asset specifically for the scrolling ticker. It will float on the far left of the ticker items.",
   "main.tickerItems": "Enter scrolling news items. Put each individual notice on a new line; they will cycle from right to left continuously on the stream overlay.",
+  "main.tickerSpeed": "Configure the scroll completion time in seconds for the news ticker statements. Lower values speed up scrolling, higher values slow it down.",
+  "main.productTickerSpeed": "Set the duration in seconds for a full loop completion of the product marquee text.",
   "main.hostName": "The primary name of the host or speaker. Will slide in from the left inside the nameplate lower-third container.",
   "main.hostTitle": "The credentials or role title of the host. Appears in smaller text directly beneath the host's name inside the lower-third.",
   "main.hostAutoHide": "When checked, the nameplate lower-third will automatically hide itself after the configured duration on screen.",

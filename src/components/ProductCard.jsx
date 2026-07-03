@@ -8,6 +8,7 @@ export function ProductCard({
   price = "₱350.00", 
   imageUrl = "", 
   promoText = "Promo: Buy 2 Get 1 Free • Free Shipping Nationwide • Limited Stock Only!", 
+  speed = 25,
   className = '' 
 }) {
   return (
@@ -104,13 +105,13 @@ export function ProductCard({
               <div className="flex-1 h-full flex items-center overflow-hidden bg-brand-charcoal relative">
                 <div className="marquee-container text-xs font-black uppercase tracking-wider text-white flex items-center">
                   {/* Duplicate scrolling text for smooth infinite loop */}
-                  <div className="marquee-content gap-12 flex items-center pr-12 animate-shimmer" style={{ animationDuration: '25s' }}>
+                  <div className="marquee-content gap-12 flex items-center pr-12 animate-shimmer" style={{ animationDuration: `${speed}s` }}>
                     <span>{promoText}</span>
                     <span>•</span>
                     <span>{promoText}</span>
                     <span>•</span>
                   </div>
-                  <div className="marquee-content gap-12 flex items-center pr-12 animate-shimmer" style={{ animationDuration: '25s' }} aria-hidden="true">
+                  <div className="marquee-content gap-12 flex items-center pr-12 animate-shimmer" style={{ animationDuration: `${speed}s` }} aria-hidden="true">
                     <span>{promoText}</span>
                     <span>•</span>
                     <span>{promoText}</span>

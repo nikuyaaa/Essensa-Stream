@@ -9,6 +9,7 @@ export function Ticker({
     "Celebrating 16 Years of Wellness, Credibility, and Prosperity"
   ],
   logoUrl = '',
+  speed = 60,
   className = '' 
 }) {
   const combinedText = items.join("  •  ");
@@ -32,13 +33,13 @@ export function Ticker({
       <div className="flex-1 h-full flex items-center overflow-hidden bg-brand-charcoal relative">
         <div className="marquee-container text-2xl font-black tracking-widest text-white uppercase flex items-center">
           {/* Scroll items twice to ensure infinite, seamless repeating loops */}
-          <div className="marquee-content gap-24 flex items-center pr-24">
+          <div className="marquee-content gap-24 flex items-center pr-24" style={{ animationDuration: `${speed}s` }}>
             <span>{combinedText}</span>
             <span>•</span>
             <span>{combinedText}</span>
             <span>•</span>
           </div>
-          <div className="marquee-content gap-24 flex items-center pr-24" aria-hidden="true">
+          <div className="marquee-content gap-24 flex items-center pr-24" aria-hidden="true" style={{ animationDuration: `${speed}s` }}>
             <span>{combinedText}</span>
             <span>•</span>
             <span>{combinedText}</span>
