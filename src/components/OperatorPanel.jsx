@@ -24,6 +24,9 @@ export function OperatorPanel({ initialState, onStateChange }) {
   // Field-isolated formatting states dictionary for dynamic text token builder
   const [formattingStates, setFormattingStates] = useState({});
 
+  // Live selection tracking state
+  const [activeSelection, setActiveSelection] = useState(null);
+
   // Sync states when initialState updates (e.g., from network response)
   useEffect(() => {
     const hasConfigChanged = !state ||
@@ -193,11 +196,77 @@ export function OperatorPanel({ initialState, onStateChange }) {
   };
 
   // Keyword split-tone tag formatting helpers
+  const handleTextSelect = (inputId, tab, field, event) => {
+    const input = event.target;
+    const start = input.selectionStart;
+    const end = input.selectionEnd;
+    if (start !== end && start !== null && end !== null) {
+      setActiveSelection({
+        inputId,
+        tab,
+        field,
+        start,
+        end,
+        selectedText: input.value.substring(start, end)
+      });
+    } else {
+      setActiveSelection(null);
+    }
+  };
+
+  const handleLiveFormattingUpdate = (inputId, newColor, newEffect) => {
+    if (!activeSelection || activeSelection.inputId !== inputId) return;
+    
+    const { tab, field, start, end } = activeSelection;
+    const text = draftState[tab]?.[field] || "";
+    
+    let tagOpen = "";
+    let tagClose = "";
+    
+    if (newEffect === 'none') {
+      tagOpen = `[color=${newColor}]`;
+      tagClose = `[/color]`;
+    } else {
+      tagOpen = `[effect=${newEffect} color=${newColor}]`;
+      tagClose = `[/effect]`;
+    }
+    
+    const selectedText = text.substring(start, end);
+    const cleanSelected = selectedText.replace(/\[\/?gold\]|\[\/?green\]|<\/?b>|<\/?gold>|\[color=[^\]]+\]|\[\/color\]|\[effect=[^\]]+\]|\[\/effect\]/gi, "");
+    
+    const newText = text.substring(0, start) + `${tagOpen}${cleanSelected}${tagClose}` + text.substring(end);
+    updateDraft(tab, field, newText);
+    
+    const newEnd = start + tagOpen.length + cleanSelected.length + tagClose.length;
+    
+    setActiveSelection({
+      inputId,
+      tab,
+      field,
+      start,
+      end: newEnd,
+      selectedText: `${tagOpen}${cleanSelected}${tagClose}`
+    });
+    
+    setTimeout(() => {
+      const input = document.getElementById(inputId);
+      if (input) {
+        input.focus();
+        input.setSelectionRange(start, newEnd);
+      }
+    }, 50);
+  };
+
   const applyDynamicTag = (tab, field, inputId) => {
     const formatState = formattingStates[inputId] || { color: '#D4AF37', effect: 'none' };
     const colorVal = formatState.color;
     const effectVal = formatState.effect;
-    
+
+    if (activeSelection && activeSelection.inputId === inputId) {
+      handleLiveFormattingUpdate(inputId, colorVal, effectVal);
+      return;
+    }
+
     let tagOpen = "";
     let tagClose = "";
     
@@ -209,25 +278,7 @@ export function OperatorPanel({ initialState, onStateChange }) {
       tagClose = `[/effect]`;
     }
     
-    const input = document.getElementById(inputId);
     const text = draftState[tab]?.[field] || "";
-    
-    if (input) {
-      const start = input.selectionStart;
-      const end = input.selectionEnd;
-      if (start !== end && start !== null && end !== null) {
-        const selectedText = text.substring(start, end);
-        // Strip any existing tags inside the selection to prevent nested tagging anomalies
-        const cleanSelected = selectedText.replace(/\[\/?gold\]|\[\/?green\]|<\/?b>|<\/?gold>|\[color=[^\]]+\]|\[\/color\]|\[effect=[^\]]+\]|\[\/effect\]/gi, "");
-        const newText = text.substring(0, start) + `${tagOpen}${cleanSelected}${tagClose}` + text.substring(end);
-        updateDraft(tab, field, newText);
-        setTimeout(() => {
-          input.focus();
-          input.setSelectionRange(start + tagOpen.length, start + tagOpen.length + cleanSelected.length);
-        }, 50);
-        return;
-      }
-    }
     
     // Fallback: wrap the last word
     const clean = text.replace(/\[\/?gold\]|\[\/?green\]|<\/?b>|<\/?gold>|\[color=[^\]]+\]|\[\/color\]|\[effect=[^\]]+\]|\[\/effect\]/gi, "");
@@ -243,6 +294,7 @@ export function OperatorPanel({ initialState, onStateChange }) {
     const text = input ? input.value : (draftState[tab]?.[field] || "");
     const clean = text.replace(/\[\/?gold\]|\[\/?green\]|<\/?b>|<\/?gold>|\[color=[^\]]+\]|\[\/color\]|\[effect=[^\]]+\]|\[\/effect\]/gi, "");
     updateDraft(tab, field, clean);
+    setActiveSelection(null);
   };
 
   const renderFormatterButtons = (tab, field, inputId) => {
@@ -267,6 +319,7 @@ export function OperatorPanel({ initialState, onStateChange }) {
                     color: val
                   }
                 }));
+                handleLiveFormattingUpdate(inputId, val, activeEffect);
               }}
               className="absolute inset-0 opacity-0 cursor-pointer w-full h-full"
             />
@@ -288,6 +341,7 @@ export function OperatorPanel({ initialState, onStateChange }) {
                   effect: val
                 }
               }));
+              handleLiveFormattingUpdate(inputId, activeColor, val);
             }}
             className="bg-zinc-900 border border-zinc-800 text-zinc-300 font-bold px-1.5 py-0.5 rounded text-[9px] outline-none cursor-pointer focus:border-brand-green"
           >
@@ -722,6 +776,7 @@ export function OperatorPanel({ initialState, onStateChange }) {
                   id="intermission_welcomeText"
                   value={draftState['intermission-banner'].welcomeText}
                   onChange={(e) => updateDraft('intermission-banner', 'welcomeText', e.target.value)}
+                  onSelect={(e) => handleTextSelect('intermission_welcomeText', 'intermission-banner', 'welcomeText', e)}
                   className="bg-zinc-950 border border-zinc-800 rounded-lg px-3 py-2 text-sm text-zinc-200 focus:outline-none focus:border-brand-green font-bold"
                 />
                 {renderFormatterButtons('intermission-banner', 'welcomeText', 'intermission_welcomeText')}
@@ -742,6 +797,7 @@ export function OperatorPanel({ initialState, onStateChange }) {
                   id="intermission_announcement"
                   value={draftState['intermission-banner'].announcement}
                   onChange={(e) => updateDraft('intermission-banner', 'announcement', e.target.value)}
+                  onSelect={(e) => handleTextSelect('intermission_announcement', 'intermission-banner', 'announcement', e)}
                   className="bg-zinc-950 border border-zinc-800 rounded-lg px-3 py-2 text-sm text-zinc-200 focus:outline-none focus:border-brand-green font-bold resize-none"
                 />
                 {renderFormatterButtons('intermission-banner', 'announcement', 'intermission_announcement')}
@@ -754,6 +810,7 @@ export function OperatorPanel({ initialState, onStateChange }) {
                   id="intermission_rightHeader"
                   value={draftState['intermission-banner'].rightHeader || ''}
                   onChange={(e) => updateDraft('intermission-banner', 'rightHeader', e.target.value)}
+                  onSelect={(e) => handleTextSelect('intermission_rightHeader', 'intermission-banner', 'rightHeader', e)}
                   className="bg-zinc-950 border border-zinc-800 rounded-lg px-3 py-2 text-sm text-zinc-200 focus:outline-none focus:border-brand-green font-bold"
                 />
                 {renderFormatterButtons('intermission-banner', 'rightHeader', 'intermission_rightHeader')}
@@ -902,6 +959,7 @@ export function OperatorPanel({ initialState, onStateChange }) {
                       id="starting_superTitle"
                       value={draftState.starting.superTitle || ''}
                       onChange={(e) => updateDraft('starting', 'superTitle', e.target.value)}
+                      onSelect={(e) => handleTextSelect('starting_superTitle', 'starting', 'superTitle', e)}
                       className="bg-zinc-950 border border-zinc-800 rounded-lg px-3 py-2 text-sm text-zinc-200 focus:outline-none focus:border-brand-green font-bold"
                     />
                     {renderFormatterButtons('starting', 'superTitle', 'starting_superTitle')}
@@ -913,6 +971,7 @@ export function OperatorPanel({ initialState, onStateChange }) {
                       id="starting_announcement"
                       value={draftState.starting.announcement}
                       onChange={(e) => updateDraft('starting', 'announcement', e.target.value)}
+                      onSelect={(e) => handleTextSelect('starting_announcement', 'starting', 'announcement', e)}
                       className="bg-zinc-950 border border-zinc-800 rounded-lg px-3 py-2 text-sm text-zinc-200 focus:outline-none focus:border-brand-green font-bold"
                     />
                     {renderFormatterButtons('starting', 'announcement', 'starting_announcement')}
@@ -924,6 +983,7 @@ export function OperatorPanel({ initialState, onStateChange }) {
                       id="starting_subTitle"
                       value={draftState.starting.subTitle || ''}
                       onChange={(e) => updateDraft('starting', 'subTitle', e.target.value)}
+                      onSelect={(e) => handleTextSelect('starting_subTitle', 'starting', 'subTitle', e)}
                       className="bg-zinc-950 border border-zinc-800 rounded-lg px-3 py-2 text-sm text-zinc-200 focus:outline-none focus:border-brand-green font-bold"
                     />
                     {renderFormatterButtons('starting', 'subTitle', 'starting_subTitle')}
@@ -1118,6 +1178,7 @@ export function OperatorPanel({ initialState, onStateChange }) {
                       id="main_segmentName"
                       value={draftState.main.segmentName}
                       onChange={(e) => updateDraft('main', 'segmentName', e.target.value)}
+                      onSelect={(e) => handleTextSelect('main_segmentName', 'main', 'segmentName', e)}
                       className="bg-zinc-950 border border-zinc-800 rounded-lg px-3 py-2 text-sm text-zinc-200 focus:outline-none focus:border-brand-green font-bold"
                     />
                     {renderFormatterButtons('main', 'segmentName', 'main_segmentName')}
@@ -1325,6 +1386,7 @@ export function OperatorPanel({ initialState, onStateChange }) {
                       id="main_hostName"
                       value={draftState.main.hostName}
                       onChange={(e) => updateDraft('main', 'hostName', e.target.value)}
+                      onSelect={(e) => handleTextSelect('main_hostName', 'main', 'hostName', e)}
                       className="bg-zinc-950 border border-zinc-800 rounded-lg px-3 py-2 text-sm text-zinc-200 focus:outline-none focus:border-brand-green font-bold"
                     />
                     {renderFormatterButtons('main', 'hostName', 'main_hostName')}
@@ -1336,6 +1398,7 @@ export function OperatorPanel({ initialState, onStateChange }) {
                       id="main_hostTitle"
                       value={draftState.main.hostTitle}
                       onChange={(e) => updateDraft('main', 'hostTitle', e.target.value)}
+                      onSelect={(e) => handleTextSelect('main_hostTitle', 'main', 'hostTitle', e)}
                       className="bg-zinc-950 border border-zinc-800 rounded-lg px-3 py-2 text-sm text-zinc-200 focus:outline-none focus:border-brand-green font-bold"
                     />
                     {renderFormatterButtons('main', 'hostTitle', 'main_hostTitle')}
@@ -1679,6 +1742,7 @@ export function OperatorPanel({ initialState, onStateChange }) {
                     id="brb_bannerText"
                     value={draftState.brb.bannerText}
                     onChange={(e) => updateDraft('brb', 'bannerText', e.target.value)}
+                    onSelect={(e) => handleTextSelect('brb_bannerText', 'brb', 'bannerText', e)}
                     className="bg-zinc-950 border border-zinc-800 rounded-lg px-3 py-2 text-sm text-zinc-200 focus:outline-none focus:border-brand-green font-bold"
                   />
                   {renderFormatterButtons('brb', 'bannerText', 'brb_bannerText')}
@@ -1855,6 +1919,7 @@ export function OperatorPanel({ initialState, onStateChange }) {
                   id="ending_title"
                   value={draftState.ending.title}
                   onChange={(e) => updateDraft('ending', 'title', e.target.value)}
+                  onSelect={(e) => handleTextSelect('ending_title', 'ending', 'title', e)}
                   className="bg-zinc-950 border border-zinc-800 rounded-lg px-3 py-2 text-sm text-zinc-200 focus:outline-none focus:border-brand-green font-bold"
                 />
                 {renderFormatterButtons('ending', 'title', 'ending_title')}
