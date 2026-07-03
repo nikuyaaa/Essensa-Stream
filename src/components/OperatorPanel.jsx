@@ -21,9 +21,8 @@ export function OperatorPanel({ initialState, onStateChange }) {
   // Elapsed time state for main stream clock
   const [elapsedSeconds, setElapsedSeconds] = useState(0);
 
-  // Formatting state for dynamic text token builder
-  const [formatColor, setFormatColor] = useState('#D4AF37');
-  const [formatEffect, setFormatEffect] = useState('none');
+  // Field-isolated formatting states dictionary for dynamic text token builder
+  const [formattingStates, setFormattingStates] = useState({});
 
   // Sync states when initialState updates (e.g., from network response)
   useEffect(() => {
@@ -195,8 +194,9 @@ export function OperatorPanel({ initialState, onStateChange }) {
 
   // Keyword split-tone tag formatting helpers
   const applyDynamicTag = (tab, field, inputId) => {
-    const colorVal = formatColor;
-    const effectVal = formatEffect;
+    const formatState = formattingStates[inputId] || { color: '#D4AF37', effect: 'none' };
+    const colorVal = formatState.color;
+    const effectVal = formatState.effect;
     
     let tagOpen = "";
     let tagClose = "";
@@ -217,11 +217,13 @@ export function OperatorPanel({ initialState, onStateChange }) {
       const end = input.selectionEnd;
       if (start !== end && start !== null && end !== null) {
         const selectedText = text.substring(start, end);
-        const newText = text.substring(0, start) + `${tagOpen}${selectedText}${tagClose}` + text.substring(end);
+        // Strip any existing tags inside the selection to prevent nested tagging anomalies
+        const cleanSelected = selectedText.replace(/\[\/?gold\]|\[\/?green\]|<\/?b>|<\/?gold>|\[color=[^\]]+\]|\[\/color\]|\[effect=[^\]]+\]|\[\/effect\]/gi, "");
+        const newText = text.substring(0, start) + `${tagOpen}${cleanSelected}${tagClose}` + text.substring(end);
         updateDraft(tab, field, newText);
         setTimeout(() => {
           input.focus();
-          input.setSelectionRange(start + tagOpen.length, end + tagOpen.length);
+          input.setSelectionRange(start + tagOpen.length, start + tagOpen.length + cleanSelected.length);
         }, 50);
         return;
       }
@@ -244,6 +246,10 @@ export function OperatorPanel({ initialState, onStateChange }) {
   };
 
   const renderFormatterButtons = (tab, field, inputId) => {
+    const formatState = formattingStates[inputId] || { color: '#D4AF37', effect: 'none' };
+    const activeColor = formatState.color;
+    const activeEffect = formatState.effect;
+
     return (
       <div className="flex flex-wrap items-center gap-3 bg-zinc-950 px-3 py-1.5 rounded-xl border border-zinc-850 select-none mt-1 text-[10px]">
         <div className="flex items-center gap-1.5">
@@ -251,20 +257,38 @@ export function OperatorPanel({ initialState, onStateChange }) {
           <div className="flex items-center gap-2 bg-zinc-900 border border-zinc-800 rounded px-2 py-0.5 relative cursor-pointer active:scale-[0.98] transition hover:border-zinc-700" title="Select custom color">
             <input
               type="color"
-              value={formatColor}
-              onChange={(e) => setFormatColor(e.target.value)}
+              value={activeColor}
+              onChange={(e) => {
+                const val = e.target.value;
+                setFormattingStates(prev => ({
+                  ...prev,
+                  [inputId]: {
+                    ...(prev[inputId] || { color: '#D4AF37', effect: 'none' }),
+                    color: val
+                  }
+                }));
+              }}
               className="absolute inset-0 opacity-0 cursor-pointer w-full h-full"
             />
-            <div className="w-3.5 h-3.5 rounded border border-black/40 shadow-inner" style={{ backgroundColor: formatColor }} />
-            <span className="text-[9px] text-zinc-300 font-mono font-bold uppercase tracking-wider">{formatColor}</span>
+            <div className="w-3.5 h-3.5 rounded border border-black/40 shadow-inner" style={{ backgroundColor: activeColor }} />
+            <span className="text-[9px] text-zinc-300 font-mono font-bold uppercase tracking-wider">{activeColor}</span>
           </div>
         </div>
 
         <div className="flex items-center gap-1.5">
           <span className="font-black text-zinc-500 uppercase tracking-wider">Effect:</span>
           <select
-            value={formatEffect}
-            onChange={(e) => setFormatEffect(e.target.value)}
+            value={activeEffect}
+            onChange={(e) => {
+              const val = e.target.value;
+              setFormattingStates(prev => ({
+                ...prev,
+                [inputId]: {
+                  ...(prev[inputId] || { color: '#D4AF37', effect: 'none' }),
+                  effect: val
+                }
+              }));
+            }}
             className="bg-zinc-900 border border-zinc-800 text-zinc-300 font-bold px-1.5 py-0.5 rounded text-[9px] outline-none cursor-pointer focus:border-brand-green"
           >
             <option value="none">Solid Color</option>
