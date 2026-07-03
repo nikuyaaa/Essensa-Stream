@@ -1220,23 +1220,6 @@ export function OperatorPanel({ initialState, onStateChange }) {
                 <div className="flex flex-col gap-4">
                   {renderSunraySliders('main')}
                   {renderGreenSliders('main')}
-                  
-                  {/* Product Ticker Speed Slider */}
-                  <div className="flex flex-col gap-2 bg-zinc-950 p-4 rounded-xl border border-zinc-850">
-                    <div className="flex justify-between text-[9px] uppercase font-black text-zinc-400">
-                      <span>Product Marquee Ticker Speed (Seconds) <Tooltip text={TooltipTexts['main.productTickerSpeed']} /></span>
-                      <span className="text-zinc-200 font-bold">{draftState.main.productTickerSpeed || 25}s</span>
-                    </div>
-                    <input 
-                      type="range" 
-                      min="5" 
-                      max="100" 
-                      step="5"
-                      value={draftState.main.productTickerSpeed || 25} 
-                      onChange={(e) => updateDraft('main', 'productTickerSpeed', parseInt(e.target.value) || 25)}
-                      className="w-full accent-brand-gold bg-zinc-900 border border-zinc-800 rounded h-2 cursor-pointer"
-                    />
-                  </div>
                 </div>
                 <div className="flex justify-end border-t border-zinc-800 pt-3 mt-1">
                   <button
@@ -1441,6 +1424,29 @@ export function OperatorPanel({ initialState, onStateChange }) {
                             });
                           }}
                           className="bg-zinc-900 border border-zinc-800 rounded px-2.5 py-1.5 text-xs font-bold text-zinc-100 focus:outline-none focus:border-brand-green"
+                        />
+                      </div>
+
+                      {/* Product Marquee Ticker Speed Slider */}
+                      <div className="flex flex-col gap-2 bg-zinc-900/60 p-3 rounded border border-zinc-855">
+                        <div className="flex justify-between text-[9px] uppercase font-black text-zinc-400">
+                          <span>Scrolling Speed (Seconds) <Tooltip text={TooltipTexts['main.productTickerSpeed']} /></span>
+                          <span className="text-zinc-200 font-bold">{product.speed || 25}s</span>
+                        </div>
+                        <input 
+                          type="range" 
+                          min="5" 
+                          max="100" 
+                          step="5"
+                          value={product.speed || 25} 
+                          onChange={(e) => {
+                            const val = parseInt(e.target.value) || 25;
+                            setDraftState(prev => {
+                              const updated = prev.main.products.map(p => p.id === product.id ? { ...p, speed: val } : p);
+                              return { ...prev, main: { ...prev.main, products: updated } };
+                            });
+                          }}
+                          className="w-full accent-brand-gold bg-zinc-950 border border-zinc-800 rounded h-1.5 cursor-pointer"
                         />
                       </div>
 

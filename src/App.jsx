@@ -118,15 +118,15 @@ const defaultState = {
         "promoText": "Promo: Buy 2 Get 1 Free • Free Shipping!",
         "imageUrl": "",
         "stayOnScreen": true,
-        "hideDuration": 10
+        "hideDuration": 10,
+        "speed": 25
       }
     ],
     "sunraySpeed": 4,
     "sunrayIntensity": 0.3,
     "greenSpeed": 4,
     "greenIntensity": 0.45,
-    "tickerSpeed": 60,
-    "productTickerSpeed": 25
+    "tickerSpeed": 60
   },
   "brb": {
     "bannerText": "Be Right [gold]Back[/gold]",
@@ -765,7 +765,7 @@ function App() {
                   price={product.price}
                   imageUrl={product.imageUrl}
                   promoText={product.promoText}
-                  speed={state.main.productTickerSpeed || 25}
+                  speed={product.speed || 25}
                   className="relative !bottom-auto !right-auto"
                 />
               ))}
