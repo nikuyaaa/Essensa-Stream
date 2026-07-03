@@ -4,6 +4,8 @@ import {
   Tag, Clock, List, RefreshCw, Layers, Sparkles, Save, Globe, Facebook, Youtube, Instagram, Settings, Plus, Trash
 } from 'lucide-react';
 import { Logo } from './Logo';
+import { Tooltip } from './Tooltip';
+import { TooltipTexts } from './TooltipTexts';
 
 export function OperatorPanel({ initialState, onStateChange }) {
   const [state, setState] = useState(initialState);
@@ -263,7 +265,7 @@ export function OperatorPanel({ initialState, onStateChange }) {
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div className="flex flex-col gap-1">
           <div className="flex justify-between text-[9px] uppercase font-black text-zinc-400">
-            <span>Speed (seconds)</span>
+            <span>Speed (seconds) <Tooltip text={TooltipTexts['animation.goldSpeed']} /></span>
             <span className="text-zinc-200 font-bold">{draftState[tab]?.sunraySpeed || 4}s</span>
           </div>
           <input 
@@ -278,7 +280,7 @@ export function OperatorPanel({ initialState, onStateChange }) {
         </div>
         <div className="flex flex-col gap-1">
           <div className="flex justify-between text-[9px] uppercase font-black text-zinc-400">
-            <span>Glow Intensity</span>
+            <span>Glow Intensity <Tooltip text={TooltipTexts['animation.goldGlow']} /></span>
             <span className="text-zinc-200 font-bold">{(draftState[tab]?.sunrayIntensity ?? 0.3).toFixed(2)}</span>
           </div>
           <input 
@@ -301,7 +303,7 @@ export function OperatorPanel({ initialState, onStateChange }) {
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div className="flex flex-col gap-1">
           <div className="flex justify-between text-[9px] uppercase font-black text-zinc-400">
-            <span>Speed (seconds)</span>
+            <span>Speed (seconds) <Tooltip text={TooltipTexts['animation.greenSpeed']} /></span>
             <span className="text-zinc-200 font-bold">{draftState[tab]?.greenSpeed || 4}s</span>
           </div>
           <input 
@@ -316,7 +318,7 @@ export function OperatorPanel({ initialState, onStateChange }) {
         </div>
         <div className="flex flex-col gap-1">
           <div className="flex justify-between text-[9px] uppercase font-black text-zinc-400">
-            <span>Glow Intensity</span>
+            <span>Glow Intensity <Tooltip text={TooltipTexts['animation.greenGlow']} /></span>
             <span className="text-zinc-200 font-bold">{(draftState[tab]?.greenIntensity ?? 0.45).toFixed(2)}</span>
           </div>
           <input 
@@ -652,7 +654,7 @@ export function OperatorPanel({ initialState, onStateChange }) {
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="flex flex-col gap-1.5">
-                <label className="text-[10px] uppercase font-black tracking-wider text-zinc-400">Left-side Header Welcome Text</label>
+                <label className="text-[10px] uppercase font-black tracking-wider text-zinc-400">Left-side Header Welcome Text <Tooltip text={TooltipTexts['intermission.welcomeText']} /></label>
                 <input
                   type="text"
                   id="intermission_welcomeText"
@@ -663,7 +665,7 @@ export function OperatorPanel({ initialState, onStateChange }) {
                 {renderFormatterButtons('intermission-banner', 'welcomeText', 'intermission_welcomeText')}
               </div>
               <div className="flex flex-col gap-1.5">
-                <label className="text-[10px] uppercase font-black tracking-wider text-zinc-400">Left-side Tagline Description</label>
+                <label className="text-[10px] uppercase font-black tracking-wider text-zinc-400">Left-side Tagline Description <Tooltip text={TooltipTexts['intermission.tagline']} /></label>
                 <input
                   type="text"
                   value={draftState['intermission-banner'].tagline}
@@ -672,7 +674,7 @@ export function OperatorPanel({ initialState, onStateChange }) {
                 />
               </div>
               <div className="flex flex-col gap-1.5 md:col-span-2">
-                <label className="text-[10px] uppercase font-black tracking-wider text-zinc-400">Left-side Notice Announcement</label>
+                <label className="text-[10px] uppercase font-black tracking-wider text-zinc-400">Left-side Notice Announcement <Tooltip text={TooltipTexts['intermission.announcement']} /></label>
                 <textarea
                   rows="2"
                   id="intermission_announcement"
@@ -684,7 +686,7 @@ export function OperatorPanel({ initialState, onStateChange }) {
               </div>
               
               <div className="flex flex-col gap-1.5">
-                <label className="text-[10px] uppercase font-black tracking-wider text-zinc-400">Right-side Banner Header</label>
+                <label className="text-[10px] uppercase font-black tracking-wider text-zinc-400">Right-side Banner Header <Tooltip text={TooltipTexts['intermission.rightHeader']} /></label>
                 <input
                   type="text"
                   id="intermission_rightHeader"
@@ -695,7 +697,7 @@ export function OperatorPanel({ initialState, onStateChange }) {
                 {renderFormatterButtons('intermission-banner', 'rightHeader', 'intermission_rightHeader')}
               </div>
               <div className="flex flex-col gap-1.5">
-                <label className="text-[10px] uppercase font-black tracking-wider text-zinc-400">Right-side Dynamic Alert Message (Optional)</label>
+                <label className="text-[10px] uppercase font-black tracking-wider text-zinc-400">Right-side Dynamic Alert Message (Optional) <Tooltip text={TooltipTexts['intermission.alertText']} /></label>
                 <input
                   type="text"
                   placeholder="e.g. SPECIAL PROMO REVEAL AT 8PM!"
@@ -705,7 +707,7 @@ export function OperatorPanel({ initialState, onStateChange }) {
                 />
               </div>
               <div className="flex flex-col gap-1.5 md:col-span-2">
-                <label className="text-[10px] uppercase font-black tracking-wider text-zinc-400">Right-side Body Subtext</label>
+                <label className="text-[10px] uppercase font-black tracking-wider text-zinc-400">Right-side Body Subtext <Tooltip text={TooltipTexts['intermission.rightBody']} /></label>
                 <textarea
                   rows="2"
                   value={draftState['intermission-banner'].rightBody || ''}
@@ -715,8 +717,8 @@ export function OperatorPanel({ initialState, onStateChange }) {
               </div>
 
               {/* Standalone Brand Logo Form */}
-              <div className="flex flex-col gap-1.5 md:col-span-2 bg-zinc-950 p-4 rounded-xl border border-zinc-850">
-                <label className="text-[10px] uppercase font-black tracking-wider text-zinc-400">Scene Brand Logo (Image/Video Loop)</label>
+              <div className="flex flex-col gap-1.5 md:col-span-2 bg-zinc-950 p-4 rounded-xl border border-zinc-855">
+                <label className="text-[10px] uppercase font-black tracking-wider text-zinc-400">Scene Brand Logo (Image/Video Loop) <Tooltip text={TooltipTexts['intermission.logoUrl']} /></label>
                 <input
                   type="file"
                   accept="image/*,video/*"
@@ -832,7 +834,7 @@ export function OperatorPanel({ initialState, onStateChange }) {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="flex flex-col gap-4">
                   <div className="flex flex-col gap-1.5">
-                    <label className="text-[10px] uppercase font-black tracking-wider text-zinc-400">Supertitle Header</label>
+                    <label className="text-[10px] uppercase font-black tracking-wider text-zinc-400">Supertitle Header <Tooltip text={TooltipTexts['starting.superTitle']} /></label>
                     <input
                       type="text"
                       id="starting_superTitle"
@@ -843,7 +845,7 @@ export function OperatorPanel({ initialState, onStateChange }) {
                     {renderFormatterButtons('starting', 'superTitle', 'starting_superTitle')}
                   </div>
                   <div className="flex flex-col gap-1.5">
-                    <label className="text-[10px] uppercase font-black tracking-wider text-zinc-400">Header Announcement</label>
+                    <label className="text-[10px] uppercase font-black tracking-wider text-zinc-400">Header Announcement <Tooltip text={TooltipTexts['starting.announcement']} /></label>
                     <input
                       type="text"
                       id="starting_announcement"
@@ -854,7 +856,7 @@ export function OperatorPanel({ initialState, onStateChange }) {
                     {renderFormatterButtons('starting', 'announcement', 'starting_announcement')}
                   </div>
                   <div className="flex flex-col gap-1.5">
-                    <label className="text-[10px] uppercase font-black tracking-wider text-zinc-400">Core Subtitle Layer</label>
+                    <label className="text-[10px] uppercase font-black tracking-wider text-zinc-400">Core Subtitle Layer <Tooltip text={TooltipTexts['starting.subTitle']} /></label>
                     <input
                       type="text"
                       id="starting_subTitle"
@@ -865,7 +867,7 @@ export function OperatorPanel({ initialState, onStateChange }) {
                     {renderFormatterButtons('starting', 'subTitle', 'starting_subTitle')}
                   </div>
                   <div className="flex flex-col gap-1.5">
-                    <label className="text-[10px] uppercase font-black tracking-wider text-zinc-400">Tagline Description</label>
+                    <label className="text-[10px] uppercase font-black tracking-wider text-zinc-400">Tagline Description <Tooltip text={TooltipTexts['starting.tagline']} /></label>
                     <input
                       type="text"
                       value={draftState.starting.tagline}
@@ -876,7 +878,7 @@ export function OperatorPanel({ initialState, onStateChange }) {
 
                   {/* Standalone Logo Uploader */}
                   <div className="flex flex-col gap-1.5 bg-zinc-950 p-4 rounded-xl border border-zinc-855">
-                    <label className="text-[10px] uppercase font-black tracking-wider text-zinc-400">Scene Brand Logo (Image/Video Loop)</label>
+                    <label className="text-[10px] uppercase font-black tracking-wider text-zinc-400">Scene Brand Logo (Image/Video Loop) <Tooltip text={TooltipTexts['starting.logoUrl']} /></label>
                     <input
                       type="file"
                       accept="image/*,video/*"
@@ -959,7 +961,7 @@ export function OperatorPanel({ initialState, onStateChange }) {
 
                   {/* HMS Custom duration loader */}
                   <div className="flex flex-col gap-2 border-t border-zinc-800/60 pt-3">
-                    <span className="text-[9px] uppercase font-black text-zinc-500">Set Custom Temporal Time</span>
+                    <span className="text-[9px] uppercase font-black text-zinc-500">Set Custom Temporal Time <Tooltip text={TooltipTexts['starting.customTime']} /></span>
                     <div className="flex items-center gap-2">
                       <div className="flex flex-col items-center">
                         <label className="text-[8px] uppercase text-zinc-500 font-bold mb-1">HH</label>
@@ -1048,7 +1050,7 @@ export function OperatorPanel({ initialState, onStateChange }) {
                 </div>
                 <div className="flex flex-col gap-4">
                   <div className="flex flex-col gap-1.5">
-                    <label className="text-[10px] uppercase font-black tracking-wider text-zinc-400">Show Title</label>
+                    <label className="text-[10px] uppercase font-black tracking-wider text-zinc-400">Show Title <Tooltip text={TooltipTexts['main.segmentName']} /></label>
                     <input
                       type="text"
                       id="main_segmentName"
@@ -1061,7 +1063,7 @@ export function OperatorPanel({ initialState, onStateChange }) {
 
                   {/* Standalone Logo Uploader for Ticker branding */}
                   <div className="flex flex-col gap-1.5 bg-zinc-950 p-4 rounded-xl border border-zinc-850">
-                    <label className="text-[10px] uppercase font-black tracking-wider text-zinc-400">News Ticker Brand Logo (Image/Video Loop)</label>
+                    <label className="text-[10px] uppercase font-black tracking-wider text-zinc-400">News Ticker Brand Logo (Image/Video Loop) <Tooltip text={TooltipTexts['main.logoUrl']} /></label>
                     <input
                       type="file"
                       accept="image/*,video/*"
@@ -1170,7 +1172,7 @@ export function OperatorPanel({ initialState, onStateChange }) {
                   </button>
                 </div>
                 <div className="flex flex-col gap-3">
-                  <label className="text-[10px] uppercase font-black tracking-wider text-zinc-400">One news statement per line</label>
+                  <label className="text-[10px] uppercase font-black tracking-wider text-zinc-400">One news statement per line <Tooltip text={TooltipTexts['main.tickerItems']} /></label>
                   <textarea
                     rows="4"
                     value={draftState.main.tickerItems.join('\n')}
@@ -1237,7 +1239,7 @@ export function OperatorPanel({ initialState, onStateChange }) {
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="flex flex-col gap-1.5">
-                    <label className="text-[10px] uppercase font-black tracking-wider text-zinc-400">Host Name</label>
+                    <label className="text-[10px] uppercase font-black tracking-wider text-zinc-400">Host Name <Tooltip text={TooltipTexts['main.hostName']} /></label>
                     <input
                       type="text"
                       id="main_hostName"
@@ -1248,7 +1250,7 @@ export function OperatorPanel({ initialState, onStateChange }) {
                     {renderFormatterButtons('main', 'hostName', 'main_hostName')}
                   </div>
                   <div className="flex flex-col gap-1.5">
-                    <label className="text-[10px] uppercase font-black tracking-wider text-zinc-400">Credentials Title</label>
+                    <label className="text-[10px] uppercase font-black tracking-wider text-zinc-400">Credentials Title <Tooltip text={TooltipTexts['main.hostTitle']} /></label>
                     <input
                       type="text"
                       id="main_hostTitle"
@@ -1262,7 +1264,7 @@ export function OperatorPanel({ initialState, onStateChange }) {
                   {/* Host visibility timer parameters */}
                   <div className="flex flex-col gap-2 md:col-span-2 border-t border-zinc-850 pt-3">
                     <div className="flex items-center justify-between">
-                      <span className="text-xs text-zinc-400 font-bold">Auto-hide host nameplate automatically</span>
+                      <span className="text-xs text-zinc-400 font-bold">Auto-hide host nameplate automatically <Tooltip text={TooltipTexts['main.hostAutoHide']} /></span>
                       <input 
                         type="checkbox"
                         checked={draftState.main.hostAutoHide}
@@ -1272,7 +1274,7 @@ export function OperatorPanel({ initialState, onStateChange }) {
                     </div>
                     {draftState.main.hostAutoHide && (
                       <div className="flex flex-col gap-2 mt-1 bg-zinc-950 p-3 rounded-lg border border-zinc-850">
-                        <span className="text-[9px] uppercase font-black text-zinc-500">Auto-Hide Duration (seconds)</span>
+                        <span className="text-[9px] uppercase font-black text-zinc-500">Auto-Hide Duration (seconds) <Tooltip text={TooltipTexts['main.hostHideDuration']} /></span>
                         <div className="flex gap-2 items-center">
                           {[5, 10, 30].map(s => (
                             <button
@@ -1354,7 +1356,7 @@ export function OperatorPanel({ initialState, onStateChange }) {
                       {/* Inputs */}
                       <div className="grid grid-cols-2 gap-3">
                         <div className="flex flex-col gap-1">
-                          <label className="text-[9px] uppercase font-black text-zinc-400">Product Name</label>
+                          <label className="text-[9px] uppercase font-black text-zinc-400">Product Name <Tooltip text={TooltipTexts['main.productName']} /></label>
                           <input
                             type="text"
                             value={product.name || ''}
@@ -1369,7 +1371,7 @@ export function OperatorPanel({ initialState, onStateChange }) {
                           />
                         </div>
                         <div className="flex flex-col gap-1">
-                          <label className="text-[9px] uppercase font-black text-zinc-400">Price Pill</label>
+                          <label className="text-[9px] uppercase font-black text-zinc-400">Price Pill <Tooltip text={TooltipTexts['main.productPrice']} /></label>
                           <input
                             type="text"
                             value={product.price || ''}
@@ -1386,7 +1388,7 @@ export function OperatorPanel({ initialState, onStateChange }) {
                       </div>
 
                       <div className="flex flex-col gap-1">
-                        <label className="text-[9px] uppercase font-black text-zinc-400">Promo Scrolling Banner</label>
+                        <label className="text-[9px] uppercase font-black text-zinc-400">Promo Scrolling Banner <Tooltip text={TooltipTexts['main.productPromoText']} /></label>
                         <input
                           type="text"
                           value={product.promoText || ''}
@@ -1403,7 +1405,7 @@ export function OperatorPanel({ initialState, onStateChange }) {
 
                       {/* Direct file upload wrapper */}
                       <div className="flex flex-col gap-1 bg-zinc-900/60 p-2.5 rounded border border-zinc-850">
-                        <span className="text-[8px] uppercase font-black text-zinc-500">Asset File Upload (Image / Animated GIF / Video MP4)</span>
+                        <span className="text-[8px] uppercase font-black text-zinc-500">Asset File Upload (Image / Animated GIF / Video MP4) <Tooltip text={TooltipTexts['main.productImage']} /></span>
                         <input 
                           type="file" 
                           accept="image/*,video/*"
@@ -1427,7 +1429,7 @@ export function OperatorPanel({ initialState, onStateChange }) {
                       {/* Visibility Timers */}
                       <div className="flex flex-col gap-1.5 border-t border-zinc-850 pt-2.5">
                         <div className="flex items-center justify-between">
-                          <span className="text-[9px] uppercase font-black text-zinc-400">Stay on screen indefinitely</span>
+                          <span className="text-[9px] uppercase font-black text-zinc-400">Stay on screen indefinitely <Tooltip text={TooltipTexts['main.productPermanent']} /></span>
                           <input 
                             type="checkbox"
                             checked={product.stayOnScreen}
@@ -1443,7 +1445,7 @@ export function OperatorPanel({ initialState, onStateChange }) {
                         </div>
                         {!product.stayOnScreen && (
                           <div className="flex flex-col gap-1.5 mt-1 bg-zinc-900 p-2 rounded border border-zinc-850">
-                            <span className="text-[8px] uppercase font-black text-zinc-500">Auto-Hide Duration (seconds)</span>
+                            <span className="text-[8px] uppercase font-black text-zinc-500">Auto-Hide Duration (seconds) <Tooltip text={TooltipTexts['main.productHideDuration']} /></span>
                             <div className="flex gap-2 items-center">
                               {[5, 10, 30].map(s => (
                                 <button
@@ -1562,7 +1564,7 @@ export function OperatorPanel({ initialState, onStateChange }) {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="flex flex-col gap-4">
                 <div className="flex flex-col gap-1.5">
-                  <label className="text-[10px] uppercase font-black tracking-wider text-zinc-400">BRB Banner Header Text</label>
+                  <label className="text-[10px] uppercase font-black tracking-wider text-zinc-400">BRB Banner Header Text <Tooltip text={TooltipTexts['brb.bannerText']} /></label>
                   <input
                     type="text"
                     id="brb_bannerText"
@@ -1573,7 +1575,7 @@ export function OperatorPanel({ initialState, onStateChange }) {
                   {renderFormatterButtons('brb', 'bannerText', 'brb_bannerText')}
                 </div>
                 <div className="flex flex-col gap-1.5">
-                  <label className="text-[10px] uppercase font-black tracking-wider text-zinc-400">Notices / Status Box Statements (One statement per line)</label>
+                  <label className="text-[10px] uppercase font-black tracking-wider text-zinc-400">Notices / Status Box Statements (One statement per line) <Tooltip text={TooltipTexts['brb.announcements']} /></label>
                   <textarea
                     rows="4"
                     value={draftState.brb.announcements.join('\n')}
@@ -1587,7 +1589,7 @@ export function OperatorPanel({ initialState, onStateChange }) {
 
                 {/* Standalone Logo Uploader */}
                 <div className="flex flex-col gap-1.5 bg-zinc-950 p-4 rounded-xl border border-zinc-850">
-                  <label className="text-[10px] uppercase font-black tracking-wider text-zinc-400">Scene Brand Logo (Image/Video Loop)</label>
+                  <label className="text-[10px] uppercase font-black tracking-wider text-zinc-400">Scene Brand Logo (Image/Video Loop) <Tooltip text={TooltipTexts['brb.logoUrl']} /></label>
                   <input
                     type="file"
                     accept="image/*,video/*"
@@ -1669,7 +1671,7 @@ export function OperatorPanel({ initialState, onStateChange }) {
 
                 {/* HMS Custom Time Setup */}
                 <div className="flex flex-col gap-2 border-t border-zinc-800/60 pt-3">
-                  <span className="text-[9px] uppercase font-black text-zinc-500">Set Custom Temporal Time</span>
+                  <span className="text-[9px] uppercase font-black text-zinc-500">Set Custom Temporal Time <Tooltip text={TooltipTexts['brb.customTime']} /></span>
                   <div className="flex items-center gap-2">
                     <div className="flex flex-col items-center">
                       <label className="text-[8px] uppercase text-zinc-500 font-bold mb-1">HH</label>
@@ -1738,7 +1740,7 @@ export function OperatorPanel({ initialState, onStateChange }) {
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="flex flex-col gap-1.5">
-                <label className="text-[10px] uppercase font-black tracking-wider text-zinc-400">Closing Main Title</label>
+                <label className="text-[10px] uppercase font-black tracking-wider text-zinc-400">Closing Main Title <Tooltip text={TooltipTexts['ending.title']} /></label>
                 <input
                   type="text"
                   id="ending_title"
@@ -1749,7 +1751,7 @@ export function OperatorPanel({ initialState, onStateChange }) {
                 {renderFormatterButtons('ending', 'title', 'ending_title')}
               </div>
               <div className="flex flex-col gap-1.5">
-                <label className="text-[10px] uppercase font-black tracking-wider text-zinc-400">Credits Signature</label>
+                <label className="text-[10px] uppercase font-black tracking-wider text-zinc-400">Credits Signature <Tooltip text={TooltipTexts['ending.signature']} /></label>
                 <input
                   type="text"
                   value={draftState.ending.signature}
@@ -1758,7 +1760,7 @@ export function OperatorPanel({ initialState, onStateChange }) {
                 />
               </div>
               <div className="flex flex-col gap-1.5 md:col-span-2">
-                <label className="text-[10px] uppercase font-black tracking-wider text-zinc-400">Closing Paragraph / Description Notice</label>
+                <label className="text-[10px] uppercase font-black tracking-wider text-zinc-400">Closing Paragraph / Description Notice <Tooltip text={TooltipTexts['ending.description']} /></label>
                 <textarea
                   rows="3"
                   value={draftState.ending.description}
@@ -1769,7 +1771,7 @@ export function OperatorPanel({ initialState, onStateChange }) {
 
               {/* Standalone Logo Uploader */}
               <div className="flex flex-col gap-1.5 md:col-span-2 bg-zinc-950 p-4 rounded-xl border border-zinc-850">
-                <label className="text-[10px] uppercase font-black tracking-wider text-zinc-400">Ending Outro Logo Asset (Image/Video Loop)</label>
+                <label className="text-[10px] uppercase font-black tracking-wider text-zinc-400">Ending Outro Logo Asset (Image/Video Loop) <Tooltip text={TooltipTexts['ending.logoUrl']} /></label>
                 <input
                   type="file"
                   accept="image/*,video/*"
@@ -1816,7 +1818,7 @@ export function OperatorPanel({ initialState, onStateChange }) {
                 <Layers className="w-4 h-4" /> Default Fallback Logo Customization
               </h2>
               <div className="flex flex-col gap-3">
-                <label className="text-[10px] uppercase font-black text-zinc-400">Fallback Brand Logo (static image or animated/video loop)</label>
+                <label className="text-[10px] uppercase font-black text-zinc-400">Fallback Brand Logo (static image or animated/video loop) <Tooltip text={TooltipTexts['settings.logoUrl']} /></label>
                 <input 
                   type="file" 
                   accept="image/*,video/*"
@@ -1867,7 +1869,7 @@ export function OperatorPanel({ initialState, onStateChange }) {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {/* Typography color picker */}
                 <div className="flex flex-col gap-2">
-                  <span className="text-[10px] uppercase font-black text-zinc-400">Typography Base Color</span>
+                  <span className="text-[10px] uppercase font-black text-zinc-400">Typography Base Color <Tooltip text={TooltipTexts['settings.typographyColor']} /></span>
                   <div className="flex items-center gap-2">
                     <input 
                       type="color" 
@@ -1898,7 +1900,7 @@ export function OperatorPanel({ initialState, onStateChange }) {
 
                 {/* Banner background color picker */}
                 <div className="flex flex-col gap-2">
-                  <span className="text-[10px] uppercase font-black text-zinc-400">Banner Background Color</span>
+                  <span className="text-[10px] uppercase font-black text-zinc-400">Banner Background Color <Tooltip text={TooltipTexts['settings.bannerBgColor']} /></span>
                   <div className="flex items-center gap-2">
                     <input 
                       type="color" 
@@ -1949,7 +1951,7 @@ export function OperatorPanel({ initialState, onStateChange }) {
               </h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="flex flex-col gap-3">
-                  <span className="text-[10px] uppercase font-black text-brand-gold tracking-wider">Starting Presets</span>
+                  <span className="text-[10px] uppercase font-black text-brand-gold tracking-wider">Starting Presets <Tooltip text={TooltipTexts['settings.timerPresets']} /></span>
                   <div className="grid grid-cols-5 gap-1.5">
                     {[0, 1, 2, 3, 4].map(i => {
                       const mins = draftState.timerPresets?.starting?.[i]
@@ -1983,7 +1985,7 @@ export function OperatorPanel({ initialState, onStateChange }) {
                 </div>
 
                 <div className="flex flex-col gap-3">
-                  <span className="text-[10px] uppercase font-black text-brand-gold tracking-wider">BRB Presets</span>
+                  <span className="text-[10px] uppercase font-black text-brand-gold tracking-wider">BRB Presets <Tooltip text={TooltipTexts['settings.timerPresets']} /></span>
                   <div className="grid grid-cols-5 gap-1.5">
                     {[0, 1, 2, 3, 4].map(i => {
                       const mins = draftState.timerPresets?.brb?.[i]
@@ -2044,7 +2046,7 @@ export function OperatorPanel({ initialState, onStateChange }) {
               {/* Display & Layout settings */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 bg-zinc-950 p-4 rounded-xl border border-zinc-850">
                 <div className="flex flex-col gap-1">
-                  <label className="text-[9px] uppercase font-black text-zinc-400">Display Layout Format</label>
+                  <label className="text-[9px] uppercase font-black text-zinc-400">Display Layout Format <Tooltip text={TooltipTexts['settings.socialFormat']} /></label>
                   <select
                     value={draftState.socialsStyle?.format || 'icon-text'}
                     onChange={(e) => {
@@ -2063,7 +2065,7 @@ export function OperatorPanel({ initialState, onStateChange }) {
                 </div>
 
                 <div className="flex flex-col gap-1">
-                  <label className="text-[9px] uppercase font-black text-zinc-400">Display Grid Alignment</label>
+                  <label className="text-[9px] uppercase font-black text-zinc-400">Display Grid Alignment <Tooltip text={TooltipTexts['settings.socialLayout']} /></label>
                   <select
                     value={draftState.socialsStyle?.layout || 'grid'}
                     onChange={(e) => {
@@ -2106,7 +2108,7 @@ export function OperatorPanel({ initialState, onStateChange }) {
                     </div>
 
                     <div className="flex-1 flex flex-col gap-1">
-                      <label className="text-[8px] uppercase font-black text-zinc-500">Display String Handle</label>
+                      <label className="text-[8px] uppercase font-black text-zinc-500">Display String Handle <Tooltip text={TooltipTexts['settings.socialHandles']} /></label>
                       <input
                         type="text"
                         value={handle.text}
