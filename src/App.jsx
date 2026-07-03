@@ -70,7 +70,9 @@ const defaultState = {
     "logoUrl": "",
     "socials": [],
     "sunraySpeed": 4,
-    "sunrayIntensity": 0.3
+    "sunrayIntensity": 0.3,
+    "greenSpeed": 4,
+    "greenIntensity": 0.45
   },
   "starting": {
     "announcement": "Advocating the [green]Organic Way[/green] of Living",
@@ -85,7 +87,9 @@ const defaultState = {
       "Celebrating 16 Years of Wellness, Credibility, and Prosperity"
     ],
     "sunraySpeed": 4,
-    "sunrayIntensity": 0.3
+    "sunrayIntensity": 0.3,
+    "greenSpeed": 4,
+    "greenIntensity": 0.45
   },
   "main": {
     "headerVisible": true,
@@ -118,7 +122,9 @@ const defaultState = {
       }
     ],
     "sunraySpeed": 4,
-    "sunrayIntensity": 0.3
+    "sunrayIntensity": 0.3,
+    "greenSpeed": 4,
+    "greenIntensity": 0.45
   },
   "brb": {
     "bannerText": "Be Right [gold]Back[/gold]",
@@ -130,7 +136,9 @@ const defaultState = {
       "Stay tuned for the awarding ceremony next!"
     ],
     "sunraySpeed": 4,
-    "sunrayIntensity": 0.3
+    "sunrayIntensity": 0.3,
+    "greenSpeed": 4,
+    "greenIntensity": 0.45
   },
   "ending": {
     "title": "Thank you for [gold]joining us[/gold]!",
@@ -138,7 +146,9 @@ const defaultState = {
     "signature": "Made with ❤️ Essensa Naturale Family",
     "logoUrl": "",
     "sunraySpeed": 4,
-    "sunrayIntensity": 0.3
+    "sunrayIntensity": 0.3,
+    "greenSpeed": 4,
+    "greenIntensity": 0.45
   }
 };
 
@@ -465,7 +475,9 @@ function App() {
       return (
         <OverlayWrapper currentView={currentView} style={{
           '--sunray-speed': `${state['intermission-banner']?.sunraySpeed || 4}s`,
-          '--sunray-glow': state['intermission-banner']?.sunrayIntensity ?? 0.3
+          '--sunray-glow': state['intermission-banner']?.sunrayIntensity ?? 0.3,
+          '--green-speed': `${state['intermission-banner']?.greenSpeed || 4}s`,
+          '--green-glow': state['intermission-banner']?.greenIntensity ?? 0.45
         }}>
           <div className="canvas-1080p flex flex-row bg-white select-none">
             {/* Left Half: Charcoal Black */}
@@ -531,7 +543,9 @@ function App() {
       return (
         <OverlayWrapper currentView={currentView} style={{
           '--sunray-speed': `${state.starting?.sunraySpeed || 4}s`,
-          '--sunray-glow': state.starting?.sunrayIntensity ?? 0.3
+          '--sunray-glow': state.starting?.sunrayIntensity ?? 0.3,
+          '--green-speed': `${state.starting?.greenSpeed || 4}s`,
+          '--green-glow': state.starting?.greenIntensity ?? 0.45
         }}>
           <div className="canvas-1080p flex flex-row bg-white select-none">
             {/* Left Half: Charcoal Black */}
@@ -602,7 +616,9 @@ function App() {
       return (
         <OverlayWrapper currentView={currentView} style={{
           '--sunray-speed': `${state.brb?.sunraySpeed || 4}s`,
-          '--sunray-glow': state.brb?.sunrayIntensity ?? 0.3
+          '--sunray-glow': state.brb?.sunrayIntensity ?? 0.3,
+          '--green-speed': `${state.brb?.greenSpeed || 4}s`,
+          '--green-glow': state.brb?.greenIntensity ?? 0.45
         }}>
           <div className="canvas-1080p bg-brand-cream flex flex-col items-center justify-center relative select-none">
             {/* Rotating sunburst backdrop */}
@@ -656,7 +672,9 @@ function App() {
       return (
         <OverlayWrapper currentView={currentView} style={{
           '--sunray-speed': `${state.ending?.sunraySpeed || 4}s`,
-          '--sunray-glow': state.ending?.sunrayIntensity ?? 0.3
+          '--sunray-glow': state.ending?.sunrayIntensity ?? 0.3,
+          '--green-speed': `${state.ending?.greenSpeed || 4}s`,
+          '--green-glow': state.ending?.greenIntensity ?? 0.45
         }}>
           <div className="canvas-1080p bg-brand-cream flex flex-col items-center justify-center relative select-none">
             {/* Rotating sunburst backdrop */}
@@ -703,7 +721,9 @@ function App() {
       return (
         <OverlayWrapper currentView={currentView} style={{
           '--sunray-speed': `${state.main?.sunraySpeed || 4}s`,
-          '--sunray-glow': state.main?.sunrayIntensity ?? 0.3
+          '--sunray-glow': state.main?.sunrayIntensity ?? 0.3,
+          '--green-speed': `${state.main?.greenSpeed || 4}s`,
+          '--green-glow': state.main?.greenIntensity ?? 0.45
         }}>
           <div className="canvas-1080p bg-transparent overflow-hidden">
             

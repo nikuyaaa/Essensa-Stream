@@ -23,30 +23,10 @@ export function OperatorPanel({ initialState, onStateChange }) {
   useEffect(() => {
     const hasConfigChanged = !state ||
       JSON.stringify(initialState['intermission-banner']) !== JSON.stringify(state['intermission-banner']) ||
-      initialState.starting.announcement !== state.starting.announcement ||
-      initialState.starting.tagline !== state.starting.tagline ||
-      initialState.starting.superTitle !== state.starting.superTitle ||
-      initialState.starting.subTitle !== state.starting.subTitle ||
-      initialState.starting.logoUrl !== state.starting.logoUrl ||
-      JSON.stringify(initialState.starting.tickerItems) !== JSON.stringify(state.starting.tickerItems) ||
-      initialState.main.headerVisible !== state.main.headerVisible ||
-      initialState.main.segmentName !== state.main.segmentName ||
-      initialState.main.showClock !== state.main.showClock ||
-      initialState.main.tickerVisible !== state.main.tickerVisible ||
-      initialState.main.logoUrl !== state.main.logoUrl ||
-      JSON.stringify(initialState.main.tickerItems) !== JSON.stringify(state.main.tickerItems) ||
-      initialState.main.hostVisible !== state.main.hostVisible ||
-      initialState.main.hostName !== state.main.hostName ||
-      initialState.main.hostTitle !== state.main.hostTitle ||
-      initialState.main.hostAutoHide !== state.main.hostAutoHide ||
-      JSON.stringify(initialState.main.products) !== JSON.stringify(state.main.products) ||
-      initialState.brb.bannerText !== state.brb.bannerText ||
-      initialState.brb.logoUrl !== state.brb.logoUrl ||
-      JSON.stringify(initialState.brb.announcements) !== JSON.stringify(state.brb.announcements) ||
-      initialState.ending.title !== state.ending.title ||
-      initialState.ending.description !== state.ending.description ||
-      initialState.ending.signature !== state.ending.signature ||
-      initialState.ending.logoUrl !== state.ending.logoUrl ||
+      JSON.stringify(initialState.starting) !== JSON.stringify(state.starting) ||
+      JSON.stringify(initialState.main) !== JSON.stringify(state.main) ||
+      JSON.stringify(initialState.brb) !== JSON.stringify(state.brb) ||
+      JSON.stringify(initialState.ending) !== JSON.stringify(state.ending) ||
       JSON.stringify(initialState.socials) !== JSON.stringify(state.socials) ||
       JSON.stringify(initialState.socialsStyle) !== JSON.stringify(state.socialsStyle) ||
       JSON.stringify(initialState.timerPresets) !== JSON.stringify(state.timerPresets) ||
@@ -309,6 +289,44 @@ export function OperatorPanel({ initialState, onStateChange }) {
             value={draftState[tab]?.sunrayIntensity ?? 0.3} 
             onChange={(e) => updateDraft(tab, 'sunrayIntensity', parseFloat(e.target.value))}
             className="w-full accent-brand-gold bg-zinc-900 border border-zinc-800 rounded h-2 cursor-pointer"
+          />
+        </div>
+      </div>
+    </div>
+  );
+
+  const renderGreenSliders = (tab) => (
+    <div className="flex flex-col gap-2 bg-zinc-950 p-4 rounded-xl border border-zinc-850">
+      <span className="text-[10px] uppercase font-black text-brand-accent">Green Wrap Text Animation Settings</span>
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div className="flex flex-col gap-1">
+          <div className="flex justify-between text-[9px] uppercase font-black text-zinc-400">
+            <span>Speed (seconds)</span>
+            <span className="text-zinc-200 font-bold">{draftState[tab]?.greenSpeed || 4}s</span>
+          </div>
+          <input 
+            type="range" 
+            min="1" 
+            max="15" 
+            step="0.5"
+            value={draftState[tab]?.greenSpeed || 4} 
+            onChange={(e) => updateDraft(tab, 'greenSpeed', parseFloat(e.target.value))}
+            className="w-full accent-brand-accent bg-zinc-900 border border-zinc-800 rounded h-2 cursor-pointer"
+          />
+        </div>
+        <div className="flex flex-col gap-1">
+          <div className="flex justify-between text-[9px] uppercase font-black text-zinc-400">
+            <span>Glow Intensity</span>
+            <span className="text-zinc-200 font-bold">{(draftState[tab]?.greenIntensity ?? 0.45).toFixed(2)}</span>
+          </div>
+          <input 
+            type="range" 
+            min="0" 
+            max="1" 
+            step="0.05"
+            value={draftState[tab]?.greenIntensity ?? 0.45} 
+            onChange={(e) => updateDraft(tab, 'greenIntensity', parseFloat(e.target.value))}
+            className="w-full accent-brand-accent bg-zinc-900 border border-zinc-800 rounded h-2 cursor-pointer"
           />
         </div>
       </div>
@@ -786,8 +804,9 @@ export function OperatorPanel({ initialState, onStateChange }) {
             </div>
 
             {/* Sunray sliders */}
-            <div className="mt-4">
+            <div className="mt-4 flex flex-col gap-4">
               {renderSunraySliders('intermission-banner')}
+              {renderGreenSliders('intermission-banner')}
             </div>
 
             {/* Individual Save Button */}
@@ -873,6 +892,12 @@ export function OperatorPanel({ initialState, onStateChange }) {
                         Loaded URL: {draftState.starting.logoUrl}
                       </span>
                     )}
+                  </div>
+
+                  {/* Text Animation sliders */}
+                  <div className="mt-4 flex flex-col gap-4">
+                    {renderSunraySliders('starting')}
+                    {renderGreenSliders('starting')}
                   </div>
 
                   <div className="flex justify-end mt-2">
@@ -1163,6 +1188,26 @@ export function OperatorPanel({ initialState, onStateChange }) {
                   >
                     <Save className="w-3.5 h-3.5 text-brand-gold" />
                     Save Ticker Settings
+                  </button>
+                </div>
+              </div>
+
+              {/* Text Animation Settings */}
+              <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-6 shadow-xl flex flex-col gap-4">
+                <h2 className="text-sm font-black text-brand-gold uppercase tracking-widest flex items-center gap-2 border-b border-zinc-800 pb-3">
+                  <Sparkles className="w-4 h-4 text-brand-gold" /> Text Animation Settings
+                </h2>
+                <div className="flex flex-col gap-4">
+                  {renderSunraySliders('main')}
+                  {renderGreenSliders('main')}
+                </div>
+                <div className="flex justify-end border-t border-zinc-800 pt-3 mt-1">
+                  <button
+                    onClick={() => commitSection('main')}
+                    className="flex items-center gap-2 bg-brand-green hover:bg-brand-green/90 text-white font-black uppercase tracking-wider text-xs py-2 px-4 rounded-lg border border-brand-gold/45 shadow-sm active:scale-95"
+                  >
+                    <Save className="w-3.5 h-3.5 text-brand-gold" />
+                    Save Text Animation Settings
                   </button>
                 </div>
               </div>
@@ -1560,8 +1605,9 @@ export function OperatorPanel({ initialState, onStateChange }) {
                   )}
                 </div>
 
-                <div className="mt-4">
+                <div className="mt-4 flex flex-col gap-4">
                   {renderSunraySliders('brb')}
+                  {renderGreenSliders('brb')}
                 </div>
 
                 <div className="flex justify-end mt-2">
@@ -1680,9 +1726,6 @@ export function OperatorPanel({ initialState, onStateChange }) {
                   </div>
                 </div>
               </div>
-              <div className="mt-4 border-t border-zinc-800 pt-4">
-                {renderSunraySliders('starting')}
-              </div>
             </div>
           </div>
         )}
@@ -1745,8 +1788,9 @@ export function OperatorPanel({ initialState, onStateChange }) {
               </div>
             </div>
 
-            <div className="mt-4">
+            <div className="mt-4 flex flex-col gap-4">
               {renderSunraySliders('ending')}
+              {renderGreenSliders('ending')}
             </div>
 
             {/* Individual Save Button */}
@@ -1972,13 +2016,17 @@ export function OperatorPanel({ initialState, onStateChange }) {
                   </div>
                 </div>
               </div>
-              <div className="mt-4 border-t border-zinc-850 pt-4">
+              <div className="mt-4 border-t border-zinc-850 pt-4 flex flex-col gap-4">
                 {renderSunraySliders('main')}
+                {renderGreenSliders('main')}
               </div>
 
               <div className="flex justify-end border-t border-zinc-800 pt-3 mt-1">
                 <button
-                  onClick={() => commitSection('timerPresets')}
+                  onClick={() => {
+                    commitSection('timerPresets');
+                    commitSection('main');
+                  }}
                   className="flex items-center gap-2 bg-brand-green hover:bg-brand-green/90 text-white font-black uppercase tracking-wider text-xs py-2 px-4 rounded-lg border border-brand-gold/45 shadow-sm active:scale-95"
                 >
                   <Save className="w-3.5 h-3.5 text-brand-gold" />

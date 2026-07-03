@@ -204,10 +204,33 @@ body {
 }
 
 /* Split-tone text keyword accent styles */
+@keyframes green-sunray-shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
 .keyword-green {
-  color: #4CAF50 !important;
-  text-shadow: 0 0 8px rgba(76, 175, 80, 0.45);
+  background: linear-gradient(
+    120deg, 
+    #1b7339 0%, 
+    #4caf50 25%, 
+    #81c784 45%, 
+    #ffffff 50%, 
+    #81c784 55%, 
+    #4caf50 75%, 
+    #1b7339 100%
+  );
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: green-sunray-shimmer var(--green-speed, 4s) infinite linear;
+  filter: drop-shadow(0 0 10px rgba(76, 175, 80, var(--green-glow, 0.45)));
   font-weight: 900;
+  display: inline-block;
 }
 
 /* Looping hardware-accelerated Golden Sunray text sweep animation */
