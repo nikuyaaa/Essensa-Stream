@@ -69,5 +69,10 @@ export const TooltipTexts = {
   "animation.gradientSpeed": "Sets the duration in seconds for a full color transition cycle of the Metallic Gradient animation.",
   "animation.gradientIntensity": "Configures the opacity of the white shifting sheen highlights inside the Metallic Gradient text.",
   "animation.glitchSpeed": "Controls the frequency in seconds of the Chromatic Aberration (Glitch) animation.",
-  "animation.glitchIntensity": "Adjusts the pixel offset width of the channel split chromatic aberration for the Glitch effect."
+  "animation.glitchIntensity": "Adjusts the pixel offset width of the channel split chromatic aberration for the Glitch effect.",
+  "dual-pov.segmentName": "The primary event header title displayed in the center of the top header bar of the Dual-POV frame backdrop overlay.",
+  "dual-pov.cam1Label": "Label text overlay printed inside the top-left area of the Host Camera window box cutout.",
+  "dual-pov.cam2Label": "Label text overlay printed inside the top-left area of the Guest Camera window box cutout.",
+  "dual-pov.subText": "Secondary text information printed at the center bottom of the Dual-POV overlay canvas.",
+  "dual-pov.accentTag": "Capsule badge pill announcement text rendered beneath the sub-text metadata."
 };

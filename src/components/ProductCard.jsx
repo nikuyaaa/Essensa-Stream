@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Sparkles, Tag } from 'lucide-react';
 
@@ -11,8 +11,9 @@ export function ProductCard({
   speed = 25,
   className = '' 
 }) {
+  const [delay] = useState(() => -((Date.now() / 1000) % speed));
   return (
-    <AnimatePresence>
+    <AnimatePresence initial={false}>
       {isOpen && (
         <motion.div
           initial={{ x: 450, opacity: 0, scale: 0.95 }}
@@ -103,15 +104,15 @@ export function ProductCard({
 
               {/* 2. Scrolling Marquee Area */}
               <div className="flex-1 h-full flex items-center overflow-hidden bg-brand-charcoal relative">
-                <div className="marquee-container text-xs font-black uppercase tracking-wider text-white flex items-center">
+                <div key={`${promoText}_${speed}`} className="marquee-container text-xs font-black uppercase tracking-wider text-white flex items-center">
                   {/* Duplicate scrolling text for smooth infinite loop */}
-                  <div className="marquee-content gap-12 flex items-center pr-12 animate-shimmer" style={{ animationDuration: `${speed}s` }}>
+                  <div className="marquee-content gap-12 flex items-center pr-12 animate-shimmer" style={{ animationDuration: `${speed}s`, animationDelay: `${delay}s` }}>
                     <span>{promoText}</span>
                     <span>•</span>
                     <span>{promoText}</span>
                     <span>•</span>
                   </div>
-                  <div className="marquee-content gap-12 flex items-center pr-12 animate-shimmer" style={{ animationDuration: `${speed}s` }} aria-hidden="true">
+                  <div className="marquee-content gap-12 flex items-center pr-12 animate-shimmer" style={{ animationDuration: `${speed}s`, animationDelay: `${delay}s` }} aria-hidden="true">
                     <span>{promoText}</span>
                     <span>•</span>
                     <span>{promoText}</span>

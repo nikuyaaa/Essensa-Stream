@@ -65,5 +65,20 @@
     "gradientIntensity": 0.45,
     "glitchSpeed": 3.0,
     "glitchIntensity": 0.75
+  },
+  "dual-pov": {
+    "segmentName": "Revitalizing Health [gold]Anytime, Anywhere[/gold].",
+    "cam1Label": "CAM 01 - HOST",
+    "cam2Label": "CAM 02 - GUEST",
+    "subText": "16 YEARS OF WELLNESS & PROSPERITY",
+    "accentTag": "ORGANIC WAY OF LIVING",
+    "sunraySpeed": 4.0,
+    "sunrayIntensity": 0.30,
+    "glowSpeed": 2.5,
+    "glowIntensity": 0.30,
+    "gradientSpeed": 6.0,
+    "gradientIntensity": 0.45,
+    "glitchSpeed": 3.0,
+    "glitchIntensity": 0.75
   }
 }

@@ -21,7 +21,7 @@ export function LowerThird({
   }, [isOpen, autoHide, name, title, onClose]);
 
   return (
-    <AnimatePresence>
+    <AnimatePresence initial={false}>
       {isOpen && (
         <motion.div
           initial={{ x: -600, opacity: 0 }}

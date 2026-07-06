@@ -450,4 +450,23 @@ body {
                0 8px 24px rgba(0, 0, 0, 0.4) !important;
 }
 
+/* Premium Animated Gold-to-Green Camera Border Glow */
+@keyframes borderGlowLoop {
+  0%, 100% {
+    border-color: #D4AF37;
+    box-shadow: 0 0 16px rgba(212, 175, 55, 0.6), 
+                0 0 32px rgba(212, 175, 55, 0.3);
+  }
+  50% {
+    border-color: #1B8A43;
+    box-shadow: 0 0 16px rgba(27, 138, 67, 0.6), 
+                0 0 32px rgba(27, 138, 67, 0.3);
+  }
+}
+
+.animate-border-glow {
+  animation: borderGlowLoop 6s ease-in-out infinite;
+  border-width: 4px;
+}
+
 

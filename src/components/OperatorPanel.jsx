@@ -35,6 +35,7 @@ export function OperatorPanel({ initialState, onStateChange }) {
       JSON.stringify(initialState.main) !== JSON.stringify(state.main) ||
       JSON.stringify(initialState.brb) !== JSON.stringify(state.brb) ||
       JSON.stringify(initialState.ending) !== JSON.stringify(state.ending) ||
+      JSON.stringify(initialState['dual-pov']) !== JSON.stringify(state['dual-pov']) ||
       JSON.stringify(initialState.socials) !== JSON.stringify(state.socials) ||
       JSON.stringify(initialState.socialsStyle) !== JSON.stringify(state.socialsStyle) ||
       JSON.stringify(initialState.timerPresets) !== JSON.stringify(state.timerPresets) ||
@@ -820,6 +821,7 @@ export function OperatorPanel({ initialState, onStateChange }) {
           { id: 'intermission-banner', label: 'Intermission Banner' },
           { id: 'starting', label: 'Starting Soon' },
           { id: 'main', label: 'Main Stream overlay' },
+          { id: 'dual-pov', label: 'Dual-POV Overlay' },
           { id: 'brb', label: 'Be Right Back (BRB)' },
           { id: 'ending', label: 'Ending outro' },
           { id: 'settings', label: 'Global Settings' }
@@ -1799,6 +1801,124 @@ export function OperatorPanel({ initialState, onStateChange }) {
                 </div>
               </div>
 
+            </div>
+          </div>
+        )}
+
+        {/* TAB: Dual-POV Overlay */}
+        {activeTab === 'dual-pov' && (
+          <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-6 shadow-xl flex flex-col gap-6 animate-fade-in">
+            <h2 className="text-sm font-black text-brand-gold uppercase tracking-widest flex items-center gap-2 border-b border-zinc-800 pb-3">
+              <Layers className="w-4 h-4 text-brand-gold" /> Edit Dual-POV Screen Details
+            </h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="flex flex-col gap-4">
+                <div className="flex flex-col gap-1.5">
+                  <div className="flex items-center justify-between">
+                    <label className="text-[10px] uppercase font-black tracking-wider text-zinc-400">
+                      Header Title <Tooltip text={TooltipTexts['dual-pov.segmentName']} />
+                    </label>
+                    {renderFormatterButtons('dual-pov', 'segmentName', 'dual_pov_segmentName')}
+                  </div>
+                  <input
+                    type="text"
+                    id="dual_pov_segmentName"
+                    value={draftState['dual-pov']?.segmentName || ''}
+                    onChange={(e) => updateDraft('dual-pov', 'segmentName', e.target.value)}
+                    onSelect={(e) => handleTextSelect('dual_pov_segmentName', 'dual-pov', 'segmentName', e)}
+                    className="bg-zinc-950 border border-zinc-850 rounded-xl px-4 py-3 text-xs font-semibold text-zinc-100 placeholder-zinc-650 w-full focus:outline-none focus:border-brand-green/60 shadow-inner"
+                    placeholder="Enter header title text..."
+                  />
+                </div>
+
+                <div className="flex flex-col gap-1.5">
+                  <div className="flex items-center justify-between">
+                    <label className="text-[10px] uppercase font-black tracking-wider text-zinc-400">
+                      Cam 1 Label (Host) <Tooltip text={TooltipTexts['dual-pov.cam1Label']} />
+                    </label>
+                    {renderFormatterButtons('dual-pov', 'cam1Label', 'dual_pov_cam1Label')}
+                  </div>
+                  <input
+                    type="text"
+                    id="dual_pov_cam1Label"
+                    value={draftState['dual-pov']?.cam1Label || ''}
+                    onChange={(e) => updateDraft('dual-pov', 'cam1Label', e.target.value)}
+                    onSelect={(e) => handleTextSelect('dual_pov_cam1Label', 'dual-pov', 'cam1Label', e)}
+                    className="bg-zinc-950 border border-zinc-850 rounded-xl px-4 py-3 text-xs font-semibold text-zinc-100 placeholder-zinc-650 w-full focus:outline-none focus:border-brand-green/60 shadow-inner"
+                    placeholder="Enter camera 1 label..."
+                  />
+                </div>
+
+                <div className="flex flex-col gap-1.5">
+                  <div className="flex items-center justify-between">
+                    <label className="text-[10px] uppercase font-black tracking-wider text-zinc-400">
+                      Cam 2 Label (Guest) <Tooltip text={TooltipTexts['dual-pov.cam2Label']} />
+                    </label>
+                    {renderFormatterButtons('dual-pov', 'cam2Label', 'dual_pov_cam2Label')}
+                  </div>
+                  <input
+                    type="text"
+                    id="dual_pov_cam2Label"
+                    value={draftState['dual-pov']?.cam2Label || ''}
+                    onChange={(e) => updateDraft('dual-pov', 'cam2Label', e.target.value)}
+                    onSelect={(e) => handleTextSelect('dual_pov_cam2Label', 'dual-pov', 'cam2Label', e)}
+                    className="bg-zinc-950 border border-zinc-850 rounded-xl px-4 py-3 text-xs font-semibold text-zinc-100 placeholder-zinc-650 w-full focus:outline-none focus:border-brand-green/60 shadow-inner"
+                    placeholder="Enter camera 2 label..."
+                  />
+                </div>
+              </div>
+
+              <div className="flex flex-col gap-4">
+                <div className="flex flex-col gap-1.5">
+                  <div className="flex items-center justify-between">
+                    <label className="text-[10px] uppercase font-black tracking-wider text-zinc-400">
+                      Sub-text Metadata <Tooltip text={TooltipTexts['dual-pov.subText']} />
+                    </label>
+                    {renderFormatterButtons('dual-pov', 'subText', 'dual_pov_subText')}
+                  </div>
+                  <input
+                    type="text"
+                    id="dual_pov_subText"
+                    value={draftState['dual-pov']?.subText || ''}
+                    onChange={(e) => updateDraft('dual-pov', 'subText', e.target.value)}
+                    onSelect={(e) => handleTextSelect('dual_pov_subText', 'dual-pov', 'subText', e)}
+                    className="bg-zinc-950 border border-zinc-850 rounded-xl px-4 py-3 text-xs font-semibold text-zinc-100 placeholder-zinc-650 w-full focus:outline-none focus:border-brand-green/60 shadow-inner"
+                    placeholder="Enter bottom sub-text..."
+                  />
+                </div>
+
+                <div className="flex flex-col gap-1.5">
+                  <div className="flex items-center justify-between">
+                    <label className="text-[10px] uppercase font-black tracking-wider text-zinc-400">
+                      Sharp Accent Tag <Tooltip text={TooltipTexts['dual-pov.accentTag']} />
+                    </label>
+                    {renderFormatterButtons('dual-pov', 'accentTag', 'dual_pov_accentTag')}
+                  </div>
+                  <input
+                    type="text"
+                    id="dual_pov_accentTag"
+                    value={draftState['dual-pov']?.accentTag || ''}
+                    onChange={(e) => updateDraft('dual-pov', 'accentTag', e.target.value)}
+                    onSelect={(e) => handleTextSelect('dual_pov_accentTag', 'dual-pov', 'accentTag', e)}
+                    className="bg-zinc-950 border border-zinc-850 rounded-xl px-4 py-3 text-xs font-semibold text-zinc-100 placeholder-zinc-650 w-full focus:outline-none focus:border-brand-green/60 shadow-inner"
+                    placeholder="Enter accent capsule pill text..."
+                  />
+                </div>
+              </div>
+            </div>
+
+            <div className="mt-4">
+              {renderEffectSliders('dual-pov')}
+            </div>
+
+            <div className="flex justify-end mt-2">
+              <button
+                onClick={() => commitSection('dual-pov')}
+                className="flex items-center gap-2 bg-brand-green hover:bg-brand-green/90 text-white font-black uppercase tracking-wider text-xs py-2.5 px-6 rounded-lg border border-brand-gold/45 shadow-sm active:scale-95"
+              >
+                <Save className="w-4 h-4 text-brand-gold" />
+                Save Dual-POV Details
+              </button>
             </div>
           </div>
         )}

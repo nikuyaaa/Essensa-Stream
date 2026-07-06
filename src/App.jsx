@@ -425,10 +425,10 @@ function App() {
     };
   }, []);
 
-  const isControlView = urlView === 'control' || urlView === 'dashboard';
+  const isControlView = !urlView || urlView === 'control' || urlView === 'dashboard';
   const currentView = isControlView 
-    ? urlView 
-    : (urlView || 'main'); // Default is main overlay view
+    ? (urlView || 'control') 
+    : urlView; // Default is operator control dashboard
 
   // Adjust body overflow dynamically based on view (enables touchpad scrolling in control panel)
   useEffect(() => {
@@ -874,6 +874,64 @@ function App() {
         </OverlayWrapper>
       );
 
+    // View: Dual-POV Stream Overlay layout
+    case 'dual-pov':
+      return (
+        <OverlayWrapper currentView={currentView} style={{
+          '--sunray-speed': `${state['dual-pov']?.sunraySpeed || 4}s`,
+          '--sunray-glow': state['dual-pov']?.sunrayIntensity ?? 0.3,
+          '--glow-speed': `${state['dual-pov']?.glowSpeed || 2.5}s`,
+          '--glow-intensity': state['dual-pov']?.glowIntensity ?? 0.3,
+          '--gradient-speed': `${state['dual-pov']?.gradientSpeed || 6}s`,
+          '--gradient-intensity': state['dual-pov']?.gradientIntensity ?? 0.45,
+          '--glitch-speed': `${state['dual-pov']?.glitchSpeed || 3}s`,
+          '--glitch-intensity': state['dual-pov']?.glitchIntensity ?? 0.75,
+          '--green-speed': `${state['dual-pov']?.greenSpeed || 4}s`,
+          '--green-glow': state['dual-pov']?.greenIntensity ?? 0.45
+        }}>
+          <Header 
+            segmentName={renderSplitToneText(state['dual-pov']?.segmentName || state.main.segmentName, "text-brand-charcoal", "keyword-green", "keyword-gold")} 
+            startTime={state.main.startTime} 
+            showClock={state.main.showClock} 
+            className="!shadow-[0_8px_24px_rgba(0,0,0,0.15)] !z-40"
+          />
+          <DualPOVOverlay state={state} />
+
+          {/* Lower Third (Host Nameplate) */}
+          <LowerThird 
+            isOpen={state.main.hostVisible} 
+            name={renderSplitToneText(state.main.hostName, "text-white", "keyword-green", "keyword-gold")} 
+            title={renderSplitToneText(state.main.hostTitle, "text-white/80", "keyword-green", "keyword-gold")}
+            autoHide={state.main.hostAutoHide}
+            onClose={() => setState(prev => ({
+              ...prev,
+              main: {
+                ...prev.main,
+                hostVisible: false
+              }
+            }))}
+          />
+
+          {/* Multiple Product Flashcards (Stacked Vertically) */}
+          <div className="absolute bottom-[130px] right-[80px] z-30 flex flex-col-reverse gap-6 items-end select-none">
+            {state.main.products && state.main.products.map(product => (
+              <ProductCard 
+                key={product.id}
+                isOpen={product.visible}
+                name={product.name}
+                price={product.price}
+                imageUrl={product.imageUrl}
+                promoText={product.promoText}
+                speed={product.speed || 25}
+                className="relative !bottom-auto !right-auto"
+              />
+            ))}
+          </div>
+
+          <Ticker items={state.main.tickerItems} logoUrl={state.globalLogoUrl} speed={state.main.tickerSpeed || 60} />
+        </OverlayWrapper>
+      );
+
     // View 6 (Default): Main Live Stream Overlay
     case 'main':
     default:
@@ -945,6 +1003,51 @@ function App() {
         </OverlayWrapper>
       );
   }
+}
+
+function DualPOVOverlay({ state }) {
+  const dualPOVConfig = state['dual-pov'] || {};
+
+  return (
+    <div className="w-[1920px] h-[1080px] bg-transparent flex flex-col select-none relative overflow-hidden">
+      {/* 1. Header Spacer (64px) - matches replicated absolute Header */}
+      <div className="h-[64px] w-full bg-transparent shrink-0" />
+
+      {/* 2. Symmetrical Camera Row (926px) with clean Studio White masking */}
+      <div className="h-[926px] w-full bg-transparent relative z-10 shrink-0">
+        {/* Solid White Backdrop Mask using clipping paths */}
+        <div 
+          className="absolute inset-0 bg-white z-0 pointer-events-none" 
+          style={{
+            clipPath: "path('M 0,0 L 1920,0 L 1920,926 L 0,926 Z M 126,130 A 16,16 0 0 0 110,146 L 110,564 A 16,16 0 0 0 126,580 L 894,580 A 16,16 0 0 0 910,564 L 910,146 A 16,16 0 0 0 894,130 Z M 1026,130 A 16,16 0 0 0 1010,146 L 1010,564 A 16,16 0 0 0 1026,580 L 1794,580 A 16,16 0 0 0 1810,564 L 1810,146 A 16,16 0 0 0 1794,130 Z')"
+          }}
+        />
+        
+        {/* Camera 1 Absolute Border Frame */}
+        <div className="absolute left-[110px] top-[130px] w-[800px] h-[450px] animate-border-glow rounded-2xl shadow-2xl bg-transparent flex flex-col justify-end p-4 z-10">
+          {/* Camera label */}
+          <div className="absolute top-4 left-4 px-3 py-1 bg-black/80 border border-[#D4AF37]/30 rounded text-xs font-black uppercase text-brand-gold tracking-widest text-protected z-10">
+            {renderSplitToneText(dualPOVConfig.cam1Label || "CAM 01 - HOST", "text-brand-gold", "keyword-green", "keyword-gold")}
+          </div>
+        </div>
+
+        {/* Symmetrical Center Divider Line */}
+        <div className="absolute left-[959.5px] top-[90px] w-px h-[700px] bg-black/10 z-20 pointer-events-none" />
+
+        {/* Camera 2 Absolute Border Frame */}
+        <div className="absolute left-[1010px] top-[130px] w-[800px] h-[450px] animate-border-glow rounded-2xl shadow-2xl bg-transparent flex flex-col justify-end p-4 z-10">
+          {/* Camera label */}
+          <div className="absolute top-4 left-4 px-3 py-1 bg-black/80 border border-[#D4AF37]/30 rounded text-xs font-black uppercase text-brand-gold tracking-widest text-protected z-10">
+            {renderSplitToneText(dualPOVConfig.cam2Label || "CAM 02 - GUEST", "text-brand-gold", "keyword-green", "keyword-gold")}
+          </div>
+        </div>
+        
+      </div>
+
+      {/* 3. Footer Spacer (90px) - matches replicated absolute Ticker */}
+      <div className="h-[90px] w-full bg-transparent shrink-0" />
+    </div>
+  );
 }
 
 export default App;

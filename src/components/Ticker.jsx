@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Logo } from './Logo';
 
 export function Ticker({ 
@@ -13,6 +13,9 @@ export function Ticker({
   className = '' 
 }) {
   const combinedText = items.join("  •  ");
+  
+  // Calculate aligned animation start delay relative to system time
+  const [delay] = useState(() => -((Date.now() / 1000) % speed));
 
   return (
     <div
@@ -31,15 +34,15 @@ export function Ticker({
 
       {/* 2. Scrolling Marquee Area */}
       <div className="flex-1 h-full flex items-center overflow-hidden bg-brand-charcoal relative">
-        <div className="marquee-container text-2xl font-black tracking-widest text-white uppercase flex items-center">
+        <div key={`${combinedText}_${speed}`} className="marquee-container text-2xl font-black tracking-widest text-white uppercase flex items-center">
           {/* Scroll items twice to ensure infinite, seamless repeating loops */}
-          <div className="marquee-content gap-24 flex items-center pr-24" style={{ animationDuration: `${speed}s` }}>
+          <div className="marquee-content gap-24 flex items-center pr-24" style={{ animationDuration: `${speed}s`, animationDelay: `${delay}s` }}>
             <span>{combinedText}</span>
             <span>•</span>
             <span>{combinedText}</span>
             <span>•</span>
           </div>
-          <div className="marquee-content gap-24 flex items-center pr-24" aria-hidden="true" style={{ animationDuration: `${speed}s` }}>
+          <div className="marquee-content gap-24 flex items-center pr-24" aria-hidden="true" style={{ animationDuration: `${speed}s`, animationDelay: `${delay}s` }}>
             <span>{combinedText}</span>
             <span>•</span>
             <span>{combinedText}</span>
