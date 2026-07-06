@@ -773,7 +773,7 @@ function App() {
           '--green-speed': `${state.brb?.greenSpeed || 4}s`,
           '--green-glow': state.brb?.greenIntensity ?? 0.45
         }}>
-          <div className="canvas-1080p bg-brand-cream flex flex-col items-center justify-center relative select-none">
+          <div className="canvas-1080p bg-white/15 flex flex-col items-center justify-center relative select-none">
             {/* Rotating sunburst backdrop */}
             <div className="absolute inset-0 flex items-center justify-center scale-150 opacity-15 pointer-events-none">
               <LogoSunburst className="w-[800px] h-[800px]" />
@@ -835,7 +835,7 @@ function App() {
           '--green-speed': `${state.ending?.greenSpeed || 4}s`,
           '--green-glow': state.ending?.greenIntensity ?? 0.45
         }}>
-          <div className="canvas-1080p bg-brand-cream flex flex-col items-center justify-center relative select-none">
+          <div className="canvas-1080p bg-white/15 flex flex-col items-center justify-center relative select-none">
             {/* Rotating sunburst backdrop */}
             <div className="absolute inset-0 flex items-center justify-center scale-150 opacity-15 pointer-events-none">
               <LogoSunburst className="w-[800px] h-[800px]" />
@@ -961,21 +961,21 @@ function App() {
               )}
             </AnimatePresence>
 
-            {/* Middle Zone Edge-to-Edge Backdrop (solid green background with transparent centered single camera cutout) */}
+            {/* Middle Zone Edge-to-Edge Backdrop (transparent white background with transparent centered single camera cutout) */}
             <div 
-              className="absolute left-0 top-[64px] w-[1920px] h-[926px] bg-[#022B13] z-10 pointer-events-none select-none"
+              className="absolute left-0 top-[64px] w-[1920px] h-[926px] bg-white/10 z-10 pointer-events-none select-none"
               style={{
-                clipPath: "path('M 0,0 L 1920,0 L 1920,926 L 0,926 Z M 496,193 A 16,16 0 0 0 480,209 L 480,717 A 16,16 0 0 0 496,733 L 1424,733 A 16,16 0 0 0 1440,717 L 1440,209 A 16,16 0 0 0 1424,193 Z')"
+                clipPath: "path('M 0,0 L 1920,0 L 1920,926 L 0,926 Z M 64,30 A 24,24 0 0 0 40,54 L 40,872 A 24,24 0 0 0 64,896 L 1856,896 A 24,24 0 0 0 1880,872 L 1880,54 A 24,24 0 0 0 1856,30 Z')"
               }}
             />
 
             {/* Camera White Card Frame Housing & Animated Glowing Trim */}
             <div className="absolute left-0 top-[64px] w-[1920px] h-[926px] z-20 pointer-events-none select-none">
               {/* White rounded card frame boundary */}
-              <div className="absolute left-[470px] top-[174px] w-[980px] h-[560px] bg-transparent border-[10px] border-white rounded-[24px] shadow-lg pointer-events-auto" />
+              <div className="absolute left-[30px] top-[20px] w-[1860px] h-[886px] bg-transparent border-[10px] border-white rounded-[34px] shadow-lg pointer-events-auto" />
               
               {/* Surrounding animated glowing ring */}
-              <div className="absolute left-[468px] top-[172px] w-[984px] h-[564px] bg-transparent border-2 rounded-[26px] animate-border-glow pointer-events-auto" />
+              <div className="absolute left-[28px] top-[18px] w-[1864px] h-[890px] bg-transparent border-2 rounded-[36px] animate-border-glow pointer-events-auto" />
             </div>
 
             {/* Lower Third (Host Nameplate) */}
@@ -1032,9 +1032,9 @@ function DualPOVOverlay({ state }) {
 
       {/* 2. Middle Zone (926px) with Edge-to-Edge Backdrop and Symmetrical Dual Cutouts */}
       <div className="h-[926px] w-full bg-transparent relative z-10 shrink-0 pointer-events-none">
-        {/* Solid Green Edge-to-Edge Backdrop Mask using clipping paths */}
+        {/* Event Poster Edge-to-Edge Backdrop Mask using clipping paths */}
         <div 
-          className="absolute inset-0 bg-[#022B13] z-10 pointer-events-none" 
+          className="absolute inset-0 bg-white/10 z-10 pointer-events-none" 
           style={{
             clipPath: "path('M 0,0 L 1920,0 L 1920,926 L 0,926 Z M 176,204 A 16,16 0 0 0 160,220 L 160,620 A 16,16 0 0 0 176,636 L 912,636 A 16,16 0 0 0 928,620 L 928,220 A 16,16 0 0 0 912,204 Z M 1008,204 A 16,16 0 0 0 992,220 L 992,620 A 16,16 0 0 0 1008,636 L 1744,636 A 16,16 0 0 0 1760,620 L 1760,220 A 16,16 0 0 0 1744,204 Z')"
           }}
