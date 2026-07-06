@@ -961,6 +961,23 @@ function App() {
               )}
             </AnimatePresence>
 
+            {/* Middle Zone Edge-to-Edge Backdrop (solid green background with transparent centered single camera cutout) */}
+            <div 
+              className="absolute left-0 top-[64px] w-[1920px] h-[926px] bg-[#022B13] z-10 pointer-events-none select-none"
+              style={{
+                clipPath: "path('M 0,0 L 1920,0 L 1920,926 L 0,926 Z M 496,193 A 16,16 0 0 0 480,209 L 480,717 A 16,16 0 0 0 496,733 L 1424,733 A 16,16 0 0 0 1440,717 L 1440,209 A 16,16 0 0 0 1424,193 Z')"
+              }}
+            />
+
+            {/* Camera White Card Frame Housing & Animated Glowing Trim */}
+            <div className="absolute left-0 top-[64px] w-[1920px] h-[926px] z-20 pointer-events-none select-none">
+              {/* White rounded card frame boundary */}
+              <div className="absolute left-[470px] top-[174px] w-[980px] h-[560px] bg-transparent border-[10px] border-white rounded-[24px] shadow-lg pointer-events-auto" />
+              
+              {/* Surrounding animated glowing ring */}
+              <div className="absolute left-[468px] top-[172px] w-[984px] h-[564px] bg-transparent border-2 rounded-[26px] animate-border-glow pointer-events-auto" />
+            </div>
+
             {/* Lower Third (Host Nameplate) */}
             <LowerThird 
               isOpen={state.main.hostVisible} 
@@ -1013,29 +1030,31 @@ function DualPOVOverlay({ state }) {
       {/* 1. Header Spacer (64px) - matches replicated absolute Header */}
       <div className="h-[64px] w-full bg-transparent shrink-0" />
 
-      {/* 2. Symmetrical Camera Row (926px) with clean Studio White masking */}
-      <div className="h-[926px] w-full bg-transparent relative z-10 shrink-0">
-        {/* Solid White Backdrop Mask using clipping paths */}
+      {/* 2. Middle Zone (926px) with Edge-to-Edge Backdrop and Symmetrical Dual Cutouts */}
+      <div className="h-[926px] w-full bg-transparent relative z-10 shrink-0 pointer-events-none">
+        {/* Solid Green Edge-to-Edge Backdrop Mask using clipping paths */}
         <div 
-          className="absolute inset-0 bg-white z-0 pointer-events-none" 
+          className="absolute inset-0 bg-[#022B13] z-10 pointer-events-none" 
           style={{
-            clipPath: "path('M 0,0 L 1920,0 L 1920,926 L 0,926 Z M 126,130 A 16,16 0 0 0 110,146 L 110,564 A 16,16 0 0 0 126,580 L 894,580 A 16,16 0 0 0 910,564 L 910,146 A 16,16 0 0 0 894,130 Z M 1026,130 A 16,16 0 0 0 1010,146 L 1010,564 A 16,16 0 0 0 1026,580 L 1794,580 A 16,16 0 0 0 1810,564 L 1810,146 A 16,16 0 0 0 1794,130 Z')"
+            clipPath: "path('M 0,0 L 1920,0 L 1920,926 L 0,926 Z M 176,204 A 16,16 0 0 0 160,220 L 160,620 A 16,16 0 0 0 176,636 L 912,636 A 16,16 0 0 0 928,620 L 928,220 A 16,16 0 0 0 912,204 Z M 1008,204 A 16,16 0 0 0 992,220 L 992,620 A 16,16 0 0 0 1008,636 L 1744,636 A 16,16 0 0 0 1760,620 L 1760,220 A 16,16 0 0 0 1744,204 Z')"
           }}
         />
         
-        {/* Camera 1 Absolute Border Frame */}
-        <div className="absolute left-[110px] top-[130px] w-[800px] h-[450px] animate-border-glow rounded-2xl shadow-2xl bg-transparent flex flex-col justify-end p-4 z-10">
+        {/* Camera 1 White Card Frame Housing & Animated Glowing Trim */}
+        <div className="absolute left-[150px] top-[194px] w-[788px] h-[452px] bg-transparent border-[10px] border-white rounded-[24px] shadow-lg z-20 pointer-events-auto" />
+        <div className="absolute left-[148px] top-[192px] w-[792px] h-[456px] bg-transparent border-2 rounded-[26px] animate-border-glow z-30 pointer-events-auto">
           {/* Camera label */}
           <div className="absolute top-4 left-4 px-3 py-1 bg-black/80 border border-[#D4AF37]/30 rounded text-xs font-black uppercase text-brand-gold tracking-widest text-protected z-10">
             {renderSplitToneText(dualPOVConfig.cam1Label || "CAM 01 - HOST", "text-brand-gold", "keyword-green", "keyword-gold")}
           </div>
         </div>
 
-        {/* Symmetrical Center Divider Line */}
+        {/* Center Divider Line */}
         <div className="absolute left-[959.5px] top-[90px] w-px h-[700px] bg-black/10 z-20 pointer-events-none" />
 
-        {/* Camera 2 Absolute Border Frame */}
-        <div className="absolute left-[1010px] top-[130px] w-[800px] h-[450px] animate-border-glow rounded-2xl shadow-2xl bg-transparent flex flex-col justify-end p-4 z-10">
+        {/* Camera 2 White Card Frame Housing & Animated Glowing Trim */}
+        <div className="absolute left-[982px] top-[194px] w-[788px] h-[452px] bg-transparent border-[10px] border-white rounded-[24px] shadow-lg z-20 pointer-events-auto" />
+        <div className="absolute left-[980px] top-[192px] w-[792px] h-[456px] bg-transparent border-2 rounded-[26px] animate-border-glow z-30 pointer-events-auto">
           {/* Camera label */}
           <div className="absolute top-4 left-4 px-3 py-1 bg-black/80 border border-[#D4AF37]/30 rounded text-xs font-black uppercase text-brand-gold tracking-widest text-protected z-10">
             {renderSplitToneText(dualPOVConfig.cam2Label || "CAM 02 - GUEST", "text-brand-gold", "keyword-green", "keyword-gold")}
