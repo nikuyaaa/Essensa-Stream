@@ -1036,13 +1036,13 @@ function DualPOVOverlay({ state }) {
         <div 
           className="absolute inset-0 bg-white/10 z-10 pointer-events-none" 
           style={{
-            clipPath: "path('M 0,0 L 1920,0 L 1920,926 L 0,926 Z M 176,204 A 16,16 0 0 0 160,220 L 160,620 A 16,16 0 0 0 176,636 L 912,636 A 16,16 0 0 0 928,620 L 928,220 A 16,16 0 0 0 912,204 Z M 1008,204 A 16,16 0 0 0 992,220 L 992,620 A 16,16 0 0 0 1008,636 L 1744,636 A 16,16 0 0 0 1760,620 L 1760,220 A 16,16 0 0 0 1744,204 Z')"
+            clipPath: "path('M 0,0 L 1920,0 L 1920,926 L 0,926 Z M 52,164 A 16,16 0 0 0 36,180 L 36,652 A 16,16 0 0 0 52,668 L 916,668 A 16,16 0 0 0 932,652 L 932,180 A 16,16 0 0 0 916,164 Z M 1004,164 A 16,16 0 0 0 988,180 L 988,652 A 16,16 0 0 0 1004,668 L 1868,668 A 16,16 0 0 0 1884,652 L 1884,180 A 16,16 0 0 0 1868,164 Z')"
           }}
         />
         
         {/* Camera 1 White Card Frame Housing & Animated Glowing Trim */}
-        <div className="absolute left-[150px] top-[194px] w-[788px] h-[452px] bg-transparent border-[10px] border-white rounded-[24px] shadow-lg z-20 pointer-events-auto" />
-        <div className="absolute left-[148px] top-[192px] w-[792px] h-[456px] bg-transparent border-2 rounded-[26px] animate-border-glow z-30 pointer-events-auto">
+        <div className="absolute left-[24px] top-[152px] w-[920px] h-[528px] bg-transparent border-[12px] border-white rounded-[28px] shadow-lg z-20 pointer-events-auto" />
+        <div className="absolute left-[22px] top-[150px] w-[924px] h-[532px] bg-transparent border-2 rounded-[30px] animate-border-glow z-30 pointer-events-auto">
           {/* Camera label */}
           <div className="absolute top-4 left-4 px-3 py-1 bg-black/80 border border-[#D4AF37]/30 rounded text-xs font-black uppercase text-brand-gold tracking-widest text-protected z-10">
             {renderSplitToneText(dualPOVConfig.cam1Label || "CAM 01 - HOST", "text-brand-gold", "keyword-green", "keyword-gold")}
@@ -1053,8 +1053,8 @@ function DualPOVOverlay({ state }) {
         <div className="absolute left-[959.5px] top-[90px] w-px h-[700px] bg-black/10 z-20 pointer-events-none" />
 
         {/* Camera 2 White Card Frame Housing & Animated Glowing Trim */}
-        <div className="absolute left-[982px] top-[194px] w-[788px] h-[452px] bg-transparent border-[10px] border-white rounded-[24px] shadow-lg z-20 pointer-events-auto" />
-        <div className="absolute left-[980px] top-[192px] w-[792px] h-[456px] bg-transparent border-2 rounded-[26px] animate-border-glow z-30 pointer-events-auto">
+        <div className="absolute left-[976px] top-[152px] w-[920px] h-[528px] bg-transparent border-[12px] border-white rounded-[28px] shadow-lg z-20 pointer-events-auto" />
+        <div className="absolute left-[974px] top-[150px] w-[924px] h-[532px] bg-transparent border-2 rounded-[30px] animate-border-glow z-30 pointer-events-auto">
           {/* Camera label */}
           <div className="absolute top-4 left-4 px-3 py-1 bg-black/80 border border-[#D4AF37]/30 rounded text-xs font-black uppercase text-brand-gold tracking-widest text-protected z-10">
             {renderSplitToneText(dualPOVConfig.cam2Label || "CAM 02 - GUEST", "text-brand-gold", "keyword-green", "keyword-gold")}
