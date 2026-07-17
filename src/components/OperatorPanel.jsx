@@ -146,6 +146,13 @@ export function OperatorPanel({ initialState, onStateChange }) {
     return () => clearTimeout(t);
   };
 
+  const getOverlayLink = (path) => {
+    const origin = window.location.origin;
+    const wsUrl = state.globalSettings?.wsBrokerUrl || "wss://socketsbay.com/wss/v2/1/demo/";
+    const roomName = state.globalSettings?.wsRoomName || "essensa_stream_nikuyaaa_secure";
+    return `${origin}/overlay/${path}?wsBrokerUrl=${encodeURIComponent(wsUrl)}&wsRoomName=${encodeURIComponent(roomName)}`;
+  };
+
   // Broadcast state modifications directly to database & connected sources
   const commitState = (newState) => {
     setState(newState);
@@ -2651,6 +2658,52 @@ export function OperatorPanel({ initialState, onStateChange }) {
                   <Save className="w-3.5 h-3.5 text-brand-gold" />
                   Save Sync Settings
                 </button>
+              </div>
+            </div>
+
+            {/* OBS Browser Source Links Card */}
+            <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-6 shadow-xl flex flex-col gap-4 lg:col-span-2">
+              <h2 className="text-sm font-black text-brand-gold uppercase tracking-widest flex items-center gap-2 border-b border-zinc-800 pb-3">
+                <Globe className="w-4 h-4" /> OBS Browser Source Links (Synced)
+              </h2>
+              <p className="text-xs text-zinc-400">
+                Copy these URLs and paste them as browser sources in OBS or Streamlabs. They automatically include your custom WebSocket sync parameters so that OBS can communicate with this dashboard instantly.
+              </p>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {[
+                  { label: "Starting Soon Overlay", path: "starting" },
+                  { label: "Main Stream Overlay", path: "main" },
+                  { label: "Dual-POV Overlay", path: "dual-pov" },
+                  { label: "Be Right Back Overlay", path: "brb" },
+                  { label: "Ending Outro Overlay", path: "ending" },
+                  { label: "Intermission Overlay", path: "intermission" }
+                ].map((item, idx) => {
+                  const link = getOverlayLink(item.path);
+                  return (
+                    <div key={idx} className="flex flex-col gap-1.5 bg-zinc-950 p-4 rounded-xl border border-zinc-850 justify-between">
+                      <span className="text-[10px] uppercase font-black text-zinc-400">{item.label}</span>
+                      <div className="flex items-center gap-2 mt-1">
+                        <input
+                          type="text"
+                          readOnly
+                          value={link}
+                          className="bg-zinc-900 border border-zinc-800 rounded px-2.5 py-1.5 text-xs text-zinc-400 font-mono w-full focus:outline-none select-all"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => {
+                            navigator.clipboard.writeText(link);
+                            alert(`${item.label} URL copied to clipboard!`);
+                          }}
+                          className="bg-brand-green/20 hover:bg-brand-green/30 border border-brand-green/45 text-brand-green hover:text-white px-3 py-1.5 rounded text-xs font-bold shrink-0 active:scale-95 transition"
+                        >
+                          Copy
+                        </button>
+                      </div>
+                    </div>
+                  );
+                })}
               </div>
             </div>
 

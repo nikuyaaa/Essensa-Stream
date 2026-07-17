@@ -357,8 +357,12 @@ function App() {
     let socket = null;
     let reconnectTimeout = null;
 
-    const wsUrl = state.globalSettings?.wsBrokerUrl || "wss://socketsbay.com/wss/v2/1/demo/";
-    const roomName = state.globalSettings?.wsRoomName || "essensa_stream_nikuyaaa_secure";
+    const searchParams = new URLSearchParams(window.location.search);
+    const queryWsUrl = searchParams.get('wsBrokerUrl');
+    const queryRoomName = searchParams.get('wsRoomName');
+
+    const wsUrl = queryWsUrl || state.globalSettings?.wsBrokerUrl || "wss://socketsbay.com/wss/v2/1/demo/";
+    const roomName = queryRoomName || state.globalSettings?.wsRoomName || "essensa_stream_nikuyaaa_secure";
 
     const handleIncomingMessage = (type, payload) => {
       if (type === 'UPDATE_STATE' || type === 'STATE_RESPONSE') {
