@@ -156,6 +156,11 @@ export function OperatorPanel({ initialState, onStateChange }) {
       socket.send(JSON.stringify({ room: "essensa_stream_nikuyaaa_secure", ...msg }));
     }
 
+    // Save state to localStorage fallback
+    try {
+      localStorage.setItem('essensa_stream_state', JSON.stringify(newState));
+    } catch (e) {}
+
     // Save state to local Vite server sync API
     fetch('/api/state', {
       method: 'POST',
@@ -927,7 +932,14 @@ export function OperatorPanel({ initialState, onStateChange }) {
                       updateDraft('intermission-banner', 'logoUrl', url);
                     });
                   }}
-                  className="bg-zinc-900 border border-zinc-800 rounded px-2.5 py-1.5 text-xs text-zinc-300 w-full cursor-pointer focus:outline-none"
+                  className="bg-zinc-900 border border-zinc-800 rounded px-2.5 py-1.5 text-xs text-zinc-300 w-full cursor-pointer focus:outline-none mb-1.5"
+                />
+                <input
+                  type="text"
+                  placeholder="Or paste external image/video URL here..."
+                  value={draftState['intermission-banner'].logoUrl || ''}
+                  onChange={(e) => updateDraft('intermission-banner', 'logoUrl', e.target.value)}
+                  className="bg-zinc-900 border border-zinc-800 rounded px-2.5 py-1.5 text-xs text-zinc-300 w-full focus:outline-none placeholder:text-zinc-660"
                 />
                 {draftState['intermission-banner'].logoUrl && (
                   <span className="text-[9px] text-brand-gold font-bold truncate max-w-[400px] mt-1.5">
@@ -1089,7 +1101,14 @@ export function OperatorPanel({ initialState, onStateChange }) {
                           updateDraft('starting', 'logoUrl', url);
                         });
                       }}
-                      className="bg-zinc-900 border border-zinc-800 rounded px-2.5 py-1.5 text-xs text-zinc-300 w-full cursor-pointer focus:outline-none"
+                      className="bg-zinc-900 border border-zinc-800 rounded px-2.5 py-1.5 text-xs text-zinc-300 w-full cursor-pointer focus:outline-none mb-1.5"
+                    />
+                    <input
+                      type="text"
+                      placeholder="Or paste external image/video URL here..."
+                      value={draftState.starting.logoUrl || ''}
+                      onChange={(e) => updateDraft('starting', 'logoUrl', e.target.value)}
+                      className="bg-zinc-900 border border-zinc-800 rounded px-2.5 py-1.5 text-xs text-zinc-300 w-full focus:outline-none placeholder:text-zinc-660"
                     />
                     {draftState.starting.logoUrl && (
                       <span className="text-[9px] text-brand-gold font-bold truncate max-w-[400px] mt-1.5">
@@ -1264,7 +1283,7 @@ export function OperatorPanel({ initialState, onStateChange }) {
                   </div>
 
                   {/* Standalone Logo Uploader for Ticker branding */}
-                  <div className="flex flex-col gap-1.5 bg-zinc-950 p-4 rounded-xl border border-zinc-850">
+                  <div className="flex flex-col gap-1.5 bg-zinc-950 p-4 rounded-xl border border-zinc-855">
                     <label className="text-[10px] uppercase font-black tracking-wider text-zinc-400">News Ticker Brand Logo (Image/Video Loop) <Tooltip text={TooltipTexts['main.logoUrl']} /></label>
                     <input
                       type="file"
@@ -1274,7 +1293,14 @@ export function OperatorPanel({ initialState, onStateChange }) {
                           updateDraft('main', 'logoUrl', url);
                         });
                       }}
-                      className="bg-zinc-900 border border-zinc-800 rounded px-2.5 py-1.5 text-xs text-zinc-350 w-full cursor-pointer focus:outline-none"
+                      className="bg-zinc-900 border border-zinc-800 rounded px-2.5 py-1.5 text-xs text-zinc-350 w-full cursor-pointer focus:outline-none mb-1.5"
+                    />
+                    <input
+                      type="text"
+                      placeholder="Or paste external image/video URL here..."
+                      value={draftState.main.logoUrl || ''}
+                      onChange={(e) => updateDraft('main', 'logoUrl', e.target.value)}
+                      className="bg-zinc-900 border border-zinc-800 rounded px-2.5 py-1.5 text-xs text-zinc-350 w-full focus:outline-none placeholder:text-zinc-650"
                     />
                     {draftState.main.logoUrl && (
                       <span className="text-[9px] text-brand-gold font-bold truncate max-w-[400px] mt-1.5">
@@ -1667,7 +1693,20 @@ export function OperatorPanel({ initialState, onStateChange }) {
                               });
                             });
                           }}
-                          className="bg-zinc-950 border border-zinc-800 rounded px-2 py-1 text-2xs text-zinc-300 w-full cursor-pointer focus:outline-none"
+                          className="bg-zinc-950 border border-zinc-800 rounded px-2 py-1 text-2xs text-zinc-300 w-full cursor-pointer focus:outline-none mb-1"
+                        />
+                        <input
+                          type="text"
+                          placeholder="Or paste external asset URL here..."
+                          value={product.imageUrl || ''}
+                          onChange={(e) => {
+                            const val = e.target.value;
+                            setDraftState(prev => {
+                              const updated = prev.main.products.map(p => p.id === product.id ? { ...p, imageUrl: val } : p);
+                              return { ...prev, main: { ...prev.main, products: updated } };
+                            });
+                          }}
+                          className="bg-zinc-950 border border-zinc-800 rounded px-2 py-1 text-2xs text-zinc-300 w-full focus:outline-none placeholder:text-zinc-650"
                         />
                         {product.imageUrl && (
                           <span className="text-[9px] text-brand-gold font-bold truncate max-w-[300px] mt-1.5">
@@ -1967,7 +2006,14 @@ export function OperatorPanel({ initialState, onStateChange }) {
                         updateDraft('brb', 'logoUrl', url);
                       });
                     }}
-                    className="bg-zinc-900 border border-zinc-800 rounded px-2.5 py-1.5 text-xs text-zinc-350 w-full cursor-pointer focus:outline-none"
+                    className="bg-zinc-900 border border-zinc-800 rounded px-2.5 py-1.5 text-xs text-zinc-355 w-full cursor-pointer focus:outline-none mb-1.5"
+                  />
+                  <input
+                    type="text"
+                    placeholder="Or paste external image/video URL here..."
+                    value={draftState.brb.logoUrl || ''}
+                    onChange={(e) => updateDraft('brb', 'logoUrl', e.target.value)}
+                    className="bg-zinc-900 border border-zinc-800 rounded px-2.5 py-1.5 text-xs text-zinc-355 w-full focus:outline-none placeholder:text-zinc-650"
                   />
                   {draftState.brb.logoUrl && (
                     <span className="text-[9px] text-brand-gold font-bold truncate max-w-[400px] mt-1.5">
@@ -2149,7 +2195,14 @@ export function OperatorPanel({ initialState, onStateChange }) {
                       updateDraft('ending', 'logoUrl', url);
                     });
                   }}
-                  className="bg-zinc-900 border border-zinc-800 rounded px-2.5 py-1.5 text-xs text-zinc-350 w-full cursor-pointer focus:outline-none"
+                  className="bg-zinc-900 border border-zinc-800 rounded px-2.5 py-1.5 text-xs text-zinc-350 w-full cursor-pointer focus:outline-none mb-1.5"
+                />
+                <input
+                  type="text"
+                  placeholder="Or paste external image/video URL here..."
+                  value={draftState.ending.logoUrl || ''}
+                  onChange={(e) => updateDraft('ending', 'logoUrl', e.target.value)}
+                  className="bg-zinc-900 border border-zinc-800 rounded px-2.5 py-1.5 text-xs text-zinc-350 w-full focus:outline-none placeholder:text-zinc-650"
                 />
                 {draftState.ending.logoUrl && (
                   <span className="text-[9px] text-brand-gold font-bold truncate max-w-[400px] mt-1.5">
@@ -2198,7 +2251,14 @@ export function OperatorPanel({ initialState, onStateChange }) {
                       }));
                     });
                   }}
-                  className="bg-zinc-950 border border-zinc-800 rounded px-2.5 py-1.5 text-xs text-zinc-350 w-full cursor-pointer focus:outline-none"
+                  className="bg-zinc-950 border border-zinc-800 rounded px-2.5 py-1.5 text-xs text-zinc-350 w-full cursor-pointer focus:outline-none mb-1.5"
+                />
+                <input
+                  type="text"
+                  placeholder="Or paste external image/video URL here..."
+                  value={draftState.globalLogoUrl || ''}
+                  onChange={(e) => setDraftState(prev => ({ ...prev, globalLogoUrl: e.target.value }))}
+                  className="bg-zinc-950 border border-zinc-800 rounded px-2.5 py-1.5 text-xs text-zinc-350 w-full focus:outline-none placeholder:text-zinc-650"
                 />
                 
                 {draftState.globalLogoUrl && (

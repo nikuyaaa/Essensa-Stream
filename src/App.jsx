@@ -310,7 +310,20 @@ function OverlayWrapper({ children, currentView, style }) {
 }
 
 function App() {
-  const [state, setState] = useState(defaultState);
+  const [state, setState] = useState(() => {
+    try {
+      const saved = localStorage.getItem('essensa_stream_state');
+      if (saved) {
+        return {
+          ...defaultState,
+          ...JSON.parse(saved)
+        };
+      }
+    } catch (e) {
+      console.warn("Could not load state from localStorage:", e);
+    }
+    return defaultState;
+  });
   const [urlView, setUrlView] = useState(null);
   const [lock, setLock] = useState(false);
 
@@ -344,10 +357,16 @@ function App() {
 
     const handleIncomingMessage = (type, payload) => {
       if (type === 'UPDATE_STATE' || type === 'STATE_RESPONSE') {
-        setState(prev => ({
-          ...prev,
-          ...payload
-        }));
+        setState(prev => {
+          const nextState = {
+            ...prev,
+            ...payload
+          };
+          try {
+            localStorage.setItem('essensa_stream_state', JSON.stringify(nextState));
+          } catch (e) {}
+          return nextState;
+        });
       } else if (type === 'CONTROL_PING') {
         bc.postMessage({ type: 'OVERLAY_PING' });
         if (socket && socket.readyState === WebSocket.OPEN) {
@@ -395,22 +414,41 @@ function App() {
     connectWebSocket();
     bc.postMessage({ type: 'REQUEST_STATE' });
 
-    // Local Dev Server Polling Fallback (runs every 1 second when WebSocket is not active)
+    // Local Dev Server Polling Fallback & LocalStorage Sync
     const pollInterval = setInterval(() => {
-      if (!socket || socket.readyState !== WebSocket.OPEN) {
-        // Try localhost first, then relative path
-        fetch('http://localhost:5173/api/state')
-          .catch(() => fetch('/api/state'))
-          .then(res => res.json())
-          .then(data => {
-            if (data && (data.main || data['intermission-banner'])) {
-              setState(prev => ({
-                ...prev,
-                ...data
-              }));
+      // Sync via localStorage if running in browser
+      try {
+        const saved = localStorage.getItem('essensa_stream_state');
+        if (saved) {
+          const parsed = JSON.parse(saved);
+          setState(prev => {
+            if (JSON.stringify(prev) !== saved) {
+              return { ...prev, ...parsed };
             }
-          })
-          .catch(() => {});
+            return prev;
+          });
+        }
+      } catch (e) {}
+
+      // Only poll backend endpoint on localhost
+      if (!socket || socket.readyState !== WebSocket.OPEN) {
+        if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+          fetch('http://localhost:5173/api/state')
+            .catch(() => fetch('/api/state'))
+            .then(res => res.json())
+            .then(data => {
+              if (data && (data.main || data['intermission-banner'])) {
+                setState(prev => {
+                  const nextState = { ...prev, ...data };
+                  try {
+                    localStorage.setItem('essensa_stream_state', JSON.stringify(nextState));
+                  } catch (e) {}
+                  return nextState;
+                });
+              }
+            })
+            .catch(() => {});
+        }
       }
     }, 1000);
 
@@ -490,6 +528,9 @@ function App() {
           // Broadcast and save
           const bc = new BroadcastChannel('essensa_overlay_channel');
           bc.postMessage({ type: 'UPDATE_STATE', payload: nextState });
+          try {
+            localStorage.setItem('essensa_stream_state', JSON.stringify(nextState));
+          } catch (e) {}
           fetch('/api/state', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -524,6 +565,9 @@ function App() {
           // Broadcast and save
           const bc = new BroadcastChannel('essensa_overlay_channel');
           bc.postMessage({ type: 'UPDATE_STATE', payload: nextState });
+          try {
+            localStorage.setItem('essensa_stream_state', JSON.stringify(nextState));
+          } catch (e) {}
           fetch('/api/state', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
