@@ -147,7 +147,9 @@ const defaultState = {
     "typographyColor": "#FFFFFF",
     "bannerBgColor": "#1A1A1A",
     "sunraySpeed": 4,
-    "sunrayIntensity": 0.3
+    "sunrayIntensity": 0.3,
+    "wsBrokerUrl": "wss://socketsbay.com/wss/v2/1/demo/",
+    "wsRoomName": "essensa_stream_nikuyaaa_secure"
   },
   "socials": [
     { "platform": "facebook", "text": "@EssensaNaturaleOfficial" },
@@ -355,6 +357,9 @@ function App() {
     let socket = null;
     let reconnectTimeout = null;
 
+    const wsUrl = state.globalSettings?.wsBrokerUrl || "wss://socketsbay.com/wss/v2/1/demo/";
+    const roomName = state.globalSettings?.wsRoomName || "essensa_stream_nikuyaaa_secure";
+
     const handleIncomingMessage = (type, payload) => {
       if (type === 'UPDATE_STATE' || type === 'STATE_RESPONSE') {
         setState(prev => {
@@ -370,7 +375,7 @@ function App() {
       } else if (type === 'CONTROL_PING') {
         bc.postMessage({ type: 'OVERLAY_PING' });
         if (socket && socket.readyState === WebSocket.OPEN) {
-          socket.send(JSON.stringify({ type: 'OVERLAY_PING' }));
+          socket.send(JSON.stringify({ room: roomName, type: 'OVERLAY_PING' }));
         }
       }
     };
@@ -382,17 +387,16 @@ function App() {
 
     // Initialize WebSocket connection for remote sync (e.g. Streamlabs Browser Source)
     const connectWebSocket = () => {
-      const wsUrl = "wss://socketsbay.com/wss/v2/1/demo/";
       socket = new WebSocket(wsUrl);
 
       socket.onopen = () => {
-        socket.send(JSON.stringify({ room: "essensa_stream_nikuyaaa_secure", type: 'REQUEST_STATE' }));
+        socket.send(JSON.stringify({ room: roomName, type: 'REQUEST_STATE' }));
       };
 
       socket.onmessage = (event) => {
         try {
           const msg = JSON.parse(event.data);
-          if (msg.room === "essensa_stream_nikuyaaa_secure") {
+          if (msg.room === roomName) {
             handleIncomingMessage(msg.type, msg.payload);
           }
         } catch (e) {
@@ -461,7 +465,7 @@ function App() {
       clearTimeout(reconnectTimeout);
       clearInterval(pollInterval);
     };
-  }, []);
+  }, [state.globalSettings?.wsBrokerUrl, state.globalSettings?.wsRoomName]);
 
   const isControlView = !urlView || urlView === 'control' || urlView === 'dashboard';
   const currentView = isControlView 

@@ -61,12 +61,15 @@ export function OperatorPanel({ initialState, onStateChange }) {
     let ws = null;
     let reconnectTimeout = null;
 
+    const wsUrl = state.globalSettings?.wsBrokerUrl || "wss://socketsbay.com/wss/v2/1/demo/";
+    const roomName = state.globalSettings?.wsRoomName || "essensa_stream_nikuyaaa_secure";
+
     const handleIncomingMessage = (type, payload) => {
       if (type === 'REQUEST_STATE') {
         const responseMsg = { type: 'STATE_RESPONSE', payload: stateRef.current };
         bc.postMessage(responseMsg);
         if (ws && ws.readyState === WebSocket.OPEN) {
-          ws.send(JSON.stringify(responseMsg));
+          ws.send(JSON.stringify({ room: roomName, ...responseMsg }));
         }
         setSyncedTabsCount(prev => prev + 1);
         triggerSyncNotice();
@@ -82,19 +85,18 @@ export function OperatorPanel({ initialState, onStateChange }) {
     };
 
     const connectWebSocket = () => {
-      const wsUrl = "wss://socketsbay.com/wss/v2/1/demo/";
       ws = new WebSocket(wsUrl);
       setSocket(ws);
 
       ws.onopen = () => {
         setWsConnected(true);
-        ws.send(JSON.stringify({ room: "essensa_stream_nikuyaaa_secure", type: 'STATE_RESPONSE', payload: stateRef.current }));
+        ws.send(JSON.stringify({ room: roomName, type: 'STATE_RESPONSE', payload: stateRef.current }));
       };
 
       ws.onmessage = (event) => {
         try {
           const msg = JSON.parse(event.data);
-          if (msg.room === "essensa_stream_nikuyaaa_secure") {
+          if (msg.room === roomName) {
             handleIncomingMessage(msg.type, msg.payload);
           }
         } catch (e) {
@@ -123,7 +125,7 @@ export function OperatorPanel({ initialState, onStateChange }) {
       const syncMsg = { type: 'STATE_RESPONSE', payload: stateRef.current };
       bc.postMessage(syncMsg);
       if (ws && ws.readyState === WebSocket.OPEN) {
-        ws.send(JSON.stringify({ room: "essensa_stream_nikuyaaa_secure", ...syncMsg }));
+        ws.send(JSON.stringify({ room: roomName, ...syncMsg }));
       }
     }, 3000);
 
@@ -136,7 +138,7 @@ export function OperatorPanel({ initialState, onStateChange }) {
       clearTimeout(reconnectTimeout);
       clearInterval(syncInterval);
     };
-  }, []);
+  }, [state.globalSettings?.wsBrokerUrl, state.globalSettings?.wsRoomName]);
 
   const triggerSyncNotice = () => {
     setShowSyncSuccess(true);
@@ -152,8 +154,9 @@ export function OperatorPanel({ initialState, onStateChange }) {
     if (channel) {
       channel.postMessage(msg);
     }
+    const roomName = newState.globalSettings?.wsRoomName || "essensa_stream_nikuyaaa_secure";
     if (socket && socket.readyState === WebSocket.OPEN) {
-      socket.send(JSON.stringify({ room: "essensa_stream_nikuyaaa_secure", ...msg }));
+      socket.send(JSON.stringify({ room: roomName, ...msg }));
     }
 
     // Save state to localStorage fallback
@@ -2586,6 +2589,67 @@ export function OperatorPanel({ initialState, onStateChange }) {
                 >
                   <Save className="w-3.5 h-3.5 text-brand-gold" />
                   Save Social Handles
+                </button>
+              </div>
+            </div>
+
+            {/* Real-time WebSocket Sync Settings Card */}
+            <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-6 shadow-xl flex flex-col gap-4 lg:col-span-2">
+              <h2 className="text-sm font-black text-brand-gold uppercase tracking-widest flex items-center gap-2 border-b border-zinc-800 pb-3">
+                <RefreshCw className="w-4 h-4" /> Real-time Cloud Synchronization (WebSockets)
+              </h2>
+              
+              <div className="bg-zinc-950 p-4 rounded-xl border border-zinc-850 flex flex-col gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="flex flex-col gap-1.5">
+                    <label className="text-[10px] uppercase font-black tracking-wider text-zinc-400">WebSocket Broker URL</label>
+                    <input
+                      type="text"
+                      placeholder="e.g. wss://socketsbay.com/wss/v2/1/demo/"
+                      value={draftState.globalSettings?.wsBrokerUrl || ''}
+                      onChange={(e) => updateDraft('globalSettings', 'wsBrokerUrl', e.target.value)}
+                      className="bg-zinc-900 border border-zinc-800 rounded px-3 py-2 text-xs font-mono text-zinc-200 focus:outline-none focus:border-brand-green w-full"
+                    />
+                    <span className="text-[9px] text-zinc-500">
+                      The WebSocket server endpoint. You can use free sandbox providers (like SocketsBay, PieSocket, etc.) to get a secure `wss://` link.
+                    </span>
+                  </div>
+
+                  <div className="flex flex-col gap-1.5">
+                    <label className="text-[10px] uppercase font-black tracking-wider text-zinc-400">WebSocket Channel / Room Name</label>
+                    <input
+                      type="text"
+                      placeholder="e.g. essensa_stream_nikuyaaa_secure"
+                      value={draftState.globalSettings?.wsRoomName || ''}
+                      onChange={(e) => updateDraft('globalSettings', 'wsRoomName', e.target.value)}
+                      className="bg-zinc-900 border border-zinc-800 rounded px-3 py-2 text-xs font-mono text-zinc-200 focus:outline-none focus:border-brand-green w-full"
+                    />
+                    <span className="text-[9px] text-zinc-550">
+                      Unique identifier room to segment your stream messages. Ensure OBS browser source and Operator Panel share the exact same room.
+                    </span>
+                  </div>
+                </div>
+
+                <div className="bg-zinc-900/60 p-3 rounded-lg border border-zinc-800/80 flex items-center justify-between">
+                  <div className="flex items-center gap-2 text-xs">
+                    <span className={`w-2.5 h-2.5 rounded-full ${wsConnected ? 'bg-emerald-400 animate-pulse' : 'bg-red-400'}`} />
+                    <span className="font-semibold text-zinc-350">
+                      Connection Status: <span className="font-bold text-zinc-200">{wsConnected ? 'Connected (Online)' : 'Disconnected (Offline)'}</span>
+                    </span>
+                  </div>
+                  <span className="text-[10px] text-zinc-400 font-bold bg-zinc-950 px-2.5 py-1 rounded-md border border-zinc-850">
+                    Active Receivers: {syncedTabsCount}
+                  </span>
+                </div>
+              </div>
+
+              <div className="flex justify-end border-t border-zinc-800 pt-3 mt-1">
+                <button
+                  onClick={() => commitSection('globalSettings')}
+                  className="flex items-center gap-2 bg-brand-green hover:bg-brand-green/90 text-white font-black uppercase tracking-wider text-xs py-2 px-4 rounded-lg border border-brand-gold/45 shadow-sm active:scale-95"
+                >
+                  <Save className="w-3.5 h-3.5 text-brand-gold" />
+                  Save Sync Settings
                 </button>
               </div>
             </div>
