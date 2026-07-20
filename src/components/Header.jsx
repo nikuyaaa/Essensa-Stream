@@ -72,7 +72,7 @@ export function Header({
       animate={{ y: 0, opacity: 1 }}
       exit={{ y: -70, opacity: 0 }}
       transition={{ type: 'spring', damping: 20, stiffness: 100 }}
-      className={`absolute top-0 left-0 w-[1920px] h-[64px] z-40 bg-white text-brand-charcoal flex items-center justify-between px-8 border-b border-black/15 shadow-[0_4px_12px_rgba(0,0,0,0.05)] select-none overflow-hidden ${className}`}
+      className={`absolute top-4 left-1/2 -translate-x-1/2 w-[1200px] h-[58px] z-50 bg-white text-brand-charcoal flex items-center justify-between px-6 rounded-2xl border border-black/15 shadow-2xl select-none overflow-hidden ${className}`}
     >
       {/* Subtle Shimmer Overlay */}
       <div className="absolute inset-0 shimmer-overlay opacity-30 animate-shimmer pointer-events-none" />
@@ -80,12 +80,12 @@ export function Header({
       {/* Left: Brand / Tagline */}
       <div className="flex items-center gap-3 relative z-10 min-w-0">
         {/* Pulsing Green dot */}
-        <div className="w-3.5 h-3.5 bg-brand-green rounded-full animate-pulse shrink-0" />
-        <span className="font-display font-black text-xl tracking-[0.2em] uppercase text-brand-green shrink-0">
+        <div className="w-3 h-3 bg-brand-green rounded-full animate-pulse shrink-0" />
+        <span className="font-display font-black text-lg tracking-[0.2em] uppercase text-brand-green shrink-0">
           Live Event
         </span>
-        <div className="h-6 w-0.5 bg-black/20 shrink-0" />
-        <span className="font-sans font-black text-xl tracking-wide text-brand-charcoal/90 truncate max-w-[1200px]">
+        <div className="h-5 w-0.5 bg-black/20 shrink-0" />
+        <span className="font-sans font-black text-base tracking-wide text-brand-charcoal/90 truncate max-w-[720px]">
           {segmentName}
         </span>
       </div>
@@ -93,10 +93,10 @@ export function Header({
       {/* Right Content Group: Live Capsule Uptime Clock */}
       {showClock && (
         <div className="flex items-center gap-4 shrink-0 relative z-10">
-          <div className="flex items-center gap-3 bg-brand-charcoal border border-white/10 px-6 py-2 rounded-lg shadow-lg">
-            <span className="w-2.5 h-2.5 bg-red-500 rounded-full animate-pulse shrink-0" />
+          <div className="flex items-center gap-2.5 bg-brand-charcoal border border-white/10 px-5 py-1.5 rounded-lg shadow-md shrink-0">
+            <span className="w-2 h-2 bg-red-500 rounded-full animate-pulse shrink-0" />
             <span className="text-[10px] uppercase font-black tracking-[0.2em] text-white/60">LIVE</span>
-            <span className="font-mono text-xl font-black tracking-widest text-brand-gold ml-1">
+            <span className="font-mono text-lg font-black tracking-widest text-brand-gold ml-1">
               {startTime ? formatRuntime(elapsedSeconds) : "00:00:00"}
             </span>
           </div>

@@ -893,7 +893,6 @@ function App() {
             segmentName={renderSplitToneText(state['dual-pov']?.segmentName || state.main.segmentName, "text-brand-charcoal", "keyword-green", "keyword-gold")} 
             startTime={state.main.startTime} 
             showClock={state.main.showClock} 
-            className="!shadow-[0_8px_24px_rgba(0,0,0,0.15)] !z-40"
           />
           <DualPOVOverlay state={state} />
 
@@ -961,22 +960,7 @@ function App() {
               )}
             </AnimatePresence>
 
-            {/* Middle Zone Edge-to-Edge Backdrop (Essensa forest green background with transparent centered single camera cutout) */}
-            <div 
-              className="absolute left-0 top-[64px] w-[1920px] h-[926px] bg-[#022B13] z-10 pointer-events-none select-none"
-              style={{
-                clipPath: "path('M 0,0 L 1920,0 L 1920,926 L 0,926 Z M 64,30 A 24,24 0 0 0 40,54 L 40,872 A 24,24 0 0 0 64,896 L 1856,896 A 24,24 0 0 0 1880,872 L 1880,54 A 24,24 0 0 0 1856,30 Z')"
-              }}
-            />
 
-            {/* Camera White Card Frame Housing & Animated Glowing Trim */}
-            <div className="absolute left-0 top-[64px] w-[1920px] h-[926px] z-20 pointer-events-none select-none">
-              {/* White rounded card frame boundary */}
-              <div className="absolute left-[30px] top-[20px] w-[1860px] h-[886px] bg-transparent border-[10px] border-white rounded-[34px] shadow-lg pointer-events-auto" />
-              
-              {/* Surrounding animated glowing ring */}
-              <div className="absolute left-[28px] top-[18px] w-[1864px] h-[890px] bg-transparent border-2 rounded-[36px] animate-border-glow pointer-events-auto" />
-            </div>
 
             {/* Lower Third (Host Nameplate) */}
             <LowerThird 
