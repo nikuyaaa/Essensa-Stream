@@ -61,15 +61,12 @@ export function OperatorPanel({ initialState, onStateChange }) {
     let ws = null;
     let reconnectTimeout = null;
 
-    const wsUrl = state.globalSettings?.wsBrokerUrl || "wss://socketsbay.com/wss/v2/1/demo/";
-    const roomName = state.globalSettings?.wsRoomName || "essensa_stream_nikuyaaa_secure";
-
     const handleIncomingMessage = (type, payload) => {
       if (type === 'REQUEST_STATE') {
         const responseMsg = { type: 'STATE_RESPONSE', payload: stateRef.current };
         bc.postMessage(responseMsg);
         if (ws && ws.readyState === WebSocket.OPEN) {
-          ws.send(JSON.stringify({ room: roomName, ...responseMsg }));
+          ws.send(JSON.stringify(responseMsg));
         }
         setSyncedTabsCount(prev => prev + 1);
         triggerSyncNotice();
@@ -85,18 +82,19 @@ export function OperatorPanel({ initialState, onStateChange }) {
     };
 
     const connectWebSocket = () => {
+      const wsUrl = "wss://socketsbay.com/wss/v2/1/demo/";
       ws = new WebSocket(wsUrl);
       setSocket(ws);
 
       ws.onopen = () => {
         setWsConnected(true);
-        ws.send(JSON.stringify({ room: roomName, type: 'STATE_RESPONSE', payload: stateRef.current }));
+        ws.send(JSON.stringify({ room: "essensa_stream_nikuyaaa_secure", type: 'STATE_RESPONSE', payload: stateRef.current }));
       };
 
       ws.onmessage = (event) => {
         try {
           const msg = JSON.parse(event.data);
-          if (msg.room === roomName) {
+          if (msg.room === "essensa_stream_nikuyaaa_secure") {
             handleIncomingMessage(msg.type, msg.payload);
           }
         } catch (e) {
@@ -125,7 +123,7 @@ export function OperatorPanel({ initialState, onStateChange }) {
       const syncMsg = { type: 'STATE_RESPONSE', payload: stateRef.current };
       bc.postMessage(syncMsg);
       if (ws && ws.readyState === WebSocket.OPEN) {
-        ws.send(JSON.stringify({ room: roomName, ...syncMsg }));
+        ws.send(JSON.stringify({ room: "essensa_stream_nikuyaaa_secure", ...syncMsg }));
       }
     }, 3000);
 
@@ -138,19 +136,12 @@ export function OperatorPanel({ initialState, onStateChange }) {
       clearTimeout(reconnectTimeout);
       clearInterval(syncInterval);
     };
-  }, [state.globalSettings?.wsBrokerUrl, state.globalSettings?.wsRoomName]);
+  }, []);
 
   const triggerSyncNotice = () => {
     setShowSyncSuccess(true);
     const t = setTimeout(() => setShowSyncSuccess(false), 2000);
     return () => clearTimeout(t);
-  };
-
-  const getOverlayLink = (path) => {
-    const origin = window.location.origin;
-    const wsUrl = state.globalSettings?.wsBrokerUrl || "wss://socketsbay.com/wss/v2/1/demo/";
-    const roomName = state.globalSettings?.wsRoomName || "essensa_stream_nikuyaaa_secure";
-    return `${origin}/overlay/${path}?wsBrokerUrl=${encodeURIComponent(wsUrl)}&wsRoomName=${encodeURIComponent(roomName)}`;
   };
 
   // Broadcast state modifications directly to database & connected sources
@@ -161,15 +152,9 @@ export function OperatorPanel({ initialState, onStateChange }) {
     if (channel) {
       channel.postMessage(msg);
     }
-    const roomName = newState.globalSettings?.wsRoomName || "essensa_stream_nikuyaaa_secure";
     if (socket && socket.readyState === WebSocket.OPEN) {
-      socket.send(JSON.stringify({ room: roomName, ...msg }));
+      socket.send(JSON.stringify({ room: "essensa_stream_nikuyaaa_secure", ...msg }));
     }
-
-    // Save state to localStorage fallback
-    try {
-      localStorage.setItem('essensa_stream_state', JSON.stringify(newState));
-    } catch (e) {}
 
     // Save state to local Vite server sync API
     fetch('/api/state', {
@@ -942,14 +927,7 @@ export function OperatorPanel({ initialState, onStateChange }) {
                       updateDraft('intermission-banner', 'logoUrl', url);
                     });
                   }}
-                  className="bg-zinc-900 border border-zinc-800 rounded px-2.5 py-1.5 text-xs text-zinc-300 w-full cursor-pointer focus:outline-none mb-1.5"
-                />
-                <input
-                  type="text"
-                  placeholder="Or paste external image/video URL here..."
-                  value={draftState['intermission-banner'].logoUrl || ''}
-                  onChange={(e) => updateDraft('intermission-banner', 'logoUrl', e.target.value)}
-                  className="bg-zinc-900 border border-zinc-800 rounded px-2.5 py-1.5 text-xs text-zinc-300 w-full focus:outline-none placeholder:text-zinc-660"
+                  className="bg-zinc-900 border border-zinc-800 rounded px-2.5 py-1.5 text-xs text-zinc-300 w-full cursor-pointer focus:outline-none"
                 />
                 {draftState['intermission-banner'].logoUrl && (
                   <span className="text-[9px] text-brand-gold font-bold truncate max-w-[400px] mt-1.5">
@@ -1111,14 +1089,7 @@ export function OperatorPanel({ initialState, onStateChange }) {
                           updateDraft('starting', 'logoUrl', url);
                         });
                       }}
-                      className="bg-zinc-900 border border-zinc-800 rounded px-2.5 py-1.5 text-xs text-zinc-300 w-full cursor-pointer focus:outline-none mb-1.5"
-                    />
-                    <input
-                      type="text"
-                      placeholder="Or paste external image/video URL here..."
-                      value={draftState.starting.logoUrl || ''}
-                      onChange={(e) => updateDraft('starting', 'logoUrl', e.target.value)}
-                      className="bg-zinc-900 border border-zinc-800 rounded px-2.5 py-1.5 text-xs text-zinc-300 w-full focus:outline-none placeholder:text-zinc-660"
+                      className="bg-zinc-900 border border-zinc-800 rounded px-2.5 py-1.5 text-xs text-zinc-300 w-full cursor-pointer focus:outline-none"
                     />
                     {draftState.starting.logoUrl && (
                       <span className="text-[9px] text-brand-gold font-bold truncate max-w-[400px] mt-1.5">
@@ -1293,7 +1264,7 @@ export function OperatorPanel({ initialState, onStateChange }) {
                   </div>
 
                   {/* Standalone Logo Uploader for Ticker branding */}
-                  <div className="flex flex-col gap-1.5 bg-zinc-950 p-4 rounded-xl border border-zinc-855">
+                  <div className="flex flex-col gap-1.5 bg-zinc-950 p-4 rounded-xl border border-zinc-850">
                     <label className="text-[10px] uppercase font-black tracking-wider text-zinc-400">News Ticker Brand Logo (Image/Video Loop) <Tooltip text={TooltipTexts['main.logoUrl']} /></label>
                     <input
                       type="file"
@@ -1303,14 +1274,7 @@ export function OperatorPanel({ initialState, onStateChange }) {
                           updateDraft('main', 'logoUrl', url);
                         });
                       }}
-                      className="bg-zinc-900 border border-zinc-800 rounded px-2.5 py-1.5 text-xs text-zinc-350 w-full cursor-pointer focus:outline-none mb-1.5"
-                    />
-                    <input
-                      type="text"
-                      placeholder="Or paste external image/video URL here..."
-                      value={draftState.main.logoUrl || ''}
-                      onChange={(e) => updateDraft('main', 'logoUrl', e.target.value)}
-                      className="bg-zinc-900 border border-zinc-800 rounded px-2.5 py-1.5 text-xs text-zinc-350 w-full focus:outline-none placeholder:text-zinc-650"
+                      className="bg-zinc-900 border border-zinc-800 rounded px-2.5 py-1.5 text-xs text-zinc-350 w-full cursor-pointer focus:outline-none"
                     />
                     {draftState.main.logoUrl && (
                       <span className="text-[9px] text-brand-gold font-bold truncate max-w-[400px] mt-1.5">
@@ -1703,20 +1667,7 @@ export function OperatorPanel({ initialState, onStateChange }) {
                               });
                             });
                           }}
-                          className="bg-zinc-950 border border-zinc-800 rounded px-2 py-1 text-2xs text-zinc-300 w-full cursor-pointer focus:outline-none mb-1"
-                        />
-                        <input
-                          type="text"
-                          placeholder="Or paste external asset URL here..."
-                          value={product.imageUrl || ''}
-                          onChange={(e) => {
-                            const val = e.target.value;
-                            setDraftState(prev => {
-                              const updated = prev.main.products.map(p => p.id === product.id ? { ...p, imageUrl: val } : p);
-                              return { ...prev, main: { ...prev.main, products: updated } };
-                            });
-                          }}
-                          className="bg-zinc-950 border border-zinc-800 rounded px-2 py-1 text-2xs text-zinc-300 w-full focus:outline-none placeholder:text-zinc-650"
+                          className="bg-zinc-950 border border-zinc-800 rounded px-2 py-1 text-2xs text-zinc-300 w-full cursor-pointer focus:outline-none"
                         />
                         {product.imageUrl && (
                           <span className="text-[9px] text-brand-gold font-bold truncate max-w-[300px] mt-1.5">
@@ -2016,14 +1967,7 @@ export function OperatorPanel({ initialState, onStateChange }) {
                         updateDraft('brb', 'logoUrl', url);
                       });
                     }}
-                    className="bg-zinc-900 border border-zinc-800 rounded px-2.5 py-1.5 text-xs text-zinc-355 w-full cursor-pointer focus:outline-none mb-1.5"
-                  />
-                  <input
-                    type="text"
-                    placeholder="Or paste external image/video URL here..."
-                    value={draftState.brb.logoUrl || ''}
-                    onChange={(e) => updateDraft('brb', 'logoUrl', e.target.value)}
-                    className="bg-zinc-900 border border-zinc-800 rounded px-2.5 py-1.5 text-xs text-zinc-355 w-full focus:outline-none placeholder:text-zinc-650"
+                    className="bg-zinc-900 border border-zinc-800 rounded px-2.5 py-1.5 text-xs text-zinc-350 w-full cursor-pointer focus:outline-none"
                   />
                   {draftState.brb.logoUrl && (
                     <span className="text-[9px] text-brand-gold font-bold truncate max-w-[400px] mt-1.5">
@@ -2205,14 +2149,7 @@ export function OperatorPanel({ initialState, onStateChange }) {
                       updateDraft('ending', 'logoUrl', url);
                     });
                   }}
-                  className="bg-zinc-900 border border-zinc-800 rounded px-2.5 py-1.5 text-xs text-zinc-350 w-full cursor-pointer focus:outline-none mb-1.5"
-                />
-                <input
-                  type="text"
-                  placeholder="Or paste external image/video URL here..."
-                  value={draftState.ending.logoUrl || ''}
-                  onChange={(e) => updateDraft('ending', 'logoUrl', e.target.value)}
-                  className="bg-zinc-900 border border-zinc-800 rounded px-2.5 py-1.5 text-xs text-zinc-350 w-full focus:outline-none placeholder:text-zinc-650"
+                  className="bg-zinc-900 border border-zinc-800 rounded px-2.5 py-1.5 text-xs text-zinc-350 w-full cursor-pointer focus:outline-none"
                 />
                 {draftState.ending.logoUrl && (
                   <span className="text-[9px] text-brand-gold font-bold truncate max-w-[400px] mt-1.5">
@@ -2261,14 +2198,7 @@ export function OperatorPanel({ initialState, onStateChange }) {
                       }));
                     });
                   }}
-                  className="bg-zinc-950 border border-zinc-800 rounded px-2.5 py-1.5 text-xs text-zinc-350 w-full cursor-pointer focus:outline-none mb-1.5"
-                />
-                <input
-                  type="text"
-                  placeholder="Or paste external image/video URL here..."
-                  value={draftState.globalLogoUrl || ''}
-                  onChange={(e) => setDraftState(prev => ({ ...prev, globalLogoUrl: e.target.value }))}
-                  className="bg-zinc-950 border border-zinc-800 rounded px-2.5 py-1.5 text-xs text-zinc-350 w-full focus:outline-none placeholder:text-zinc-650"
+                  className="bg-zinc-950 border border-zinc-800 rounded px-2.5 py-1.5 text-xs text-zinc-350 w-full cursor-pointer focus:outline-none"
                 />
                 
                 {draftState.globalLogoUrl && (
@@ -2597,113 +2527,6 @@ export function OperatorPanel({ initialState, onStateChange }) {
                   <Save className="w-3.5 h-3.5 text-brand-gold" />
                   Save Social Handles
                 </button>
-              </div>
-            </div>
-
-            {/* Real-time WebSocket Sync Settings Card */}
-            <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-6 shadow-xl flex flex-col gap-4 lg:col-span-2">
-              <h2 className="text-sm font-black text-brand-gold uppercase tracking-widest flex items-center gap-2 border-b border-zinc-800 pb-3">
-                <RefreshCw className="w-4 h-4" /> Real-time Cloud Synchronization (WebSockets)
-              </h2>
-              
-              <div className="bg-zinc-950 p-4 rounded-xl border border-zinc-850 flex flex-col gap-4">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="flex flex-col gap-1.5">
-                    <label className="text-[10px] uppercase font-black tracking-wider text-zinc-400">WebSocket Broker URL</label>
-                    <input
-                      type="text"
-                      placeholder="e.g. wss://socketsbay.com/wss/v2/1/demo/"
-                      value={draftState.globalSettings?.wsBrokerUrl || ''}
-                      onChange={(e) => updateDraft('globalSettings', 'wsBrokerUrl', e.target.value)}
-                      className="bg-zinc-900 border border-zinc-800 rounded px-3 py-2 text-xs font-mono text-zinc-200 focus:outline-none focus:border-brand-green w-full"
-                    />
-                    <span className="text-[9px] text-zinc-500">
-                      The WebSocket server endpoint. You can use free sandbox providers (like SocketsBay, PieSocket, etc.) to get a secure `wss://` link.
-                    </span>
-                  </div>
-
-                  <div className="flex flex-col gap-1.5">
-                    <label className="text-[10px] uppercase font-black tracking-wider text-zinc-400">WebSocket Channel / Room Name</label>
-                    <input
-                      type="text"
-                      placeholder="e.g. essensa_stream_nikuyaaa_secure"
-                      value={draftState.globalSettings?.wsRoomName || ''}
-                      onChange={(e) => updateDraft('globalSettings', 'wsRoomName', e.target.value)}
-                      className="bg-zinc-900 border border-zinc-800 rounded px-3 py-2 text-xs font-mono text-zinc-200 focus:outline-none focus:border-brand-green w-full"
-                    />
-                    <span className="text-[9px] text-zinc-550">
-                      Unique identifier room to segment your stream messages. Ensure OBS browser source and Operator Panel share the exact same room.
-                    </span>
-                  </div>
-                </div>
-
-                <div className="bg-zinc-900/60 p-3 rounded-lg border border-zinc-800/80 flex items-center justify-between">
-                  <div className="flex items-center gap-2 text-xs">
-                    <span className={`w-2.5 h-2.5 rounded-full ${wsConnected ? 'bg-emerald-400 animate-pulse' : 'bg-red-400'}`} />
-                    <span className="font-semibold text-zinc-350">
-                      Connection Status: <span className="font-bold text-zinc-200">{wsConnected ? 'Connected (Online)' : 'Disconnected (Offline)'}</span>
-                    </span>
-                  </div>
-                  <span className="text-[10px] text-zinc-400 font-bold bg-zinc-950 px-2.5 py-1 rounded-md border border-zinc-850">
-                    Active Receivers: {syncedTabsCount}
-                  </span>
-                </div>
-              </div>
-
-              <div className="flex justify-end border-t border-zinc-800 pt-3 mt-1">
-                <button
-                  onClick={() => commitSection('globalSettings')}
-                  className="flex items-center gap-2 bg-brand-green hover:bg-brand-green/90 text-white font-black uppercase tracking-wider text-xs py-2 px-4 rounded-lg border border-brand-gold/45 shadow-sm active:scale-95"
-                >
-                  <Save className="w-3.5 h-3.5 text-brand-gold" />
-                  Save Sync Settings
-                </button>
-              </div>
-            </div>
-
-            {/* OBS Browser Source Links Card */}
-            <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-6 shadow-xl flex flex-col gap-4 lg:col-span-2">
-              <h2 className="text-sm font-black text-brand-gold uppercase tracking-widest flex items-center gap-2 border-b border-zinc-800 pb-3">
-                <Globe className="w-4 h-4" /> OBS Browser Source Links (Synced)
-              </h2>
-              <p className="text-xs text-zinc-400">
-                Copy these URLs and paste them as browser sources in OBS or Streamlabs. They automatically include your custom WebSocket sync parameters so that OBS can communicate with this dashboard instantly.
-              </p>
-              
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {[
-                  { label: "Starting Soon Overlay", path: "starting" },
-                  { label: "Main Stream Overlay", path: "main" },
-                  { label: "Dual-POV Overlay", path: "dual-pov" },
-                  { label: "Be Right Back Overlay", path: "brb" },
-                  { label: "Ending Outro Overlay", path: "ending" },
-                  { label: "Intermission Overlay", path: "intermission" }
-                ].map((item, idx) => {
-                  const link = getOverlayLink(item.path);
-                  return (
-                    <div key={idx} className="flex flex-col gap-1.5 bg-zinc-950 p-4 rounded-xl border border-zinc-850 justify-between">
-                      <span className="text-[10px] uppercase font-black text-zinc-400">{item.label}</span>
-                      <div className="flex items-center gap-2 mt-1">
-                        <input
-                          type="text"
-                          readOnly
-                          value={link}
-                          className="bg-zinc-900 border border-zinc-800 rounded px-2.5 py-1.5 text-xs text-zinc-400 font-mono w-full focus:outline-none select-all"
-                        />
-                        <button
-                          type="button"
-                          onClick={() => {
-                            navigator.clipboard.writeText(link);
-                            alert(`${item.label} URL copied to clipboard!`);
-                          }}
-                          className="bg-brand-green/20 hover:bg-brand-green/30 border border-brand-green/45 text-brand-green hover:text-white px-3 py-1.5 rounded text-xs font-bold shrink-0 active:scale-95 transition"
-                        >
-                          Copy
-                        </button>
-                      </div>
-                    </div>
-                  );
-                })}
               </div>
             </div>
 

@@ -20,14 +20,15 @@ async function testServer(name, url) {
     }, 5000);
 
     ws1.addEventListener('open', () => {
+      // Once both are open, send from ws1
       if (ws2.readyState === WebSocket.OPEN) {
-        setTimeout(() => ws1.send(JSON.stringify({ test: "hello" })), 500);
+        ws1.send(JSON.stringify({ test: "hello" }));
       }
     });
 
     ws2.addEventListener('open', () => {
       if (ws1.readyState === WebSocket.OPEN) {
-        setTimeout(() => ws1.send(JSON.stringify({ test: "hello" })), 500);
+        ws1.send(JSON.stringify({ test: "hello" }));
       }
     });
 
@@ -47,11 +48,11 @@ async function testServer(name, url) {
     });
 
     ws1.addEventListener('error', (err) => {
-      console.log(`Error on ws1 for ${name}:`, err.message || err);
+      console.log(`Error on ws1 for ${name}`);
     });
 
     ws2.addEventListener('error', (err) => {
-      console.log(`Error on ws2 for ${name}:`, err.message || err);
+      console.log(`Error on ws2 for ${name}`);
     });
   });
 }
@@ -59,7 +60,7 @@ async function testServer(name, url) {
 async function runTests() {
   await testServer(
     "PieSocket Sandbox",
-    "wss://free.piesocket.com/v3/essensa_stream_nikuyaaa?api_key=oPeek7117e3f898a176840742f9eef68652bc8"
+    "wss://free.piesocket.com/v3/essensa_stream_nikuyaaa?api_key=VC1IyPolUZiwEnffLJccNu4s7344qnvW66v7gGbb"
   );
 
   await testServer(

@@ -147,9 +147,7 @@ const defaultState = {
     "typographyColor": "#FFFFFF",
     "bannerBgColor": "#1A1A1A",
     "sunraySpeed": 4,
-    "sunrayIntensity": 0.3,
-    "wsBrokerUrl": "wss://socketsbay.com/wss/v2/1/demo/",
-    "wsRoomName": "essensa_stream_nikuyaaa_secure"
+    "sunrayIntensity": 0.3
   },
   "socials": [
     { "platform": "facebook", "text": "@EssensaNaturaleOfficial" },
@@ -312,20 +310,7 @@ function OverlayWrapper({ children, currentView, style }) {
 }
 
 function App() {
-  const [state, setState] = useState(() => {
-    try {
-      const saved = localStorage.getItem('essensa_stream_state');
-      if (saved) {
-        return {
-          ...defaultState,
-          ...JSON.parse(saved)
-        };
-      }
-    } catch (e) {
-      console.warn("Could not load state from localStorage:", e);
-    }
-    return defaultState;
-  });
+  const [state, setState] = useState(defaultState);
   const [urlView, setUrlView] = useState(null);
   const [lock, setLock] = useState(false);
 
@@ -357,29 +342,16 @@ function App() {
     let socket = null;
     let reconnectTimeout = null;
 
-    const searchParams = new URLSearchParams(window.location.search);
-    const queryWsUrl = searchParams.get('wsBrokerUrl');
-    const queryRoomName = searchParams.get('wsRoomName');
-
-    const wsUrl = queryWsUrl || state.globalSettings?.wsBrokerUrl || "wss://socketsbay.com/wss/v2/1/demo/";
-    const roomName = queryRoomName || state.globalSettings?.wsRoomName || "essensa_stream_nikuyaaa_secure";
-
     const handleIncomingMessage = (type, payload) => {
       if (type === 'UPDATE_STATE' || type === 'STATE_RESPONSE') {
-        setState(prev => {
-          const nextState = {
-            ...prev,
-            ...payload
-          };
-          try {
-            localStorage.setItem('essensa_stream_state', JSON.stringify(nextState));
-          } catch (e) {}
-          return nextState;
-        });
+        setState(prev => ({
+          ...prev,
+          ...payload
+        }));
       } else if (type === 'CONTROL_PING') {
         bc.postMessage({ type: 'OVERLAY_PING' });
         if (socket && socket.readyState === WebSocket.OPEN) {
-          socket.send(JSON.stringify({ room: roomName, type: 'OVERLAY_PING' }));
+          socket.send(JSON.stringify({ type: 'OVERLAY_PING' }));
         }
       }
     };
@@ -391,16 +363,17 @@ function App() {
 
     // Initialize WebSocket connection for remote sync (e.g. Streamlabs Browser Source)
     const connectWebSocket = () => {
+      const wsUrl = "wss://socketsbay.com/wss/v2/1/demo/";
       socket = new WebSocket(wsUrl);
 
       socket.onopen = () => {
-        socket.send(JSON.stringify({ room: roomName, type: 'REQUEST_STATE' }));
+        socket.send(JSON.stringify({ room: "essensa_stream_nikuyaaa_secure", type: 'REQUEST_STATE' }));
       };
 
       socket.onmessage = (event) => {
         try {
           const msg = JSON.parse(event.data);
-          if (msg.room === roomName) {
+          if (msg.room === "essensa_stream_nikuyaaa_secure") {
             handleIncomingMessage(msg.type, msg.payload);
           }
         } catch (e) {
@@ -422,41 +395,22 @@ function App() {
     connectWebSocket();
     bc.postMessage({ type: 'REQUEST_STATE' });
 
-    // Local Dev Server Polling Fallback & LocalStorage Sync
+    // Local Dev Server Polling Fallback (runs every 1 second when WebSocket is not active)
     const pollInterval = setInterval(() => {
-      // Sync via localStorage if running in browser
-      try {
-        const saved = localStorage.getItem('essensa_stream_state');
-        if (saved) {
-          const parsed = JSON.parse(saved);
-          setState(prev => {
-            if (JSON.stringify(prev) !== saved) {
-              return { ...prev, ...parsed };
-            }
-            return prev;
-          });
-        }
-      } catch (e) {}
-
-      // Only poll backend endpoint on localhost
       if (!socket || socket.readyState !== WebSocket.OPEN) {
-        if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
-          fetch('http://localhost:5173/api/state')
-            .catch(() => fetch('/api/state'))
-            .then(res => res.json())
-            .then(data => {
-              if (data && (data.main || data['intermission-banner'])) {
-                setState(prev => {
-                  const nextState = { ...prev, ...data };
-                  try {
-                    localStorage.setItem('essensa_stream_state', JSON.stringify(nextState));
-                  } catch (e) {}
-                  return nextState;
-                });
-              }
-            })
-            .catch(() => {});
-        }
+        // Try localhost first, then relative path
+        fetch('http://localhost:5173/api/state')
+          .catch(() => fetch('/api/state'))
+          .then(res => res.json())
+          .then(data => {
+            if (data && (data.main || data['intermission-banner'])) {
+              setState(prev => ({
+                ...prev,
+                ...data
+              }));
+            }
+          })
+          .catch(() => {});
       }
     }, 1000);
 
@@ -469,7 +423,7 @@ function App() {
       clearTimeout(reconnectTimeout);
       clearInterval(pollInterval);
     };
-  }, [state.globalSettings?.wsBrokerUrl, state.globalSettings?.wsRoomName]);
+  }, []);
 
   const isControlView = !urlView || urlView === 'control' || urlView === 'dashboard';
   const currentView = isControlView 
@@ -536,9 +490,6 @@ function App() {
           // Broadcast and save
           const bc = new BroadcastChannel('essensa_overlay_channel');
           bc.postMessage({ type: 'UPDATE_STATE', payload: nextState });
-          try {
-            localStorage.setItem('essensa_stream_state', JSON.stringify(nextState));
-          } catch (e) {}
           fetch('/api/state', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -573,9 +524,6 @@ function App() {
           // Broadcast and save
           const bc = new BroadcastChannel('essensa_overlay_channel');
           bc.postMessage({ type: 'UPDATE_STATE', payload: nextState });
-          try {
-            localStorage.setItem('essensa_stream_state', JSON.stringify(nextState));
-          } catch (e) {}
           fetch('/api/state', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -1013,9 +961,9 @@ function App() {
               )}
             </AnimatePresence>
 
-            {/* Middle Zone Edge-to-Edge Backdrop (transparent white background with transparent centered single camera cutout) */}
+            {/* Middle Zone Edge-to-Edge Backdrop (Essensa forest green background with transparent centered single camera cutout) */}
             <div 
-              className="absolute left-0 top-[64px] w-[1920px] h-[926px] bg-white/10 z-10 pointer-events-none select-none"
+              className="absolute left-0 top-[64px] w-[1920px] h-[926px] bg-[#022B13] z-10 pointer-events-none select-none"
               style={{
                 clipPath: "path('M 0,0 L 1920,0 L 1920,926 L 0,926 Z M 64,30 A 24,24 0 0 0 40,54 L 40,872 A 24,24 0 0 0 64,896 L 1856,896 A 24,24 0 0 0 1880,872 L 1880,54 A 24,24 0 0 0 1856,30 Z')"
               }}
@@ -1086,7 +1034,7 @@ function DualPOVOverlay({ state }) {
       <div className="h-[926px] w-full bg-transparent relative z-10 shrink-0 pointer-events-none">
         {/* Event Poster Edge-to-Edge Backdrop Mask using clipping paths */}
         <div 
-          className="absolute inset-0 bg-white/10 z-10 pointer-events-none" 
+          className="absolute inset-0 bg-[#022B13] z-10 pointer-events-none" 
           style={{
             clipPath: "path('M 0,0 L 1920,0 L 1920,926 L 0,926 Z M 52,164 A 16,16 0 0 0 36,180 L 36,652 A 16,16 0 0 0 52,668 L 916,668 A 16,16 0 0 0 932,652 L 932,180 A 16,16 0 0 0 916,164 Z M 1004,164 A 16,16 0 0 0 988,180 L 988,652 A 16,16 0 0 0 1004,668 L 1868,668 A 16,16 0 0 0 1884,652 L 1884,180 A 16,16 0 0 0 1868,164 Z')"
           }}
