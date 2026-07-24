@@ -24,7 +24,6 @@ export function EditableRegion({ type, children, className = '' }) {
       onDoubleClick={handleDoubleClick}
       className={`
         ${className} 
-        relative
         ${isEditMode ? 'hover:ring-2 hover:ring-brand-gold/60 cursor-pointer transition-all duration-200' : ''}
         ${isActive && isEditMode ? 'ring-2 ring-brand-green bg-brand-green/5' : ''}
       `}

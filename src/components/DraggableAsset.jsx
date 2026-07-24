@@ -53,7 +53,6 @@ export function DraggableAsset({ id, type = 'asset', defaultX = 0, defaultY = 0,
       onDoubleClick={handleDoubleClick}
       className={`
         ${className} 
-        relative
         ${isEditMode ? 'hover:ring-2 hover:ring-brand-gold/60 cursor-move transition-shadow duration-200' : ''}
         ${isActive && isEditMode ? 'ring-2 ring-brand-green bg-brand-green/5' : ''}
       `}
