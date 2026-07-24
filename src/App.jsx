@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Facebook, Instagram, Globe, Youtube, Heart 
@@ -12,6 +13,33 @@ import { ProductCard } from './components/ProductCard';
 import { Countdown } from './components/Countdown';
 import { OperatorPanel } from './components/OperatorPanel';
 import { CommentsWidget } from './components/CommentsWidget';
+
+// Error Boundary – catches React render crashes and shows a diagnostic panel
+// instead of a blank white screen, making future issues easy to diagnose.
+class ErrorBoundary extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { hasError: false, error: null };
+  }
+  static getDerivedStateFromError(error) {
+    return { hasError: true, error };
+  }
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div style={{ position: 'fixed', inset: 0, background: '#0a0a0a', color: '#fff', fontFamily: 'monospace', padding: '40px', zIndex: 9999, overflow: 'auto' }}>
+          <div style={{ background: '#1a0000', border: '2px solid #ff4444', borderRadius: '12px', padding: '24px', maxWidth: '900px' }}>
+            <h1 style={{ color: '#ff4444', fontSize: '18px', marginBottom: '12px' }}>⚠ Application Crash — React Error Boundary</h1>
+            <p style={{ color: '#ffaaaa', fontSize: '13px', marginBottom: '16px' }}>{this.state.error?.message}</p>
+            <pre style={{ color: '#ff8888', fontSize: '11px', whiteSpace: 'pre-wrap', background: '#0d0000', padding: '16px', borderRadius: '8px' }}>{this.state.error?.stack}</pre>
+            <button onClick={() => this.setState({ hasError: false, error: null })} style={{ marginTop: '16px', background: '#ff4444', color: '#fff', border: 'none', padding: '8px 20px', borderRadius: '6px', cursor: 'pointer', fontWeight: 'bold' }}>Retry</button>
+          </div>
+        </div>
+      );
+    }
+    return this.props.children;
+  }
+}
 
 const renderSplitToneText = (text, defaultClass = "text-white", greenClass = "keyword-green", goldClass = "gold-sunray-text") => {
   if (!text) return null;
@@ -143,11 +171,14 @@ const renderSplitToneText = (text, defaultClass = "text-white", greenClass = "ke
 
 const defaultState = {
   "globalLogoUrl": "",
+  "headerCenterLogoUrl": "/uploads/BEYOND_TALK_LOGO_2.1.png",
+  "tickerRightLogoUrl": "/uploads/ORGANIC_WAY_OF_LIVING.png",
   "globalSettings": {
     "typographyColor": "#FFFFFF",
     "bannerBgColor": "#1A1A1A",
     "sunraySpeed": 4,
-    "sunrayIntensity": 0.3
+    "sunrayIntensity": 0.3,
+    "borderThickness": 6
   },
   "socials": [
     { "platform": "facebook", "text": "@EssensaNaturaleOfficial" },
@@ -344,10 +375,19 @@ function App() {
 
     const handleIncomingMessage = (type, payload) => {
       if (type === 'UPDATE_STATE' || type === 'STATE_RESPONSE') {
-        setState(prev => ({
-          ...prev,
-          ...payload
-        }));
+        setState(prev => {
+          // Deep merge nested section objects so partial payloads don't wipe required fields
+          const sectionKeys = ['main', 'starting', 'brb', 'ending', 'intermission-banner', 'dual-pov', 'globalSettings'];
+          const merged = { ...prev, ...payload };
+          sectionKeys.forEach(key => {
+            if (payload[key] && prev[key]) merged[key] = { ...prev[key], ...payload[key] };
+          });
+          // Never overwrite a valid logo URL with an empty string from synced state
+          if (!payload.headerCenterLogoUrl) merged.headerCenterLogoUrl = prev.headerCenterLogoUrl;
+          if (!payload.tickerRightLogoUrl) merged.tickerRightLogoUrl = prev.tickerRightLogoUrl;
+          if (!payload.globalLogoUrl && prev.globalLogoUrl) merged.globalLogoUrl = prev.globalLogoUrl;
+          return merged;
+        });
       } else if (type === 'CONTROL_PING') {
         bc.postMessage({ type: 'OVERLAY_PING' });
         if (socket && socket.readyState === WebSocket.OPEN) {
@@ -404,10 +444,19 @@ function App() {
           .then(res => res.json())
           .then(data => {
             if (data && (data.main || data['intermission-banner'])) {
-              setState(prev => ({
-                ...prev,
-                ...data
-              }));
+              setState(prev => {
+                // Deep merge nested section objects so partial server data doesn't wipe required fields
+                const sectionKeys = ['main', 'starting', 'brb', 'ending', 'intermission-banner', 'dual-pov', 'globalSettings'];
+                const merged = { ...prev, ...data };
+                sectionKeys.forEach(key => {
+                  if (data[key] && prev[key]) merged[key] = { ...prev[key], ...data[key] };
+                });
+                // Preserve default logo URLs when server returns empty strings
+                if (!data.headerCenterLogoUrl) merged.headerCenterLogoUrl = prev.headerCenterLogoUrl;
+                if (!data.tickerRightLogoUrl) merged.tickerRightLogoUrl = prev.tickerRightLogoUrl;
+                if (!data.globalLogoUrl && prev.globalLogoUrl) merged.globalLogoUrl = prev.globalLogoUrl;
+                return merged;
+              });
             }
           })
           .catch(() => {});
@@ -890,10 +939,17 @@ function App() {
           '--green-glow': state['dual-pov']?.greenIntensity ?? 0.45
         }}>
           <Header 
-            segmentName={renderSplitToneText(state['dual-pov']?.segmentName || state.main.segmentName, "text-brand-charcoal", "keyword-green", "keyword-gold")} 
+            segmentName={state['dual-pov']?.segmentName || state.main.segmentName} 
             startTime={state.main.startTime} 
             showClock={state.main.showClock} 
+            headerCenterLogoUrl={state.headerCenterLogoUrl || state.main.headerCenterLogoUrl}
           />
+          {/* Thin Connected White Perimeter Border - Starts at top-0 and meets the floating header at x=360 and x=1560 */}
+          <div className="absolute left-0 top-0 bottom-[90px] bg-white z-40 pointer-events-none" style={{ width: `${state.globalSettings?.borderThickness ?? 6}px` }} />
+          <div className="absolute right-0 top-0 bottom-[90px] bg-white z-40 pointer-events-none" style={{ width: `${state.globalSettings?.borderThickness ?? 6}px` }} />
+          <div className="absolute left-0 top-0 w-[360px] bg-white z-40 pointer-events-none" style={{ height: `${state.globalSettings?.borderThickness ?? 6}px` }} />
+          <div className="absolute right-0 top-0 w-[360px] bg-white z-40 pointer-events-none" style={{ height: `${state.globalSettings?.borderThickness ?? 6}px` }} />
+
           <DualPOVOverlay state={state} />
 
           {/* Lower Third (Host Nameplate) */}
@@ -927,7 +983,7 @@ function App() {
             ))}
           </div>
 
-          <Ticker items={state.main.tickerItems} logoUrl={state.globalLogoUrl} speed={state.main.tickerSpeed || 60} />
+          <Ticker items={state.main.tickerItems} logoUrl={state.globalLogoUrl} tickerRightLogoUrl={state.tickerRightLogoUrl || state.main.tickerRightLogoUrl} speed={state.main.tickerSpeed || 60} />
         </OverlayWrapper>
       );
 
@@ -953,14 +1009,18 @@ function App() {
             <AnimatePresence>
               {state.main.headerVisible && (
                 <Header 
-                  segmentName={renderSplitToneText(state.main.segmentName, "text-brand-charcoal", "keyword-green", "keyword-gold")} 
+                  segmentName={state.main.segmentName} 
                   startTime={state.main.startTime} 
                   showClock={state.main.showClock} 
+                  headerCenterLogoUrl={state.headerCenterLogoUrl || state.main.headerCenterLogoUrl}
                 />
               )}
             </AnimatePresence>
-
-
+            {/* Thin Connected White Perimeter Border - Starts at top-0 and meets the floating header at x=360 and x=1560 */}
+            <div className="absolute left-0 top-0 bottom-[90px] bg-white z-40 pointer-events-none" style={{ width: `${state.globalSettings?.borderThickness ?? 6}px` }} />
+            <div className="absolute right-0 top-0 bottom-[90px] bg-white z-40 pointer-events-none" style={{ width: `${state.globalSettings?.borderThickness ?? 6}px` }} />
+            <div className="absolute left-0 top-0 w-[360px] bg-white z-40 pointer-events-none" style={{ height: `${state.globalSettings?.borderThickness ?? 6}px` }} />
+            <div className="absolute right-0 top-0 w-[360px] bg-white z-40 pointer-events-none" style={{ height: `${state.globalSettings?.borderThickness ?? 6}px` }} />
 
             {/* Lower Third (Host Nameplate) */}
             <LowerThird 
@@ -996,7 +1056,7 @@ function App() {
             {/* Bottom News Ticker */}
             <AnimatePresence>
               {state.main.tickerVisible && (
-                 <Ticker items={state.main.tickerItems} logoUrl={state.globalLogoUrl} speed={state.main.tickerSpeed || 60} />
+                 <Ticker items={state.main.tickerItems} logoUrl={state.globalLogoUrl} tickerRightLogoUrl={state.tickerRightLogoUrl || state.main.tickerRightLogoUrl} speed={state.main.tickerSpeed || 60} />
               )}
             </AnimatePresence>
 
@@ -1043,4 +1103,10 @@ function DualPOVOverlay({ state }) {
   );
 }
 
-export default App;
+const AppWithBoundary = () => (
+  <ErrorBoundary>
+    <App />
+  </ErrorBoundary>
+);
+
+export default AppWithBoundary;

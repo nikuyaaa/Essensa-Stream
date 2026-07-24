@@ -17,6 +17,7 @@ export function Header({
   segmentName = "Revitalizing Health Anytime, Anywhere.", 
   startTime = null, 
   showClock = true,
+  headerCenterLogoUrl = '',
   className = '' 
 }) {
   const [elapsedSeconds, setElapsedSeconds] = useState(0);
@@ -66,42 +67,72 @@ export function Header({
     ].join(':');
   };
 
+  const renderText = (text, defaultClass = "text-brand-charcoal") => {
+    if (!text) return "";
+    let processed = text;
+    processed = processed.replace(/\[gold\](.*?)\[\/gold\]/gi, "||GOLD||$1||GOLD||");
+    processed = processed.replace(/\[green\](.*?)\[\/green\]/gi, "||GREEN||$1||GREEN||");
+    processed = processed.replace(/<b>(.*?)<\/b>/gi, "||GREEN||$1||GREEN||");
+    processed = processed.replace(/<gold>(.*?)<\/gold>/gi, "||GOLD||$1||GOLD||");
+    processed = processed.replace(/\[(?:color=([^\]\s]+)\s+effect=([^\]\s]+)|effect=([^\]\s]+)\s+color=([^\]\s]+))\](.*?)\[\/(?:color|effect)\]/gi, "||STYLE||$5||STYLE||");
+    processed = processed.replace(/\[color=([^\]]+)\](.*?)\[\/color\]/gi, "||STYLE||$2||STYLE||");
+    processed = processed.replace(/\[effect=([^\]]+)\](.*?)\[\/effect\]/gi, "||STYLE||$2||STYLE||");
+    
+    const parts = processed.split("||");
+    return parts.map((part, idx) => {
+      if (!part) return null;
+      if (part.startsWith("GOLD||")) {
+        const clean = part.substring(6);
+        return <span key={idx} className="keyword-gold font-black">{clean}</span>;
+      }
+      if (part.startsWith("GREEN||")) {
+        const clean = part.substring(7);
+        return <span key={idx} className="keyword-green font-black">{clean}</span>;
+      }
+      if (part.startsWith("STYLE||")) {
+        const clean = part.substring(7);
+        return <span key={idx} className="keyword-gold font-black animate-pulse">{clean}</span>;
+      }
+      return <span key={idx} className={defaultClass}>{part}</span>;
+    });
+  };
+
+  const titleString = typeof segmentName === 'string' ? segmentName : '';
+  const parts = titleString.split('|');
+  const leftText = parts[0] ? parts[0].trim() : '';
+  const rightText = parts[1] ? parts[1].trim() : '';
+
   return (
     <motion.div
       initial={{ y: -70, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       exit={{ y: -70, opacity: 0 }}
       transition={{ type: 'spring', damping: 20, stiffness: 100 }}
-      className={`absolute top-4 left-1/2 -translate-x-1/2 w-[1200px] h-[58px] z-50 bg-white text-brand-charcoal flex items-center justify-between px-6 rounded-2xl border border-black/15 shadow-2xl select-none overflow-hidden ${className}`}
+      className={`absolute top-0 left-1/2 -translate-x-1/2 w-[1200px] h-[58px] z-50 bg-white text-brand-charcoal flex items-center justify-between px-0 rounded-b-2xl border-x border-b border-black/15 shadow-2xl select-none overflow-visible ${className}`}
     >
       {/* Subtle Shimmer Overlay */}
-      <div className="absolute inset-0 shimmer-overlay opacity-30 animate-shimmer pointer-events-none" />
+      <div className="absolute inset-0 shimmer-overlay opacity-30 animate-shimmer pointer-events-none rounded-b-2xl" />
 
-      {/* Left: Brand / Tagline */}
-      <div className="flex items-center gap-3 relative z-10 min-w-0">
-        {/* Pulsing Green dot */}
-        <div className="w-3 h-3 bg-brand-green rounded-full animate-pulse shrink-0" />
-        <span className="font-display font-black text-lg tracking-[0.2em] uppercase text-brand-green shrink-0">
-          Live Event
-        </span>
-        <div className="h-5 w-0.5 bg-black/20 shrink-0" />
-        <span className="font-sans font-black text-base tracking-wide text-brand-charcoal/90 truncate max-w-[720px]">
-          {segmentName}
-        </span>
+      {/* Left side text container */}
+      <div className="flex items-center pl-8 justify-start text-left font-sans font-black text-sm tracking-widest text-brand-charcoal/90 uppercase truncate w-[470px] z-10 gap-1">
+        {renderText(leftText, "text-brand-charcoal/90")}
       </div>
 
-      {/* Right Content Group: Live Capsule Uptime Clock */}
-      {showClock && (
-        <div className="flex items-center gap-4 shrink-0 relative z-10">
-          <div className="flex items-center gap-2.5 bg-brand-charcoal border border-white/10 px-5 py-1.5 rounded-lg shadow-md shrink-0">
-            <span className="w-2 h-2 bg-red-500 rounded-full animate-pulse shrink-0" />
-            <span className="text-[10px] uppercase font-black tracking-[0.2em] text-white/60">LIVE</span>
-            <span className="font-mono text-lg font-black tracking-widest text-brand-gold ml-1">
-              {startTime ? formatRuntime(elapsedSeconds) : "00:00:00"}
-            </span>
-          </div>
+      {/* Center Symmetrical Rounded-Full Capsule Logo badge (Hangs 18px below header card with shadow to stand out without borders) */}
+      <div className="absolute left-1/2 top-0 -translate-x-1/2 bg-zinc-50 rounded-b-3xl px-6 h-[76px] min-w-[170px] flex items-center justify-center shadow-xl z-20">
+        <div className="flex items-center justify-center">
+          {headerCenterLogoUrl ? (
+            <img src={headerCenterLogoUrl} className="h-8 max-w-[150px] object-contain" alt="Header Center Logo" />
+          ) : (
+            <span className="text-[10px] font-display font-black tracking-widest text-brand-charcoal uppercase select-none">BEYOND TALKS</span>
+          )}
         </div>
-      )}
+      </div>
+
+      {/* Right side text container */}
+      <div className="flex items-center pr-8 justify-end text-right font-sans font-black text-xs tracking-wider text-zinc-550 uppercase truncate w-[470px] z-10 gap-1">
+        {renderText(rightText, "text-zinc-550")}
+      </div>
     </motion.div>
   );
 }

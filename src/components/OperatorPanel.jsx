@@ -41,8 +41,9 @@ export function OperatorPanel({ initialState, onStateChange }) {
       JSON.stringify(initialState.timerPresets) !== JSON.stringify(state.timerPresets) ||
       initialState.globalLogoUrl !== state.globalLogoUrl;
 
-    setState(initialState);
+    // Only update when config actually changed — avoids constant re-renders from the 1s poll
     if (hasConfigChanged) {
+      setState(initialState);
       setDraftState(initialState);
     }
   }, [initialState]);
@@ -179,6 +180,8 @@ export function OperatorPanel({ initialState, onStateChange }) {
       nextState.timerPresets = draftState.timerPresets;
     } else if (sectionKey === 'globalLogoUrl') {
       nextState.globalLogoUrl = draftState.globalLogoUrl;
+      nextState.headerCenterLogoUrl = draftState.headerCenterLogoUrl;
+      nextState.tickerRightLogoUrl = draftState.tickerRightLogoUrl;
     } else {
       nextState[sectionKey] = draftState[sectionKey];
     }
@@ -772,6 +775,36 @@ export function OperatorPanel({ initialState, onStateChange }) {
     return `${hrs}:${mins}:${secs}`;
   };
 
+  const renderPreview = (text) => {
+    if (!text) return "";
+    let processed = text;
+    processed = processed.replace(/\[gold\](.*?)\[\/gold\]/gi, "||GOLD||$1||GOLD||");
+    processed = processed.replace(/\[green\](.*?)\[\/green\]/gi, "||GREEN||$1||GREEN||");
+    processed = processed.replace(/<b>(.*?)<\/b>/gi, "||GREEN||$1||GREEN||");
+    processed = processed.replace(/<gold>(.*?)<\/gold>/gi, "||GOLD||$1||GOLD||");
+    processed = processed.replace(/\[(?:color=([^\]\s]+)\s+effect=([^\]\s]+)|effect=([^\]\s]+)\s+color=([^\]\s]+))\](.*?)\[\/(?:color|effect)\]/gi, "||STYLE||$5||STYLE||");
+    processed = processed.replace(/\[color=([^\]]+)\](.*?)\[\/color\]/gi, "||STYLE||$2||STYLE||");
+    processed = processed.replace(/\[effect=([^\]]+)\](.*?)\[\/effect\]/gi, "||STYLE||$2||STYLE||");
+    
+    const parts = processed.split("||");
+    return parts.map((part, idx) => {
+      if (!part) return null;
+      if (part.startsWith("GOLD||")) {
+        const clean = part.substring(6);
+        return <span key={idx} className="text-[#D4AF37] font-black">{clean}</span>;
+      }
+      if (part.startsWith("GREEN||")) {
+        const clean = part.substring(7);
+        return <span key={idx} className="text-[#1B7339] font-black">{clean}</span>;
+      }
+      if (part.startsWith("STYLE||")) {
+        const clean = part.substring(7);
+        return <span key={idx} className="text-[#D4AF37] font-black animate-pulse">{clean}</span>;
+      }
+      return <span key={idx} className="text-zinc-800 font-bold">{part}</span>;
+    });
+  };
+
   return (
     <div className="w-full h-full min-h-screen bg-zinc-950 text-zinc-100 flex flex-col font-sans select-none pb-12">
       {/* 1. Header Bar */}
@@ -1261,6 +1294,14 @@ export function OperatorPanel({ initialState, onStateChange }) {
                       className="bg-zinc-950 border border-zinc-800 rounded-lg px-3 py-2 text-sm text-zinc-200 focus:outline-none focus:border-brand-green font-bold"
                     />
                     {renderFormatterButtons('main', 'segmentName', 'main_segmentName')}
+                    
+                    {/* Mobile-Legibility Enlarged Preview */}
+                    <div className="mt-2 bg-white rounded-xl p-3 border border-zinc-250/80 shadow-sm select-none">
+                      <span className="text-[9px] uppercase font-black text-zinc-400 block mb-1">Mobile-Legibility Preview (Enlarged):</span>
+                      <div className="text-2xl font-black text-center tracking-wide text-zinc-800 uppercase flex items-center justify-center gap-1 min-h-[40px]">
+                        {renderPreview(draftState.main.segmentName)}
+                      </div>
+                    </div>
                   </div>
 
                   {/* Standalone Logo Uploader for Ticker branding */}
@@ -1283,44 +1324,10 @@ export function OperatorPanel({ initialState, onStateChange }) {
                     )}
                   </div>
 
-                  <div className="flex items-center justify-between border-t border-zinc-855 pt-3">
-                    <span className="text-xs text-zinc-400 font-bold">Show clock uptime capsule <Tooltip text={TooltipTexts['main.clockUptime']} /></span>
-                    <input 
-                      type="checkbox"
-                      checked={draftState.main.showClock}
-                      onChange={(e) => updateDraft('main', 'showClock', e.target.checked)}
-                      className="rounded text-brand-green focus:ring-brand-green h-4 w-4 bg-zinc-950 border-zinc-800 cursor-pointer"
-                    />
-                  </div>
-
-                  {/* Uptime clock controls (Direct instant execution) */}
-                  <div className="bg-zinc-950 border border-zinc-800/80 p-4 rounded-xl flex flex-col gap-3">
-                    <div className="flex justify-between items-center font-mono">
-                      <span className="text-zinc-500 text-[10px] uppercase font-black tracking-wider font-sans">Uptime Clock <Tooltip text={TooltipTexts['main.uptimeClock']} /></span>
-                      <span className="text-brand-gold text-xl font-black tracking-widest tabular-nums">
-                        {state.main.startTime ? formatElapsed(elapsedSeconds) : "00:00:00"}
-                      </span>
-                    </div>
-                    <div className="grid grid-cols-3 gap-2">
-                      <button
-                        onClick={() => triggerClockAction('start')}
-                        className="bg-brand-green/10 hover:bg-brand-green/20 border border-brand-green/30 text-brand-gold py-1.5 rounded-md font-bold text-2xs flex items-center justify-center gap-1 transition"
-                      >
-                        <Play className="w-3 h-3" /> Start Clock
-                      </button>
-                      <button
-                        onClick={() => triggerClockAction('stop')}
-                        className="bg-red-500/10 hover:bg-red-500/20 border border-red-500/30 text-red-400 py-1.5 rounded-md font-bold text-2xs flex items-center justify-center gap-1 transition"
-                      >
-                        <Pause className="w-3 h-3" /> Stop Clock
-                      </button>
-                      <button
-                        onClick={() => triggerClockAction('reset')}
-                        className="bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 text-zinc-300 py-1.5 rounded-md font-bold text-2xs flex items-center justify-center gap-1 transition"
-                      >
-                        <RotateCcw className="w-3 h-3" /> Reset
-                      </button>
-                    </div>
+                  {/* Deprecated Timer Card */}
+                  <div className="bg-zinc-950/45 border border-zinc-900 p-4 rounded-xl flex flex-col gap-2 opacity-60 select-none">
+                    <span className="text-[10px] uppercase font-black tracking-wider text-zinc-550 block">HMS Timer (Deprecated)</span>
+                    <span className="text-2xs text-zinc-500 font-bold">Timer has been removed from the top header layout. Controls are disabled.</span>
                   </div>
 
                   {/* Segment presets */}
@@ -2183,10 +2190,12 @@ export function OperatorPanel({ initialState, onStateChange }) {
             {/* Global Logo Upload Card */}
             <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-6 shadow-xl flex flex-col gap-4">
               <h2 className="text-sm font-black text-brand-gold uppercase tracking-widest flex items-center gap-2 border-b border-zinc-800 pb-3">
-                <Layers className="w-4 h-4" /> Default Fallback Logo Customization
+                <Layers className="w-4 h-4" /> Broadcast Brand Logo Assets
               </h2>
+              
+              {/* Fallback Brand Logo (Left cut out of Ticker) */}
               <div className="flex flex-col gap-3">
-                <label className="text-[10px] uppercase font-black text-zinc-400">Fallback Brand Logo (static image or animated/video loop) <Tooltip text={TooltipTexts['settings.logoUrl']} /></label>
+                <label className="text-[10px] uppercase font-black text-zinc-400">Fallback Brand Logo (static image or animated loop) <Tooltip text={TooltipTexts['settings.logoUrl']} /></label>
                 <input 
                   type="file" 
                   accept="image/*,video/*"
@@ -2200,19 +2209,92 @@ export function OperatorPanel({ initialState, onStateChange }) {
                   }}
                   className="bg-zinc-950 border border-zinc-800 rounded px-2.5 py-1.5 text-xs text-zinc-350 w-full cursor-pointer focus:outline-none"
                 />
-                
                 {draftState.globalLogoUrl && (
-                  <div className="bg-zinc-950 p-3 rounded-lg border border-zinc-850 flex items-center justify-between gap-3">
+                  <div className="bg-zinc-950 p-2.5 rounded-lg border border-zinc-850 flex items-center justify-between gap-3">
                     <span className="text-2xs font-bold text-zinc-400 truncate max-w-[280px]">
-                      Current Logo: {draftState.globalLogoUrl.slice(0, 50)}...
+                      Fallback Logo: {draftState.globalLogoUrl.slice(0, 45)}...
                     </span>
                     <button
                       type="button"
                       onClick={() => setDraftState(prev => ({ ...prev, globalLogoUrl: "" }))}
                       className="text-red-400 hover:text-red-300 text-2xs font-black uppercase shrink-0"
                     >
-                      Clear logo
+                      Clear
                     </button>
+                  </div>
+                )}
+              </div>
+
+              {/* Top-Center Header Logo */}
+              <div className="flex flex-col gap-3 border-t border-zinc-850 pt-4">
+                <label className="text-[10px] uppercase font-black text-zinc-400">Top-Center Header Logo (e.g. Beyond Talks Logo)</label>
+                <input 
+                  type="file" 
+                  accept="image/*,video/*"
+                  onChange={(e) => {
+                    handleFileUpload(e, (url) => {
+                      setDraftState(prev => ({
+                        ...prev,
+                        headerCenterLogoUrl: url
+                      }));
+                    });
+                  }}
+                  className="bg-zinc-950 border border-zinc-800 rounded px-2.5 py-1.5 text-xs text-zinc-350 w-full cursor-pointer focus:outline-none"
+                />
+                {draftState.headerCenterLogoUrl && (
+                  <div className="bg-zinc-950 p-2.5 rounded-lg border border-zinc-850 flex flex-col gap-2">
+                    <div className="flex items-center justify-between gap-3">
+                      <span className="text-2xs font-bold text-zinc-400 truncate max-w-[280px]">
+                        {(draftState.headerCenterLogoUrl || '').split('/').pop()}
+                      </span>
+                      <button
+                        type="button"
+                        onClick={() => setDraftState(prev => ({ ...prev, headerCenterLogoUrl: "" }))}
+                        className="text-red-400 hover:text-red-300 text-2xs font-black uppercase shrink-0"
+                      >
+                        Clear
+                      </button>
+                    </div>
+                    <div className="flex justify-center bg-zinc-900 rounded p-2">
+                      <img src={draftState.headerCenterLogoUrl} alt="Header logo preview" className="h-12 max-w-[160px] object-contain" />
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* Bottom-Right Sponsor/Ticker Logo */}
+              <div className="flex flex-col gap-3 border-t border-zinc-850 pt-4">
+                <label className="text-[10px] uppercase font-black text-zinc-400">Bottom-Right Ticker Logo (e.g. Organic Way of Living)</label>
+                <input 
+                  type="file" 
+                  accept="image/*,video/*"
+                  onChange={(e) => {
+                    handleFileUpload(e, (url) => {
+                      setDraftState(prev => ({
+                        ...prev,
+                        tickerRightLogoUrl: url
+                      }));
+                    });
+                  }}
+                  className="bg-zinc-950 border border-zinc-800 rounded px-2.5 py-1.5 text-xs text-zinc-350 w-full cursor-pointer focus:outline-none"
+                />
+                {draftState.tickerRightLogoUrl && (
+                  <div className="bg-zinc-950 p-2.5 rounded-lg border border-zinc-850 flex flex-col gap-2">
+                    <div className="flex items-center justify-between gap-3">
+                      <span className="text-2xs font-bold text-zinc-400 truncate max-w-[280px]">
+                        {(draftState.tickerRightLogoUrl || '').split('/').pop()}
+                      </span>
+                      <button
+                        type="button"
+                        onClick={() => setDraftState(prev => ({ ...prev, tickerRightLogoUrl: "" }))}
+                        className="text-red-400 hover:text-red-300 text-2xs font-black uppercase shrink-0"
+                      >
+                        Clear
+                      </button>
+                    </div>
+                    <div className="flex justify-center bg-zinc-900 rounded p-2">
+                      <img src={draftState.tickerRightLogoUrl} alt="Right logo preview" className="h-14 max-w-[160px] object-contain" />
+                    </div>
                   </div>
                 )}
               </div>
@@ -2223,7 +2305,7 @@ export function OperatorPanel({ initialState, onStateChange }) {
                   className="flex items-center gap-2 bg-brand-green hover:bg-brand-green/90 text-white font-black uppercase tracking-wider text-xs py-2 px-4 rounded-lg border border-brand-gold/45 shadow-sm active:scale-95"
                 >
                   <Save className="w-3.5 h-3.5 text-brand-gold" />
-                  Save Logo
+                  Save Logos
                 </button>
               </div>
             </div>
@@ -2298,7 +2380,22 @@ export function OperatorPanel({ initialState, onStateChange }) {
                 </div>
               </div>
 
-
+              {/* Border Style Preset Controller */}
+              <div className="flex flex-col gap-2 border-t border-zinc-850 pt-4">
+                <div className="flex justify-between items-center">
+                  <span className="text-[10px] uppercase font-black text-zinc-400">Perimeter Frame Border Thickness</span>
+                  <span className="text-xs font-bold text-brand-gold">{draftState.globalSettings?.borderThickness ?? 6}px</span>
+                </div>
+                <input 
+                  type="range"
+                  min="2"
+                  max="12"
+                  step="1"
+                  value={draftState.globalSettings?.borderThickness ?? 6}
+                  onChange={(e) => updateDraft('globalSettings', 'borderThickness', parseInt(e.target.value))}
+                  className="w-full accent-brand-green bg-zinc-950 rounded h-1.5 cursor-pointer"
+                />
+              </div>
 
               <div className="flex justify-end border-t border-zinc-800 pt-3 mt-1">
                 <button

@@ -1,8 +1,11 @@
 {
   "globalLogoUrl": "",
+  "headerCenterLogoUrl": "",
+  "tickerRightLogoUrl": "",
   "globalSettings": {
     "typographyColor": "#FFFFFF",
-    "bannerBgColor": "#1A1A1A"
+    "bannerBgColor": "#1A1A1A",
+    "borderThickness": 6
   },
   "intermission-banner": {
     "welcomeText": "Anniversary [gold]Live Stream[/gold]",
