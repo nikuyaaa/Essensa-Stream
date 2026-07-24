@@ -60,6 +60,60 @@ export function InlineEditorDock() {
         </div>
       );
       break;
+    case 'scene-text':
+      const scene = activeEditor.id || 'intermission-banner';
+      PanelContent = () => (
+        <div className="flex flex-col gap-4">
+          <h3 className="font-bold text-sm text-brand-gold capitalize">{scene.replace('-', ' ')} Editor</h3>
+          
+          {state[scene]?.welcomeText !== undefined && (
+            <div className="flex flex-col gap-2">
+              <label className="text-xs text-zinc-400">Welcome Text / Super Title</label>
+              <input 
+                type="text" 
+                className="bg-black/50 border border-zinc-700 rounded p-1.5 text-sm"
+                value={state[scene]?.welcomeText || ''}
+                onChange={(e) => updateGlobalState({ [scene]: { welcomeText: e.target.value } })}
+              />
+            </div>
+          )}
+
+          {state[scene]?.announcement !== undefined && (
+            <div className="flex flex-col gap-2">
+              <label className="text-xs text-zinc-400">Main Announcement</label>
+              <textarea 
+                className="bg-black/50 border border-zinc-700 rounded p-1.5 text-sm h-20"
+                value={state[scene]?.announcement || ''}
+                onChange={(e) => updateGlobalState({ [scene]: { announcement: e.target.value } })}
+              />
+            </div>
+          )}
+
+          {state[scene]?.rightHeader !== undefined && (
+            <div className="flex flex-col gap-2">
+              <label className="text-xs text-zinc-400">Right Side Header</label>
+              <input 
+                type="text" 
+                className="bg-black/50 border border-zinc-700 rounded p-1.5 text-sm"
+                value={state[scene]?.rightHeader || ''}
+                onChange={(e) => updateGlobalState({ [scene]: { rightHeader: e.target.value } })}
+              />
+            </div>
+          )}
+
+          {state[scene]?.rightBody !== undefined && (
+            <div className="flex flex-col gap-2">
+              <label className="text-xs text-zinc-400">Right Side Body Text</label>
+              <textarea 
+                className="bg-black/50 border border-zinc-700 rounded p-1.5 text-sm h-20"
+                value={state[scene]?.rightBody || ''}
+                onChange={(e) => updateGlobalState({ [scene]: { rightBody: e.target.value } })}
+              />
+            </div>
+          )}
+        </div>
+      );
+      break;
     default:
       PanelContent = () => <div className="text-sm">Editing {activeEditor.type}</div>;
   }

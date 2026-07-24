@@ -11,7 +11,6 @@ import { Ticker } from './components/Ticker';
 import { LowerThird } from './components/LowerThird';
 import { ProductCard } from './components/ProductCard';
 import { Countdown } from './components/Countdown';
-import { OperatorPanel } from './components/OperatorPanel';
 import { CommentsWidget } from './components/CommentsWidget';
 import { EditorProvider } from './contexts/EditorContext';
 import { InlineEditorDock } from './components/InlineEditorDock';
@@ -199,11 +198,11 @@ const defaultState = {
     "brb": [300, 600, 900, 1800, 3600] // 5m, 10m, 15m, 30m, 60m
   },
   "intermission-banner": {
-    "welcomeText": "Anniversary [gold]Live Stream[/gold]",
-    "announcement": "Advocating the [green]Organic Way[/green] of Living",
+    "welcomeText": "Short [gold]Break[/gold]",
+    "announcement": "We Will Be [green]Right Back[/green]",
     "tagline": "16 Years of Wellness & Prosperity",
-    "rightHeader": "Live Stream [gold]Starting Soon[/gold]",
-    "rightBody": "Our broadcast will begin shortly. Sit back, relax, and get ready for an organic way of living!",
+    "rightHeader": "Stream is on a [gold]Short Break[/gold]",
+    "rightBody": "Please stand by. The broadcast will resume shortly. Grab a drink and stretch your legs!",
     "alertText": "ALERT: Special anniversary promo packages will be revealed during the live show!",
     "logoUrl": "",
     "socials": [],
@@ -696,18 +695,6 @@ function App() {
   // Render individual views wrapped in EditorProvider
   let renderedView = null;
   switch (currentView) {
-    
-    // View 1: Control Panel / Operator Dashboard
-    case 'control':
-    case 'dashboard':
-      renderedView = (
-        <OperatorPanel 
-          initialState={state} 
-          onStateChange={(updatedState) => setState(updatedState)} 
-        />
-      );
-      break;
-
     // View 2: Intermission Banner Screen (Holding Page)
     case 'intermission-banner':
     case 'intermission':
@@ -738,14 +725,14 @@ function App() {
               </div>
 
               {/* Elegant Title */}
-              <div className="flex flex-col gap-4 mt-8 relative z-10 text-reveal-active brand-text-glow text-protected">
+              <EditableRegion type="scene-text" id="intermission-banner" className="flex flex-col gap-4 mt-8 relative z-10 text-reveal-active brand-text-glow text-protected">
                 <span className="font-sans text-sm font-black text-white/90 tracking-[0.4em] uppercase">
                   {renderSplitToneText(state['intermission-banner'].welcomeText, "text-white/90", "keyword-green", "keyword-gold")}
                 </span>
                 <h1 className="font-display font-black text-5xl text-white tracking-wide uppercase leading-tight">
                   {renderSplitToneText(state['intermission-banner'].announcement, "text-white", "keyword-green", "keyword-gold")}
                 </h1>
-              </div>
+              </EditableRegion>
 
               {/* Tagline */}
               <div className="text-xs text-white/90 uppercase tracking-[0.3em] font-black mt-8 relative z-10 text-protected">
@@ -759,7 +746,7 @@ function App() {
               <div className="hidden md:block" />
 
               {/* Welcome Notice in the center */}
-              <div className="flex flex-col items-center justify-center gap-6 py-8 relative z-10 text-center px-12">
+              <EditableRegion type="scene-text" id="intermission-banner" className="flex flex-col items-center justify-center gap-6 py-8 relative z-10 text-center px-12">
                 <h2 className="text-3xl font-black text-brand-charcoal uppercase tracking-wider">
                   {renderSplitToneText(state['intermission-banner'].rightHeader || "Live Stream <b>Starting Soon</b>", "text-brand-charcoal", "keyword-green", "keyword-gold")}
                 </h2>
@@ -772,7 +759,7 @@ function App() {
                     {state['intermission-banner'].alertText}
                   </div>
                 )}
-              </div>
+              </EditableRegion>
 
               {/* Social Media Grid */}
               <div className="w-full border-t border-black/10 pt-8 mt-4 relative z-10">
@@ -812,14 +799,14 @@ function App() {
               </div>
 
               {/* Elegant Title */}
-              <div className="flex flex-col gap-4 mt-8 relative z-10 text-reveal-active brand-text-glow text-protected">
+              <EditableRegion type="scene-text" id="starting" className="flex flex-col gap-4 mt-8 relative z-10 text-reveal-active brand-text-glow text-protected">
                 <span className="font-sans text-sm font-black text-white/90 tracking-[0.4em] uppercase">
                   {renderSplitToneText(state.starting.superTitle || "Anniversary <b>Live Stream</b>", "text-white/90", "keyword-green", "keyword-gold")}
                 </span>
                 <h1 className="font-display font-black text-5xl text-white tracking-wide uppercase leading-tight">
                   {renderSplitToneText(state.starting.announcement, "text-white", "keyword-green", "keyword-gold")}
                 </h1>
-              </div>
+              </EditableRegion>
 
               {/* Tagline */}
               <div className="text-xs text-white/90 uppercase tracking-[0.3em] font-black mt-8 relative z-10 text-protected">
@@ -887,13 +874,13 @@ function App() {
             <div className="flex flex-col items-center gap-10 text-center relative z-10 w-[900px] bg-white p-16 rounded-[32px] border border-brand-sage shadow-2xl gold-ambient-glow-soft">
               <Logo showText={true} light={false} logoUrl={state.brb.logoUrl || state.globalLogoUrl} className="scale-150 mb-6" />
 
-              <div className="flex flex-col items-center gap-4">
+              <EditableRegion type="scene-text" id="brb" className="flex flex-col items-center gap-4">
                 <h2 className="font-display font-black text-6xl text-brand-charcoal tracking-widest uppercase">
                   {renderSplitToneText(state.brb.bannerText, "text-brand-charcoal", "keyword-green", "keyword-gold")}
                 </h2>
                 {/* Thin forest green highlight line */}
                 <div className="w-36 h-2 bg-brand-green rounded-full" />
-              </div>
+              </EditableRegion>
 
               {/* Expected return countdown block */}
               <div className="flex items-center gap-4 bg-brand-cream border border-brand-sage/80 px-10 py-4 rounded-full shadow-inner mt-4">
@@ -955,14 +942,14 @@ function App() {
                 <Logo showText={true} light={false} logoUrl={state.ending.logoUrl || state.globalLogoUrl} className="scale-[1.8] origin-center mb-10" />
               </motion.div>
 
-              <div className="flex flex-col gap-4">
+              <EditableRegion type="scene-text" id="ending" className="flex flex-col gap-4">
                 <h2 className="font-display font-black text-4xl text-brand-charcoal uppercase tracking-wider">
                   {renderSplitToneText(state.ending.title, "text-brand-charcoal", "keyword-green", "keyword-gold")}
                 </h2>
                 <p className="font-sans text-brand-charcoal/80 text-xl max-w-[700px] leading-relaxed mx-auto font-bold">
                   {state.ending.description}
                 </p>
-              </div>
+              </EditableRegion>
 
               {/* Outro Social handles block */}
               <div className="w-full border-t border-brand-sage pt-8 mt-4">
@@ -1131,7 +1118,7 @@ function App() {
     <EditorProvider state={state} updateGlobalState={updateGlobalState} mode={mode} setMode={setMode}>
       {renderedView}
       <InlineEditorDock />
-      {!isObs && currentView !== 'control' && currentView !== 'dashboard' && (
+      {!isObs && (
         <button
           onClick={() => setMode(m => m === 'edit' ? 'broadcast' : 'edit')}
           className={`fixed bottom-4 left-4 z-[9999] p-2 rounded-full transition-all duration-300 ${mode === 'edit' ? 'bg-brand-gold text-black shadow-lg shadow-brand-gold/20' : 'bg-black/40 text-white/40 hover:text-white/80 hover:bg-black/60'} backdrop-blur`}
