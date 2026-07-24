@@ -1,10 +1,8 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Sparkles, Tag } from 'lucide-react';
-import { DraggableAsset } from './DraggableAsset';
 
 export function ProductCard({ 
-  id = "product-card",
   isOpen = false, 
   name = "Buah Merah Mix", 
   price = "₱350.00", 
@@ -17,9 +15,7 @@ export function ProductCard({
   return (
     <AnimatePresence initial={false}>
       {isOpen && (
-        <DraggableAsset
-          id={id}
-          type="product"
+        <motion.div
           initial={{ x: 450, opacity: 0, scale: 0.95 }}
           animate={{ x: 0, opacity: 1, scale: 1 }}
           exit={{ x: 450, opacity: 0, scale: 0.95 }}
@@ -127,7 +123,7 @@ export function ProductCard({
             </div>
 
           </div>
-        </DraggableAsset>
+        </motion.div>
       )}
     </AnimatePresence>
   );

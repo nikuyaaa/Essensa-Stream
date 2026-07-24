@@ -1,7 +1,5 @@
 import React, { useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { DraggableAsset } from './DraggableAsset';
-
 
 export function LowerThird({ 
   isOpen = false, 
@@ -25,9 +23,7 @@ export function LowerThird({
   return (
     <AnimatePresence initial={false}>
       {isOpen && (
-        <DraggableAsset
-          id="host-nameplate"
-          type="nameplate"
+        <motion.div
           initial={{ x: -600, opacity: 0 }}
           animate={{ x: 0, opacity: 1 }}
           exit={{ x: -600, opacity: 0 }}
@@ -67,7 +63,7 @@ export function LowerThird({
               {title}
             </motion.span>
           </motion.div>
-        </DraggableAsset>
+        </motion.div>
       )}
     </AnimatePresence>
   );
