@@ -111,6 +111,17 @@ export function InlineEditorDock() {
               />
             </div>
           )}
+
+          <div className="flex flex-col gap-2">
+            <label className="text-xs text-zinc-400">Dynamic Alert Message (Red Banner)</label>
+            <input 
+              type="text" 
+              className="bg-black/50 border border-zinc-700 rounded p-1.5 text-sm"
+              value={state[scene]?.alertText || ''}
+              onChange={(e) => updateGlobalState({ [scene]: { alertText: e.target.value } })}
+              placeholder="e.g. ALERT: Special promo packages..."
+            />
+          </div>
         </div>
       );
       break;

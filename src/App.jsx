@@ -838,6 +838,12 @@ function App() {
                   }}
                   textColor="text-brand-green"
                 />
+                
+                {state.starting.alertText && (
+                  <div className="mt-8 alert-banner-premium font-black uppercase text-xs tracking-widest px-8 py-4 rounded-2xl shadow-lg">
+                    {state.starting.alertText}
+                  </div>
+                )}
               </div>
 
               {/* Social Media Grid */}
