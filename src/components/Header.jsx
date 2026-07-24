@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Facebook, Instagram, Youtube } from 'lucide-react';
+import { EditableRegion } from './EditableRegion';
+
 
 const TikTokIcon = ({ className }) => (
   <svg 
@@ -103,13 +105,14 @@ export function Header({
   const rightText = parts[1] ? parts[1].trim() : '';
 
   return (
-    <motion.div
-      initial={{ y: -70, opacity: 0 }}
-      animate={{ y: 0, opacity: 1 }}
-      exit={{ y: -70, opacity: 0 }}
-      transition={{ type: 'spring', damping: 20, stiffness: 100 }}
-      className={`absolute top-0 left-1/2 -translate-x-1/2 w-[1200px] h-[58px] z-50 bg-white text-brand-charcoal flex items-center justify-between px-0 rounded-b-2xl border-x border-b border-black/15 shadow-2xl select-none overflow-visible ${className}`}
-    >
+    <EditableRegion type="header" className={`absolute top-0 left-1/2 -translate-x-1/2 w-[1200px] h-[58px] z-50 ${className}`}>
+      <motion.div
+        initial={{ y: -60, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        exit={{ y: -60, opacity: 0 }}
+        transition={{ type: 'spring', damping: 20, stiffness: 100 }}
+        className="w-full h-full relative bg-white text-brand-charcoal flex items-center justify-between px-0 rounded-b-2xl border-x border-b border-black/15 shadow-2xl select-none overflow-visible"
+      >
       {/* Subtle Shimmer Overlay */}
       <div className="absolute inset-0 shimmer-overlay opacity-30 animate-shimmer pointer-events-none rounded-b-2xl" />
 
@@ -133,7 +136,8 @@ export function Header({
       <div className="flex items-center pr-8 justify-end text-right font-sans font-black text-xs tracking-wider text-zinc-550 uppercase truncate w-[470px] z-10 gap-1">
         {renderText(rightText, "text-zinc-550")}
       </div>
-    </motion.div>
+      </motion.div>
+    </EditableRegion>
   );
 }
 

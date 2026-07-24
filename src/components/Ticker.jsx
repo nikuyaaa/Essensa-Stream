@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { Logo } from './Logo';
+import { EditableRegion } from './EditableRegion';
+
 
 export function Ticker({ 
   items = [
@@ -17,7 +19,8 @@ export function Ticker({
   const [delay] = useState(() => -((Date.now() / 1000) % speed));
 
   return (
-    <div
+    <EditableRegion
+      type="ticker"
       className={`absolute bottom-0 left-0 w-[1920px] h-[90px] z-40 bg-transparent select-none overflow-hidden ${className}`}
     >
       {/* 1. Dedicated Non-Moving White Logo Block on the Left (90px height) */}
@@ -74,7 +77,7 @@ export function Ticker({
           </div>
         )}
       </div>
-    </div>
+    </EditableRegion>
   );
 }
 

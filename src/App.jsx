@@ -13,6 +13,10 @@ import { ProductCard } from './components/ProductCard';
 import { Countdown } from './components/Countdown';
 import { OperatorPanel } from './components/OperatorPanel';
 import { CommentsWidget } from './components/CommentsWidget';
+import { EditorProvider } from './contexts/EditorContext';
+import { InlineEditorDock } from './components/InlineEditorDock';
+import { EditableRegion } from './components/EditableRegion';
+import { Lock, Unlock } from 'lucide-react';
 
 // Error Boundary – catches React render crashes and shows a diagnostic panel
 // instead of a blank white screen, making future issues easy to diagnose.
@@ -344,9 +348,22 @@ function App() {
   const [state, setState] = useState(defaultState);
   const [urlView, setUrlView] = useState(null);
   const [lock, setLock] = useState(false);
+  const [mode, setMode] = useState('broadcast');
+  const [isObs, setIsObs] = useState(false);
 
-  // Read view parameter from URL query string or pathname
+  const bcRef = React.useRef(null);
+  const socketRef = React.useRef(null);
+
+  // Read view parameter and detect OBS
   useEffect(() => {
+    const isObsDetected = !!window.obsstudio;
+    setIsObs(isObsDetected);
+    if (!isObsDetected) {
+      setMode('broadcast'); // default, toggleable via button
+    } else {
+      setMode('broadcast'); // locked
+    }
+
     const searchParams = new URLSearchParams(window.location.search);
     const viewQuery = searchParams.get('view');
     const isLocked = searchParams.get('lock') === 'true';
@@ -370,6 +387,7 @@ function App() {
   // Sync state via BroadcastChannel and WebSocket (Internet Sync for Streamlabs)
   useEffect(() => {
     const bc = new BroadcastChannel('essensa_overlay_channel');
+    bcRef.current = bc;
     let socket = null;
     let reconnectTimeout = null;
 
@@ -405,6 +423,7 @@ function App() {
     const connectWebSocket = () => {
       const wsUrl = "wss://socketsbay.com/wss/v2/1/demo/";
       socket = new WebSocket(wsUrl);
+      socketRef.current = socket;
 
       socket.onopen = () => {
         socket.send(JSON.stringify({ room: "essensa_stream_nikuyaaa_secure", type: 'REQUEST_STATE' }));
@@ -465,6 +484,7 @@ function App() {
 
     return () => {
       bc.close();
+      bcRef.current = null;
       if (socket) {
         socket.onclose = null;
         socket.close();
@@ -640,23 +660,58 @@ function App() {
     );
   };
 
-  // Render individual views
+  const updateGlobalState = (partialState) => {
+    const newState = { ...state };
+    
+    // Deep merge for specific objects
+    const sectionKeys = ['main', 'starting', 'brb', 'ending', 'intermission-banner', 'dual-pov', 'globalSettings', 'positions'];
+    sectionKeys.forEach(key => {
+      if (partialState[key]) {
+        newState[key] = { ...(state[key] || {}), ...partialState[key] };
+      }
+    });
+
+    // Top-level properties
+    Object.keys(partialState).forEach(key => {
+      if (!sectionKeys.includes(key)) {
+        newState[key] = partialState[key];
+      }
+    });
+
+    setState(newState);
+
+    const msg = { type: 'UPDATE_STATE', payload: partialState }; // broadcast only the partial change to avoid overwriting unrelated in-flight changes
+    if (bcRef.current) bcRef.current.postMessage(msg);
+    if (socketRef.current && socketRef.current.readyState === WebSocket.OPEN) {
+      socketRef.current.send(JSON.stringify({ room: "essensa_stream_nikuyaaa_secure", ...msg }));
+    }
+
+    fetch('/api/state', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(newState)
+    }).catch(() => {});
+  };
+
+  // Render individual views wrapped in EditorProvider
+  let renderedView = null;
   switch (currentView) {
     
     // View 1: Control Panel / Operator Dashboard
     case 'control':
     case 'dashboard':
-      return (
+      renderedView = (
         <OperatorPanel 
           initialState={state} 
           onStateChange={(updatedState) => setState(updatedState)} 
         />
       );
+      break;
 
     // View 2: Intermission Banner Screen (Holding Page)
     case 'intermission-banner':
     case 'intermission':
-      return (
+      renderedView = (
         <OverlayWrapper currentView={currentView} style={{
           '--sunray-speed': `${state['intermission-banner']?.sunraySpeed || 4}s`,
           '--sunray-glow': state['intermission-banner']?.sunrayIntensity ?? 0.3,
@@ -922,10 +977,11 @@ function App() {
           </div>
         </OverlayWrapper>
       );
+      break;
 
     // View: Dual-POV Stream Overlay layout
     case 'dual-pov':
-      return (
+      renderedView = (
         <OverlayWrapper currentView={currentView} style={{
           '--sunray-speed': `${state['dual-pov']?.sunraySpeed || 4}s`,
           '--sunray-glow': state['dual-pov']?.sunrayIntensity ?? 0.3,
@@ -945,10 +1001,12 @@ function App() {
             headerCenterLogoUrl={state.headerCenterLogoUrl || state.main.headerCenterLogoUrl}
           />
           {/* Thin Connected White Perimeter Border - Starts at top-0 and meets the floating header at x=360 and x=1560 */}
-          <div className="absolute left-0 top-0 bottom-[90px] bg-white z-40 pointer-events-none" style={{ width: `${state.globalSettings?.borderThickness ?? 6}px` }} />
-          <div className="absolute right-0 top-0 bottom-[90px] bg-white z-40 pointer-events-none" style={{ width: `${state.globalSettings?.borderThickness ?? 6}px` }} />
-          <div className="absolute left-0 top-0 w-[360px] bg-white z-40 pointer-events-none" style={{ height: `${state.globalSettings?.borderThickness ?? 6}px` }} />
-          <div className="absolute right-0 top-0 w-[360px] bg-white z-40 pointer-events-none" style={{ height: `${state.globalSettings?.borderThickness ?? 6}px` }} />
+          <EditableRegion type="frame" className="absolute inset-0 z-40 pointer-events-none">
+            <div className="absolute left-0 top-0 bottom-[90px] bg-white pointer-events-auto" style={{ width: `${state.globalSettings?.borderThickness ?? 6}px` }} />
+            <div className="absolute right-0 top-0 bottom-[90px] bg-white pointer-events-auto" style={{ width: `${state.globalSettings?.borderThickness ?? 6}px` }} />
+            <div className="absolute left-0 top-0 w-[360px] bg-white pointer-events-auto" style={{ height: `${state.globalSettings?.borderThickness ?? 6}px` }} />
+            <div className="absolute right-0 top-0 w-[360px] bg-white pointer-events-auto" style={{ height: `${state.globalSettings?.borderThickness ?? 6}px` }} />
+          </EditableRegion>
 
           <DualPOVOverlay state={state} />
 
@@ -986,11 +1044,12 @@ function App() {
           <Ticker items={state.main.tickerItems} logoUrl={state.globalLogoUrl} tickerRightLogoUrl={state.tickerRightLogoUrl || state.main.tickerRightLogoUrl} speed={state.main.tickerSpeed || 60} />
         </OverlayWrapper>
       );
+      break;
 
     // View 6 (Default): Main Live Stream Overlay
     case 'main':
     default:
-      return (
+      renderedView = (
         <OverlayWrapper currentView={currentView} style={{
           '--sunray-speed': `${state.main?.sunraySpeed || 4}s`,
           '--sunray-glow': state.main?.sunrayIntensity ?? 0.3,
@@ -1017,10 +1076,12 @@ function App() {
               )}
             </AnimatePresence>
             {/* Thin Connected White Perimeter Border - Starts at top-0 and meets the floating header at x=360 and x=1560 */}
-            <div className="absolute left-0 top-0 bottom-[90px] bg-white z-40 pointer-events-none" style={{ width: `${state.globalSettings?.borderThickness ?? 6}px` }} />
-            <div className="absolute right-0 top-0 bottom-[90px] bg-white z-40 pointer-events-none" style={{ width: `${state.globalSettings?.borderThickness ?? 6}px` }} />
-            <div className="absolute left-0 top-0 w-[360px] bg-white z-40 pointer-events-none" style={{ height: `${state.globalSettings?.borderThickness ?? 6}px` }} />
-            <div className="absolute right-0 top-0 w-[360px] bg-white z-40 pointer-events-none" style={{ height: `${state.globalSettings?.borderThickness ?? 6}px` }} />
+            <EditableRegion type="frame" className="absolute inset-0 z-40 pointer-events-none">
+              <div className="absolute left-0 top-0 bottom-[90px] bg-white pointer-events-auto" style={{ width: `${state.globalSettings?.borderThickness ?? 6}px` }} />
+              <div className="absolute right-0 top-0 bottom-[90px] bg-white pointer-events-auto" style={{ width: `${state.globalSettings?.borderThickness ?? 6}px` }} />
+              <div className="absolute left-0 top-0 w-[360px] bg-white pointer-events-auto" style={{ height: `${state.globalSettings?.borderThickness ?? 6}px` }} />
+              <div className="absolute right-0 top-0 w-[360px] bg-white pointer-events-auto" style={{ height: `${state.globalSettings?.borderThickness ?? 6}px` }} />
+            </EditableRegion>
 
             {/* Lower Third (Host Nameplate) */}
             <LowerThird 
@@ -1063,7 +1124,24 @@ function App() {
           </div>
         </OverlayWrapper>
       );
+      break;
   }
+
+  return (
+    <EditorProvider state={state} updateGlobalState={updateGlobalState} mode={mode} setMode={setMode}>
+      {renderedView}
+      <InlineEditorDock />
+      {!isObs && currentView !== 'control' && currentView !== 'dashboard' && (
+        <button
+          onClick={() => setMode(m => m === 'edit' ? 'broadcast' : 'edit')}
+          className={`fixed bottom-4 left-4 z-[9999] p-2 rounded-full transition-all duration-300 ${mode === 'edit' ? 'bg-brand-gold text-black shadow-lg shadow-brand-gold/20' : 'bg-black/40 text-white/40 hover:text-white/80 hover:bg-black/60'} backdrop-blur`}
+          title={mode === 'edit' ? 'Disable Editor' : 'Enable Editor'}
+        >
+          {mode === 'edit' ? <Unlock className="w-4 h-4" /> : <Lock className="w-4 h-4" />}
+        </button>
+      )}
+    </EditorProvider>
+  );
 }
 
 function DualPOVOverlay({ state }) {
