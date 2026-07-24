@@ -13,6 +13,7 @@ import { ProductCard } from './components/ProductCard';
 import { Countdown } from './components/Countdown';
 import { OperatorPanel } from './components/OperatorPanel';
 import { CommentsWidget } from './components/CommentsWidget';
+import { InlineEditorWrapper } from './components/InlineEditorWrapper';
 
 // Error Boundary – catches React render crashes and shows a diagnostic panel
 // instead of a blank white screen, making future issues easy to diagnose.
@@ -320,7 +321,7 @@ const defaultState = {
 
 // OverlayWrapper allows layouts to stretch natively to fill the browser viewport fluidly,
 // aligning elements nicely on all device sizes and custom OBS overlay dimensions.
-function OverlayWrapper({ children, currentView, style }) {
+function OverlayWrapper({ children, currentView, style, state, onStateChange }) {
   const searchParams = new URLSearchParams(window.location.search);
   const isChromaKey = searchParams.get('chromakey') === 'true';
 
@@ -335,7 +336,9 @@ function OverlayWrapper({ children, currentView, style }) {
 
   return (
     <div className={`w-full min-h-screen ${bgClass} relative overflow-hidden flex flex-col`} style={style}>
-      {children}
+      <InlineEditorWrapper state={state} onStateChange={onStateChange} currentView={currentView}>
+        {children}
+      </InlineEditorWrapper>
     </div>
   );
 }
@@ -657,7 +660,7 @@ function App() {
     case 'intermission-banner':
     case 'intermission':
       return (
-        <OverlayWrapper currentView={currentView} style={{
+        <OverlayWrapper currentView={currentView} state={state} onStateChange={setState} style={{
           '--sunray-speed': `${state['intermission-banner']?.sunraySpeed || 4}s`,
           '--sunray-glow': state['intermission-banner']?.sunrayIntensity ?? 0.3,
           '--glow-speed': `${state['intermission-banner']?.glowSpeed || 2.5}s`,
@@ -731,7 +734,7 @@ function App() {
     // View 3: Starting Soon Screen
     case 'starting':
       return (
-        <OverlayWrapper currentView={currentView} style={{
+        <OverlayWrapper currentView={currentView} state={state} onStateChange={setState} style={{
           '--sunray-speed': `${state.starting?.sunraySpeed || 4}s`,
           '--sunray-glow': state.starting?.sunrayIntensity ?? 0.3,
           '--glow-speed': `${state.starting?.glowSpeed || 2.5}s`,
@@ -810,7 +813,7 @@ function App() {
     // View 4: Be Right Back (BRB)
     case 'brb':
       return (
-        <OverlayWrapper currentView={currentView} style={{
+        <OverlayWrapper currentView={currentView} state={state} onStateChange={setState} style={{
           '--sunray-speed': `${state.brb?.sunraySpeed || 4}s`,
           '--sunray-glow': state.brb?.sunrayIntensity ?? 0.3,
           '--glow-speed': `${state.brb?.glowSpeed || 2.5}s`,
@@ -872,7 +875,7 @@ function App() {
     // View 5: Stream Ending Outro
     case 'ending':
       return (
-        <OverlayWrapper currentView={currentView} style={{
+        <OverlayWrapper currentView={currentView} state={state} onStateChange={setState} style={{
           '--sunray-speed': `${state.ending?.sunraySpeed || 4}s`,
           '--sunray-glow': state.ending?.sunrayIntensity ?? 0.3,
           '--glow-speed': `${state.ending?.glowSpeed || 2.5}s`,
@@ -926,7 +929,7 @@ function App() {
     // View: Dual-POV Stream Overlay layout
     case 'dual-pov':
       return (
-        <OverlayWrapper currentView={currentView} style={{
+        <OverlayWrapper currentView={currentView} state={state} onStateChange={setState} style={{
           '--sunray-speed': `${state['dual-pov']?.sunraySpeed || 4}s`,
           '--sunray-glow': state['dual-pov']?.sunrayIntensity ?? 0.3,
           '--glow-speed': `${state['dual-pov']?.glowSpeed || 2.5}s`,
@@ -990,7 +993,7 @@ function App() {
     case 'main':
     default:
       return (
-        <OverlayWrapper currentView={currentView} style={{
+        <OverlayWrapper currentView={currentView} state={state} onStateChange={setState} style={{
           '--sunray-speed': `${state.main?.sunraySpeed || 4}s`,
           '--sunray-glow': state.main?.sunrayIntensity ?? 0.3,
           '--glow-speed': `${state.main?.glowSpeed || 2.5}s`,
