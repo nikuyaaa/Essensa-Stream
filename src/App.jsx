@@ -945,9 +945,9 @@ function App() {
             headerCenterLogoUrl={state.headerCenterLogoUrl || state.main.headerCenterLogoUrl}
           />
           {/* Continuous Edge-to-Edge Perimeter Border - The new top-center shield (z-50) overlays this to create a seamless connection */}
-          <div className="absolute left-0 top-0 bottom-[90px] bg-white z-40 pointer-events-none" style={{ width: `${state.globalSettings?.borderThickness ?? 6}px` }} />
-          <div className="absolute right-0 top-0 bottom-[90px] bg-white z-40 pointer-events-none" style={{ width: `${state.globalSettings?.borderThickness ?? 6}px` }} />
-          <div className="absolute left-0 right-0 top-0 bg-white z-40 pointer-events-none" style={{ height: `${state.globalSettings?.borderThickness ?? 6}px` }} />
+          <div className="absolute left-0 top-0 bottom-[90px] bg-white z-40 pointer-events-none" style={{ width: `${state.globalSettings?.borderThickness ?? 6}px`, boxShadow: '0px 6px 20px rgba(0, 0, 0, 0.65)' }} />
+          <div className="absolute right-0 top-0 bottom-[90px] bg-white z-40 pointer-events-none" style={{ width: `${state.globalSettings?.borderThickness ?? 6}px`, boxShadow: '0px 6px 20px rgba(0, 0, 0, 0.65)' }} />
+          <div className="absolute left-0 right-0 top-0 bg-white z-40 pointer-events-none" style={{ height: `${state.globalSettings?.borderThickness ?? 6}px`, boxShadow: '0px 6px 20px rgba(0, 0, 0, 0.65)' }} />
 
           <DualPOVOverlay state={state} />
 
@@ -1016,9 +1016,9 @@ function App() {
               )}
             </AnimatePresence>
             {/* Continuous Edge-to-Edge Perimeter Border - The new top-center shield (z-50) overlays this to create a seamless connection */}
-            <div className="absolute left-0 top-0 bottom-[90px] bg-white z-40 pointer-events-none" style={{ width: `${state.globalSettings?.borderThickness ?? 6}px` }} />
-            <div className="absolute right-0 top-0 bottom-[90px] bg-white z-40 pointer-events-none" style={{ width: `${state.globalSettings?.borderThickness ?? 6}px` }} />
-            <div className="absolute left-0 right-0 top-0 bg-white z-40 pointer-events-none" style={{ height: `${state.globalSettings?.borderThickness ?? 6}px` }} />
+            <div className="absolute left-0 top-0 bottom-[90px] bg-white z-40 pointer-events-none" style={{ width: `${state.globalSettings?.borderThickness ?? 6}px`, boxShadow: '0px 6px 20px rgba(0, 0, 0, 0.65)' }} />
+            <div className="absolute right-0 top-0 bottom-[90px] bg-white z-40 pointer-events-none" style={{ width: `${state.globalSettings?.borderThickness ?? 6}px`, boxShadow: '0px 6px 20px rgba(0, 0, 0, 0.65)' }} />
+            <div className="absolute left-0 right-0 top-0 bg-white z-40 pointer-events-none" style={{ height: `${state.globalSettings?.borderThickness ?? 6}px`, boxShadow: '0px 6px 20px rgba(0, 0, 0, 0.65)' }} />
 
             {/* Lower Third (Host Nameplate) */}
             <LowerThird 

@@ -1,7 +1,5 @@
 import React, { useState } from 'react';
 import { Logo } from './Logo';
-import { EditableRegion } from './EditableRegion';
-
 
 export function Ticker({ 
   items = [
@@ -19,17 +17,18 @@ export function Ticker({
   const [delay] = useState(() => -((Date.now() / 1000) % speed));
 
   return (
-    <EditableRegion
-      type="ticker"
+    <div
       className={`absolute bottom-0 left-0 w-[1920px] h-[90px] z-40 bg-transparent select-none overflow-hidden ${className}`}
     >
       {/* 1. Dedicated Non-Moving White Logo Block on the Left (90px height) */}
       <div 
-        className="absolute left-0 bottom-0 w-[260px] h-[90px] bg-white flex items-center pl-8 pr-12 z-50 shadow-[4px_0_12px_rgba(0,0,0,0.15)]"
-        style={{
-          clipPath: 'polygon(0 0, calc(100% - 32px) 0, 100% 100%, 0 100%)'
-        }}
+        className="absolute left-0 bottom-0 w-[260px] h-[90px] flex items-center pl-8 pr-12 z-50"
+        style={{ filter: 'drop-shadow(0px 6px 20px rgba(0, 0, 0, 0.65))' }}
       >
+        <svg className="absolute inset-0 w-full h-full pointer-events-none" preserveAspectRatio="none" viewBox="0 0 260 90">
+          <polygon points="0,0 228,0 260,90 0,90" fill="#ffffff" />
+          <polyline points="228,0 260,90 0,90" fill="none" stroke="#D4AF37" strokeWidth="4" />
+        </svg>
         {/* Full Essensa Naturale logo (charcoal text on clean white backdrop) */}
         <Logo showText={true} light={false} logoUrl={logoUrl} className="relative z-10 scale-110 origin-left" />
       </div>
@@ -64,11 +63,13 @@ export function Ticker({
 
       {/* 3. Mirrored Dedicated White Sponsor Logo Block on the Right (90px height) */}
       <div 
-        className="absolute right-0 bottom-0 w-[260px] h-[90px] bg-white flex items-center justify-center pl-12 pr-8 z-50 shadow-[-4px_0_12px_rgba(0,0,0,0.15)]"
-        style={{
-          clipPath: 'polygon(32px 0, 100% 0, 100% 100%, 0 100%)'
-        }}
+        className="absolute right-0 bottom-0 w-[260px] h-[90px] flex items-center justify-center pl-12 pr-8 z-50"
+        style={{ filter: 'drop-shadow(0px 6px 20px rgba(0, 0, 0, 0.65))' }}
       >
+        <svg className="absolute inset-0 w-full h-full pointer-events-none" preserveAspectRatio="none" viewBox="0 0 260 90">
+          <polygon points="32,0 260,0 260,90 0,90" fill="#ffffff" />
+          <polyline points="260,90 0,90 32,0" fill="none" stroke="#D4AF37" strokeWidth="4" />
+        </svg>
         {tickerRightLogoUrl ? (
           <img src={tickerRightLogoUrl} className="h-[82px] max-w-[210px] object-contain relative z-10" alt="Sponsor Logo" />
         ) : (
@@ -77,7 +78,7 @@ export function Ticker({
           </div>
         )}
       </div>
-    </EditableRegion>
+    </div>
   );
 }
 
