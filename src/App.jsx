@@ -197,7 +197,7 @@ const defaultState = {
     { "platform": "tiktok", "text": "@essensa.naturale" },
     { "platform": "facebook", "text": "Essensa Naturale" },
     { "platform": "instagram", "text": "@essensanaturaleofficial" },
-    { "platform": "youtube", "text": "Essensa Naturale TV" }
+    { "platform": "youtube", "text": "@EssensaNaturaleOfficial" }
   ],
   "contactInfo": {
     "address": "108 West Insula Condominium, 135 West Avenue, 1105 Quezon City, Philippines",
