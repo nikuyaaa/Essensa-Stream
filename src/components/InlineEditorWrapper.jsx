@@ -176,7 +176,8 @@ export function InlineEditorWrapper({ state, onStateChange, children, currentVie
       price: state.productRibbon?.price || "₱350.00",
       imageUrl: state.productRibbon?.imageUrl || "",
       badgeText: state.productRibbon?.badgeText || "FEATURED PRODUCT",
-      holdDuration: state.productRibbon?.holdDuration || 12
+      holdDuration: state.productRibbon?.holdDuration || 12,
+      sheenSpeed: state.productRibbon?.sheenSpeed || 3.5
     });
     setActiveModal('productRibbon');
   };
@@ -192,6 +193,7 @@ export function InlineEditorWrapper({ state, onStateChange, children, currentVie
         imageUrl: formState.imageUrl,
         badgeText: formState.badgeText,
         holdDuration: parseInt(formState.holdDuration, 10) || 12,
+        sheenSpeed: parseFloat(formState.sheenSpeed) || 3.5,
         visible: true,
         triggerKey: Date.now()
       }

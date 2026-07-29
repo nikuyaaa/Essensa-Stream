@@ -469,4 +469,66 @@ body {
   border-width: 4px;
 }
 
+/* ==========================================================================
+   Option 1: Flowing Silk Ribbon Motion Engine & Beyond Talks Spotlight
+   ========================================================================== */
+
+/* 1. Continuous Liquid Sheen Sweep */
+@keyframes sheenSweep {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.silk-sheen-overlay {
+  background: linear-gradient(
+    115deg,
+    transparent 15%,
+    rgba(157, 92, 255, 0.05) 35%,
+    rgba(157, 92, 255, 0.35) 50%,
+    rgba(226, 209, 255, 0.45) 55%,
+    rgba(157, 92, 255, 0.05) 70%,
+    transparent 85%
+  );
+  background-size: 250% 100%;
+  animation: sheenSweep 3.5s infinite linear;
+}
+
+/* 2. Floating 3D Product Badge Sine Wave Loop */
+@keyframes productBadgeFloat {
+  0%, 100% {
+    transform: translateY(-4px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(2px) rotate(-1deg);
+  }
+}
+
+.animate-product-float {
+  animation: productBadgeFloat 3.5s ease-in-out infinite;
+}
+
+/* 3. Running Gradient Accent Pinstripe */
+@keyframes pinstripeRun {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.animated-pinstripe {
+  background: linear-gradient(90deg, #7B3FE4, #9D5CFF, #E2D1FF, #4A2080, #9D5CFF, #7B3FE4);
+  background-size: 300% 300%;
+  animation: pinstripeRun 4s linear infinite;
+}
+
+
 

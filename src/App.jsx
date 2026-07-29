@@ -1099,6 +1099,7 @@ function App() {
             badgeText={state.productRibbon?.badgeText || "FEATURED PRODUCT"}
             triggerKey={state.productRibbon?.triggerKey || 0}
             holdDuration={state.productRibbon?.holdDuration || 12}
+            sheenSpeed={state.productRibbon?.sheenSpeed || 3.5}
             onAutoHide={() => setState(prev => ({
               ...prev,
               productRibbon: {
@@ -1185,6 +1186,7 @@ function App() {
               badgeText={state.productRibbon?.badgeText || "FEATURED PRODUCT"}
               triggerKey={state.productRibbon?.triggerKey || 0}
               holdDuration={state.productRibbon?.holdDuration || 12}
+              sheenSpeed={state.productRibbon?.sheenSpeed || 3.5}
               onAutoHide={() => setState(prev => ({
                 ...prev,
                 productRibbon: {
