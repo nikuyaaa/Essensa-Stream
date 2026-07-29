@@ -717,13 +717,11 @@ function App() {
               </div>
             </div>
 
-            {/* Right Half: Pure White */}
-            <div className="w-[960px] h-[1080px] bg-[#FFFFFF] flex flex-col justify-between p-24 text-brand-charcoal relative">
-              {/* Top spacing */}
-              <div className="hidden md:block" />
-
-              {/* Welcome Notice in the center */}
-              <div className="flex flex-col items-center justify-center gap-6 py-8 relative z-10 text-center px-12">
+            {/* Right Half: Pure White (Identical Container to Starting Scene for Pixel-Perfect Alignment) */}
+            <div className="w-[960px] h-[1080px] bg-[#FFFFFF] flex flex-col justify-between p-16 md:px-20 md:py-16 text-brand-charcoal relative select-none">
+              
+              {/* Upper Section: Vertically Centered Welcome Notice */}
+              <div className="flex-1 flex flex-col items-center justify-center gap-6 relative z-10 text-center px-8">
                 <h2 className="text-5xl font-black text-[#120924] uppercase tracking-wider leading-snug">
                   {renderSplitToneText(state['intermission-banner'].rightHeader || "Live Stream <b>Starting Soon</b>", "text-[#120924]", "keyword-green", "keyword-gold")}
                 </h2>
@@ -732,14 +730,17 @@ function App() {
                   {state['intermission-banner'].rightBody}
                 </p>
                 {state['intermission-banner'].alertText && (
-                  <div className="mt-4 alert-banner-premium font-black uppercase text-base tracking-widest px-10 py-5 rounded-2xl shadow-xl">
+                  <div className="mt-2 alert-banner-premium font-black uppercase text-base tracking-widest px-10 py-5 rounded-2xl shadow-xl">
                     {state['intermission-banner'].alertText}
                   </div>
                 )}
               </div>
 
-              {/* Social Media Grid & Official Contact Footer */}
-              <div className="w-full border-t border-black/10 pt-8 mt-4 relative z-10 flex flex-col gap-4">
+              {/* Subtle Horizontal Trim Line (Identical to Starting Scene) */}
+              <div className="w-full h-px bg-zinc-200/80 mb-6 relative z-10" />
+
+              {/* Lower Section: Social Media Grid & Official Contact Footer */}
+              <div className="w-full relative z-10 flex flex-col gap-4">
                 {renderGlobalSocials(false, state['intermission-banner'].socials)}
                 
                 {/* Official Address & Contact Bar */}
