@@ -234,6 +234,9 @@ const defaultState = {
   },
   "starting": {
     "welcomeText": "Live Broadcast [gold]Starting Soon[/gold]",
+    "superTitle": "Anniversary [gold]Live Stream[/gold]",
+    "announcement": "Advocating the [green]Organic Way[/green] of Living",
+    "tagline": "16 Years of Wellness & Prosperity",
     "countdownSeconds": 300,
     "countdownRunning": false,
     "logoUrl": "",
@@ -794,16 +797,16 @@ function App() {
               {/* Elegant Title */}
               <div className="flex flex-col gap-4 mt-8 relative z-10 text-reveal-active brand-text-glow text-protected">
                 <span className="font-sans text-xl font-black text-white/90 tracking-[0.4em] uppercase">
-                  {renderSplitToneText(state.starting.superTitle || "Anniversary <b>Live Stream</b>", "text-white/90", "keyword-green", "keyword-gold")}
+                  {renderSplitToneText(state.starting.superTitle || state['intermission-banner']?.welcomeText || "Anniversary <b>Live Stream</b>", "text-white/90", "keyword-green", "keyword-gold")}
                 </span>
                 <h1 className="font-display font-black text-6xl text-white tracking-wide uppercase leading-tight">
-                  {renderSplitToneText(state.starting.announcement, "text-white", "keyword-green", "keyword-gold")}
+                  {renderSplitToneText(state.starting.announcement || state['intermission-banner']?.announcement || "Advocating the [green]Organic Way[/green] of Living", "text-white", "keyword-green", "keyword-gold")}
                 </h1>
               </div>
 
               {/* Tagline */}
               <div className="text-base text-white/90 uppercase tracking-[0.3em] font-black mt-8 relative z-10 text-protected">
-                {state.starting.tagline}
+                {state.starting.tagline || state['intermission-banner']?.tagline || "16 Years of Wellness & Prosperity"}
               </div>
             </div>
 
