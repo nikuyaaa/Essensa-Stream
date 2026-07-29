@@ -213,7 +213,7 @@ const defaultState = {
     "brb": [300, 600, 900, 1800, 3600] // 5m, 10m, 15m, 30m, 60m
   },
   "intermission-banner": {
-    "welcomeText": "Anniversary [gold]Live Stream[/gold]",
+    "welcomeText": "Beyond Talks [gold]Live Stream[/gold]",
     "announcement": "Advocating the [green]Organic Way[/green] of Living",
     "tagline": "16 Years of Wellness & Prosperity",
     "rightHeader": "Live Stream <b>Starting Soon</b>",
@@ -234,7 +234,7 @@ const defaultState = {
   },
   "starting": {
     "welcomeText": "Live Broadcast [gold]Starting Soon[/gold]",
-    "superTitle": "Anniversary [gold]Live Stream[/gold]",
+    "superTitle": "Beyond Talks [gold]Live Stream[/gold]",
     "announcement": "Advocating the [green]Organic Way[/green] of Living",
     "tagline": "16 Years of Wellness & Prosperity",
     "countdownSeconds": 300,
@@ -797,7 +797,7 @@ function App() {
               {/* Elegant Title */}
               <div className="flex flex-col gap-4 mt-8 relative z-10 text-reveal-active brand-text-glow text-protected">
                 <span className="font-sans text-xl font-black text-white/90 tracking-[0.4em] uppercase">
-                  {renderSplitToneText(state.starting.superTitle || state['intermission-banner']?.welcomeText || "Anniversary <b>Live Stream</b>", "text-white/90", "keyword-green", "keyword-gold")}
+                  {renderSplitToneText(state.starting.superTitle || state['intermission-banner']?.welcomeText || "Beyond Talks <b>Live Stream</b>", "text-white/90", "keyword-green", "keyword-gold")}
                 </span>
                 <h1 className="font-display font-black text-6xl text-white tracking-wide uppercase leading-tight">
                   {renderSplitToneText(state.starting.announcement || state['intermission-banner']?.announcement || "Advocating the [green]Organic Way[/green] of Living", "text-white", "keyword-green", "keyword-gold")}
