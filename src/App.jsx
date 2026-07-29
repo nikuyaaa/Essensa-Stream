@@ -810,12 +810,12 @@ function App() {
               </div>
             </div>
 
-            {/* Right Half: Pure White (Balanced Vertical Layout) */}
-            <div className="w-[960px] h-[1080px] bg-[#FFFFFF] flex flex-col justify-between p-16 md:p-20 text-brand-charcoal relative select-none">
+            {/* Right Half: Pure White (Timer Centered between Top Edge & Socials) */}
+            <div className="w-[960px] h-[1080px] bg-[#FFFFFF] flex flex-col justify-between p-16 md:px-20 md:py-16 text-brand-charcoal relative select-none">
               
-              {/* Upper Half: Enlarged Countdown Block */}
-              <div className="flex flex-col items-center justify-center py-6 relative z-10 mt-4">
-                <span className="text-zinc-600 text-lg md:text-xl font-black uppercase tracking-[0.25em] mb-6 text-reveal-active">
+              {/* Upper Section: Vertically Centered Timer Block between Top Edge & Divider */}
+              <div className="flex-1 flex flex-col items-center justify-center relative z-10">
+                <span className="text-zinc-600 text-lg md:text-xl font-black uppercase tracking-[0.25em] mb-4 text-reveal-active">
                   {renderSplitToneText(state.starting.subTitle || "Stream Starting <b>Soon</b>", "text-zinc-600", "keyword-green", "keyword-gold")}
                 </span>
                 
@@ -837,10 +837,10 @@ function App() {
               </div>
 
               {/* Subtle Horizontal Trim Line */}
-              <div className="w-full h-px bg-zinc-200/80 my-2 relative z-10" />
+              <div className="w-full h-px bg-zinc-200/80 mb-6 relative z-10" />
 
-              {/* Lower Half: Elevate Social Media Grid & Official Contact Footer */}
-              <div className="w-full relative z-10 flex flex-col gap-4 mb-2">
+              {/* Lower Section: Social Media Grid & Official Contact Footer */}
+              <div className="w-full relative z-10 flex flex-col gap-4">
                 {renderGlobalSocials(false)}
                 
                 {/* Official Address & Contact Bar */}
