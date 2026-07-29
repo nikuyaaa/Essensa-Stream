@@ -740,19 +740,19 @@ function App() {
                 {renderGlobalSocials(false, state['intermission-banner'].socials)}
                 
                 {/* Official Address & Contact Bar */}
-                <div className="flex flex-col items-center justify-center gap-1.5 text-sm text-zinc-800 font-extrabold text-center pt-2">
-                  <div className="flex items-center justify-center gap-2">
-                    <MapPin className="w-4 h-4 text-[#9D5CFF] shrink-0" />
+                <div className="flex flex-col items-center justify-center gap-2 text-base md:text-lg text-zinc-900 font-black text-center pt-3 border-t border-black/5 mt-2">
+                  <div className="flex items-center justify-center gap-2.5">
+                    <MapPin className="w-5 h-5 text-[#9D5CFF] shrink-0" />
                     <span>108 West Insula Condominium, 135 West Avenue, 1105 Quezon City, Philippines</span>
                   </div>
-                  <div className="flex items-center justify-center gap-4">
-                    <span className="flex items-center gap-1.5">
-                      <Phone className="w-4 h-4 text-[#9D5CFF] shrink-0" />
+                  <div className="flex items-center justify-center gap-6">
+                    <span className="flex items-center gap-2">
+                      <Phone className="w-5 h-5 text-[#9D5CFF] shrink-0" />
                       <span>+(632) 8284-3577</span>
                     </span>
-                    <span className="text-[#9D5CFF]">•</span>
-                    <span className="flex items-center gap-1.5">
-                      <Globe className="w-4 h-4 text-[#9D5CFF] shrink-0" />
+                    <span className="text-[#9D5CFF] font-black">•</span>
+                    <span className="flex items-center gap-2">
+                      <Globe className="w-5 h-5 text-[#9D5CFF] shrink-0" />
                       <span>essensanaturale.org</span>
                     </span>
                   </div>
@@ -838,19 +838,19 @@ function App() {
                 {renderGlobalSocials(false)}
                 
                 {/* Official Address & Contact Bar */}
-                <div className="flex flex-col items-center justify-center gap-1.5 text-sm text-zinc-800 font-extrabold text-center pt-2">
-                  <div className="flex items-center justify-center gap-2">
-                    <MapPin className="w-4 h-4 text-[#9D5CFF] shrink-0" />
+                <div className="flex flex-col items-center justify-center gap-2 text-base md:text-lg text-zinc-900 font-black text-center pt-3 border-t border-black/5 mt-2">
+                  <div className="flex items-center justify-center gap-2.5">
+                    <MapPin className="w-5 h-5 text-[#9D5CFF] shrink-0" />
                     <span>108 West Insula Condominium, 135 West Avenue, 1105 Quezon City, Philippines</span>
                   </div>
-                  <div className="flex items-center justify-center gap-4">
-                    <span className="flex items-center gap-1.5">
-                      <Phone className="w-4 h-4 text-[#9D5CFF] shrink-0" />
+                  <div className="flex items-center justify-center gap-6">
+                    <span className="flex items-center gap-2">
+                      <Phone className="w-5 h-5 text-[#9D5CFF] shrink-0" />
                       <span>+(632) 8284-3577</span>
                     </span>
-                    <span className="text-[#9D5CFF]">•</span>
-                    <span className="flex items-center gap-1.5">
-                      <Globe className="w-4 h-4 text-[#9D5CFF] shrink-0" />
+                    <span className="text-[#9D5CFF] font-black">•</span>
+                    <span className="flex items-center gap-2">
+                      <Globe className="w-5 h-5 text-[#9D5CFF] shrink-0" />
                       <span>essensanaturale.org</span>
                     </span>
                   </div>
@@ -918,19 +918,19 @@ function App() {
               <div className="w-full border-t border-zinc-200 pt-8 mt-4 flex flex-col gap-4">
                 {renderGlobalSocials(false)}
                 
-                <div className="flex flex-col items-center justify-center gap-1.5 text-sm text-zinc-800 font-extrabold text-center pt-2">
-                  <div className="flex items-center justify-center gap-2">
-                    <MapPin className="w-4 h-4 text-[#9D5CFF] shrink-0" />
+                <div className="flex flex-col items-center justify-center gap-2 text-base md:text-lg text-zinc-900 font-black text-center pt-3 border-t border-black/5 mt-2">
+                  <div className="flex items-center justify-center gap-2.5">
+                    <MapPin className="w-5 h-5 text-[#9D5CFF] shrink-0" />
                     <span>108 West Insula Condominium, 135 West Avenue, 1105 Quezon City, Philippines</span>
                   </div>
-                  <div className="flex items-center justify-center gap-4">
-                    <span className="flex items-center gap-1.5">
-                      <Phone className="w-4 h-4 text-[#9D5CFF] shrink-0" />
+                  <div className="flex items-center justify-center gap-6">
+                    <span className="flex items-center gap-2">
+                      <Phone className="w-5 h-5 text-[#9D5CFF] shrink-0" />
                       <span>+(632) 8284-3577</span>
                     </span>
-                    <span className="text-[#9D5CFF]">•</span>
-                    <span className="flex items-center gap-1.5">
-                      <Globe className="w-4 h-4 text-[#9D5CFF] shrink-0" />
+                    <span className="text-[#9D5CFF] font-black">•</span>
+                    <span className="flex items-center gap-2">
+                      <Globe className="w-5 h-5 text-[#9D5CFF] shrink-0" />
                       <span>essensanaturale.org</span>
                     </span>
                   </div>
@@ -985,19 +985,19 @@ function App() {
               <div className="w-full border-t border-zinc-200 pt-8 mt-4 flex flex-col gap-4">
                 {renderGlobalSocials(false)}
 
-                <div className="flex flex-col items-center justify-center gap-1.5 text-sm text-zinc-800 font-extrabold text-center pt-2">
-                  <div className="flex items-center justify-center gap-2">
-                    <MapPin className="w-4 h-4 text-[#9D5CFF] shrink-0" />
+                <div className="flex flex-col items-center justify-center gap-2 text-base md:text-lg text-zinc-900 font-black text-center pt-3 border-t border-black/5 mt-2">
+                  <div className="flex items-center justify-center gap-2.5">
+                    <MapPin className="w-5 h-5 text-[#9D5CFF] shrink-0" />
                     <span>108 West Insula Condominium, 135 West Avenue, 1105 Quezon City, Philippines</span>
                   </div>
-                  <div className="flex items-center justify-center gap-4">
-                    <span className="flex items-center gap-1.5">
-                      <Phone className="w-4 h-4 text-[#9D5CFF] shrink-0" />
+                  <div className="flex items-center justify-center gap-6">
+                    <span className="flex items-center gap-2">
+                      <Phone className="w-5 h-5 text-[#9D5CFF] shrink-0" />
                       <span>+(632) 8284-3577</span>
                     </span>
-                    <span className="text-[#9D5CFF]">•</span>
-                    <span className="flex items-center gap-1.5">
-                      <Globe className="w-4 h-4 text-[#9D5CFF] shrink-0" />
+                    <span className="text-[#9D5CFF] font-black">•</span>
+                    <span className="flex items-center gap-2">
+                      <Globe className="w-5 h-5 text-[#9D5CFF] shrink-0" />
                       <span>essensanaturale.org</span>
                     </span>
                   </div>
