@@ -31,7 +31,7 @@ export function ProductRibbonBanner({
     <AnimatePresence>
       {isVisible && (
         <div 
-          className="absolute bottom-[95px] right-12 w-[640px] z-30 pointer-events-auto select-none cursor-pointer flex flex-col items-end"
+          className="absolute bottom-[118px] right-12 w-[640px] z-30 pointer-events-auto select-none cursor-pointer flex flex-col items-end"
           onDoubleClick={onDoubleClick}
         >
           {/* LAYER 1: Primary Skewed White Card (Top / Front) */}
