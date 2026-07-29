@@ -169,6 +169,37 @@ export function InlineEditorWrapper({ state, onStateChange, children, currentVie
     setActiveModal(null);
   };
 
+  const openProductRibbonModal = () => {
+    setFormState({
+      name: state.productRibbon?.name || "Buah Merah Mix",
+      subtext: state.productRibbon?.subtext || "Buah Merah Mix • All-Natural Organic Antioxidant",
+      price: state.productRibbon?.price || "₱350.00",
+      imageUrl: state.productRibbon?.imageUrl || "",
+      badgeText: state.productRibbon?.badgeText || "FEATURED PRODUCT",
+      holdDuration: state.productRibbon?.holdDuration || 12
+    });
+    setActiveModal('productRibbon');
+  };
+
+  const handleSaveProductRibbon = () => {
+    const nextState = {
+      ...state,
+      productRibbon: {
+        ...state.productRibbon,
+        name: formState.name,
+        subtext: formState.subtext,
+        price: formState.price,
+        imageUrl: formState.imageUrl,
+        badgeText: formState.badgeText,
+        holdDuration: parseInt(formState.holdDuration, 10) || 12,
+        visible: true,
+        triggerKey: Date.now()
+      }
+    };
+    saveState(nextState);
+    setActiveModal(null);
+  };
+
   return (
     <div className="relative w-full min-h-screen">
       {/* Primary Children Scene Content */}
@@ -225,12 +256,49 @@ export function InlineEditorWrapper({ state, onStateChange, children, currentVie
               </div>
             </div>
           )}
+
+          {/* Lower-Third Product Ribbon Hotspot */}
+          <div 
+            onDoubleClick={openProductRibbonModal}
+            className="absolute bottom-[90px] left-0 w-full h-[72px] z-[60] cursor-pointer hover:outline hover:outline-2 hover:outline-dashed hover:outline-[#9D5CFF] bg-[#9D5CFF]/5 transition-all group"
+            title="Double-click to edit Lower-Third Product Ribbon Banner"
+          >
+            <div className="hidden group-hover:flex absolute top-2 left-1/2 -translate-x-1/2 px-3 py-1 bg-[#120924]/90 text-[#9D5CFF] text-xs font-bold uppercase tracking-wider rounded-lg border border-[#9D5CFF]/40 shadow pointer-events-none">
+              Edit Lower-Third Product Ribbon
+            </div>
+          </div>
         </>
       )}
 
-      {/* SUBTLE QUICK-TOGGLE MODE BUTTON (Hidden when ?mode=broadcast) */}
+      {/* SUBTLE QUICK-TOGGLE MODE BUTTON & LIVE STREAM PRODUCT TRIGGER DOCK (Hidden when ?mode=broadcast) */}
       {!isObsBroadcast && (
-        <div className="fixed bottom-4 right-4 z-[100] select-none">
+        <div className="fixed bottom-4 right-4 z-[100] select-none flex items-center gap-3">
+          {/* Quick Trigger Button for Product Ribbon */}
+          <button
+            onClick={() => {
+              const nextState = {
+                ...state,
+                productRibbon: {
+                  ...state.productRibbon,
+                  visible: !state.productRibbon?.visible,
+                  triggerKey: Date.now()
+                }
+              };
+              saveState(nextState);
+            }}
+            className={`flex items-center gap-2 px-3.5 py-1.5 rounded-full border text-xs font-bold shadow-2xl transition-all duration-300 ${
+              state.productRibbon?.visible 
+                ? 'bg-gradient-to-r from-[#7B3FE4] to-[#4A2080] border-[#9D5CFF] text-white animate-pulse' 
+                : 'bg-[#120924]/80 backdrop-blur-md border-[#9D5CFF]/40 text-white/80 hover:text-white hover:bg-[#120924]'
+            }`}
+            title="Trigger Right-to-Left Product Ribbon Slide"
+          >
+            <span className="w-2 h-2 rounded-full bg-[#9D5CFF]" />
+            <span className="tracking-wider uppercase font-mono text-[11px]">
+              {state.productRibbon?.visible ? 'RIBBON ON AIR' : 'TRIGGER PRODUCT RIBBON'}
+            </span>
+          </button>
+
           <button
             onClick={() => setEditMode(!editMode)}
             className="flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#7B3FE4]/25 backdrop-blur-md border border-[#9D5CFF]/40 text-white text-xs font-bold shadow-2xl transition-all duration-300 opacity-40 hover:opacity-100 hover:scale-105 hover:bg-[#120924]/90 hover:border-[#9D5CFF]"
@@ -387,6 +455,81 @@ export function InlineEditorWrapper({ state, onStateChange, children, currentVie
                 />
               </div>
             )}
+          </div>
+        </ModalContainer>
+      )}
+
+      {activeModal === 'productRibbon' && (
+        <ModalContainer title="Edit Lower-Third Product Ribbon" onClose={() => setActiveModal(null)} onSave={handleSaveProductRibbon}>
+          <div className="flex flex-col gap-4">
+            <div>
+              <label className="text-xs font-bold uppercase text-zinc-300 tracking-wider mb-1 block">Product Name / Title</label>
+              <input 
+                type="text" 
+                value={formState.name || ''} 
+                onChange={(e) => setFormState({ ...formState, name: e.target.value })}
+                placeholder="Buah Merah Mix"
+                className="w-full bg-zinc-900 border border-zinc-700 rounded-lg px-3 py-2 text-sm text-white focus:border-[#9D5CFF] focus:outline-none"
+              />
+            </div>
+            <div>
+              <label className="text-xs font-bold uppercase text-zinc-300 tracking-wider mb-1 block">Subtext / Key Benefits</label>
+              <input 
+                type="text" 
+                value={formState.subtext || ''} 
+                onChange={(e) => setFormState({ ...formState, subtext: e.target.value })}
+                placeholder="Buah Merah Mix • All-Natural Organic Antioxidant"
+                className="w-full bg-zinc-900 border border-zinc-700 rounded-lg px-3 py-2 text-sm text-white focus:border-[#9D5CFF] focus:outline-none"
+              />
+            </div>
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <label className="text-xs font-bold uppercase text-zinc-300 tracking-wider mb-1 block">Price</label>
+                <input 
+                  type="text" 
+                  value={formState.price || ''} 
+                  onChange={(e) => setFormState({ ...formState, price: e.target.value })}
+                  placeholder="₱350.00"
+                  className="w-full bg-zinc-900 border border-zinc-700 rounded-lg px-3 py-2 text-sm text-white focus:border-[#9D5CFF] focus:outline-none"
+                />
+              </div>
+              <div>
+                <label className="text-xs font-bold uppercase text-zinc-300 tracking-wider mb-1 block">Badge Tag</label>
+                <input 
+                  type="text" 
+                  value={formState.badgeText || ''} 
+                  onChange={(e) => setFormState({ ...formState, badgeText: e.target.value })}
+                  placeholder="FEATURED PRODUCT"
+                  className="w-full bg-zinc-900 border border-zinc-700 rounded-lg px-3 py-2 text-sm text-white focus:border-[#9D5CFF] focus:outline-none"
+                />
+              </div>
+            </div>
+            <div>
+              <label className="text-xs font-bold uppercase text-zinc-300 tracking-wider mb-1 block">Product Image Cutout URL</label>
+              <input 
+                type="text" 
+                value={formState.imageUrl || ''} 
+                onChange={(e) => setFormState({ ...formState, imageUrl: e.target.value })}
+                placeholder="Leave blank for default 3D Organic Bottle graphic"
+                className="w-full bg-zinc-900 border border-zinc-700 rounded-lg px-3 py-2 text-sm text-white focus:border-[#9D5CFF] focus:outline-none"
+              />
+              <div className="flex items-center gap-3 mt-2">
+                <label className="cursor-pointer px-4 py-2 bg-zinc-800 hover:bg-zinc-700 border border-zinc-600 rounded-lg text-xs font-bold text-white flex items-center gap-2">
+                  <Upload className="w-4 h-4 text-[#9D5CFF]" />
+                  Upload Image Cutout
+                  <input type="file" accept="image/*" onChange={(e) => handleFileUpload(e, 'imageUrl')} className="hidden" />
+                </label>
+              </div>
+            </div>
+            <div>
+              <label className="text-xs font-bold uppercase text-zinc-300 tracking-wider mb-1 block">Hold Duration On Screen (Seconds)</label>
+              <input 
+                type="number" 
+                value={formState.holdDuration || 12} 
+                onChange={(e) => setFormState({ ...formState, holdDuration: e.target.value })}
+                className="w-full bg-zinc-900 border border-zinc-700 rounded-lg px-3 py-2 text-sm text-white focus:border-[#9D5CFF] focus:outline-none font-mono"
+              />
+            </div>
           </div>
         </ModalContainer>
       )}

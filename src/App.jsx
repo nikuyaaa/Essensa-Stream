@@ -10,6 +10,7 @@ import { Header } from './components/Header';
 import { Ticker } from './components/Ticker';
 import { LowerThird } from './components/LowerThird';
 import { ProductCard } from './components/ProductCard';
+import { ProductRibbonBanner } from './components/ProductRibbonBanner';
 import { Countdown } from './components/Countdown';
 import { OperatorPanel } from './components/OperatorPanel';
 import { CommentsWidget } from './components/CommentsWidget';
@@ -254,6 +255,16 @@ const defaultState = {
     "glitchIntensity": 0.75,
     "greenSpeed": 4,
     "greenIntensity": 0.45
+  },
+  "productRibbon": {
+    "visible": false,
+    "name": "Buah Merah Mix",
+    "subtext": "Buah Merah Mix • All-Natural Organic Antioxidant",
+    "price": "₱350.00",
+    "imageUrl": "",
+    "badgeText": "FEATURED PRODUCT",
+    "holdDuration": 12,
+    "triggerKey": 0
   },
   "main": {
     "headerVisible": true,
@@ -1078,6 +1089,25 @@ function App() {
             ))}
           </div>
 
+          {/* Edge-to-Edge Lower-Third Product Ribbon Banner */}
+          <ProductRibbonBanner
+            isVisible={state.productRibbon?.visible}
+            name={state.productRibbon?.name || "Buah Merah Mix"}
+            subtext={state.productRibbon?.subtext || "Buah Merah Mix • All-Natural Organic Antioxidant"}
+            price={state.productRibbon?.price || "₱350.00"}
+            imageUrl={state.productRibbon?.imageUrl || ""}
+            badgeText={state.productRibbon?.badgeText || "FEATURED PRODUCT"}
+            triggerKey={state.productRibbon?.triggerKey || 0}
+            holdDuration={state.productRibbon?.holdDuration || 12}
+            onAutoHide={() => setState(prev => ({
+              ...prev,
+              productRibbon: {
+                ...prev.productRibbon,
+                visible: false
+              }
+            }))}
+          />
+
           <Ticker items={state.main.tickerItems} logoUrl={state.globalLogoUrl} tickerRightLogoUrl={state.tickerRightLogoUrl || state.main.tickerRightLogoUrl} speed={state.main.tickerSpeed || 60} />
         </OverlayWrapper>
       );
@@ -1094,9 +1124,7 @@ function App() {
           '--gradient-speed': `${state.main?.gradientSpeed || 6}s`,
           '--gradient-intensity': state.main?.gradientIntensity ?? 0.45,
           '--glitch-speed': `${state.main?.glitchSpeed || 3}s`,
-          '--glitch-intensity': state.main?.glitchIntensity ?? 0.75,
-          '--green-speed': `${state.main?.greenSpeed || 4}s`,
-          '--green-glow': state.main?.greenIntensity ?? 0.45
+          '--glitch-intensity': state.main?.glitchIntensity ?? 0.45
         }}>
           <div className="canvas-1080p bg-transparent overflow-hidden">
             
@@ -1146,6 +1174,25 @@ function App() {
                 />
               ))}
             </div>
+
+            {/* Edge-to-Edge Lower-Third Product Ribbon Banner */}
+            <ProductRibbonBanner
+              isVisible={state.productRibbon?.visible}
+              name={state.productRibbon?.name || "Buah Merah Mix"}
+              subtext={state.productRibbon?.subtext || "Buah Merah Mix • All-Natural Organic Antioxidant"}
+              price={state.productRibbon?.price || "₱350.00"}
+              imageUrl={state.productRibbon?.imageUrl || ""}
+              badgeText={state.productRibbon?.badgeText || "FEATURED PRODUCT"}
+              triggerKey={state.productRibbon?.triggerKey || 0}
+              holdDuration={state.productRibbon?.holdDuration || 12}
+              onAutoHide={() => setState(prev => ({
+                ...prev,
+                productRibbon: {
+                  ...prev.productRibbon,
+                  visible: false
+                }
+              }))}
+            />
 
             {/* Bottom News Ticker */}
             <AnimatePresence>
