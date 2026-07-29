@@ -172,11 +172,11 @@ const renderSplitToneText = (text, defaultClass = "text-white", greenClass = "ke
 
 const defaultState = {
   "globalLogoUrl": "",
-  "headerCenterLogoUrl": "/uploads/BEYOND_TALK_LOGO_2.1.png",
+  "headerCenterLogoUrl": "/uploads/BEYOND_TALK_LOGO_2.1_2.png",
   "tickerRightLogoUrl": "/uploads/ORGANIC_WAY_OF_LIVING.png",
   "globalSettings": {
     "typographyColor": "#FFFFFF",
-    "bannerBgColor": "#1A1A1A",
+    "bannerBgColor": "#120924",
     "sunraySpeed": 4,
     "sunrayIntensity": 0.3,
     "borderThickness": 6
@@ -199,9 +199,9 @@ const defaultState = {
     "welcomeText": "Anniversary [gold]Live Stream[/gold]",
     "announcement": "Advocating the [green]Organic Way[/green] of Living",
     "tagline": "16 Years of Wellness & Prosperity",
-    "rightHeader": "Live Stream [gold]Starting Soon[/gold]",
-    "rightBody": "Our broadcast will begin shortly. Sit back, relax, and get ready for an organic way of living!",
-    "alertText": "ALERT: Special anniversary promo packages will be revealed during the live show!",
+    "rightHeader": "Live Stream <b>Starting Soon</b>",
+    "rightBody": "We are preparing the live stream. Stay tuned for exciting announcements and prizes!",
+    "alertText": "🏆 GRAND RAFFLE DRAWING AT THE END OF THE STREAM",
     "logoUrl": "",
     "socials": [],
     "sunraySpeed": 4,
@@ -216,17 +216,14 @@ const defaultState = {
     "greenIntensity": 0.45
   },
   "starting": {
-    "announcement": "Advocating the [green]Organic Way[/green] of Living",
-    "tagline": "16 Years of Wellness & Prosperity",
-    "superTitle": "Anniversary [gold]Live Stream[/gold]",
-    "subTitle": "Stream Starting [gold]Soon[/gold]",
+    "welcomeText": "Live Broadcast [gold]Starting Soon[/gold]",
     "countdownSeconds": 300,
     "countdownRunning": false,
     "logoUrl": "",
-    "tickerItems": [
-      "Essensa Naturale: 16 Years of Organic Way of Living",
-      "Celebrating 16 Years of Wellness, Credibility, and Prosperity"
-    ],
+    "rightHeader": "Welcome to [green]Essensa Naturale[/green]",
+    "rightBody": "Please take your seats. The stream will commence shortly.",
+    "alertText": "🎁 EXCLUSIVE PROMO CODES WILL BE DROPPED LIVE",
+    "socials": [],
     "sunraySpeed": 4,
     "sunrayIntensity": 0.3,
     "glowSpeed": 2.5,
@@ -252,8 +249,8 @@ const defaultState = {
       "Celebrating 16 Years of Wellness, Credibility, and Prosperity"
     ],
     "hostVisible": false,
-    "hostName": "Juan [gold]Dela Cruz[/gold]",
-    "hostTitle": "Entrepreneurial [green]Coach[/green]",
+    "hostName": "Dr. Jane Doe",
+    "hostTitle": "Naturopathic Consultant & Wellness Specialist",
     "hostAutoHide": true,
     "hostHideDuration": 8,
     "products": [
@@ -262,7 +259,7 @@ const defaultState = {
         "visible": false,
         "name": "Buah Merah Mix",
         "price": "₱350.00",
-        "promoText": "Promo: Buy 2 Get 1 Free • Free Shipping!",
+        "promoText": "Promo: Buy 2 Get 1 Free • Free Shipping Nationwide • Limited Stock Only!",
         "imageUrl": "",
         "stayOnScreen": true,
         "hideDuration": 10,
@@ -328,10 +325,8 @@ function OverlayWrapper({ children, currentView, style, state, onStateChange }) 
   let bgClass = "bg-transparent";
   if (isChromaKey) {
     bgClass = "bg-[#00ff00]";
-  } else if (currentView === 'intermission-banner' || currentView === 'starting') {
-    bgClass = "bg-brand-charcoal";
-  } else if (currentView === 'brb' || currentView === 'ending') {
-    bgClass = "bg-brand-cream";
+  } else if (['intermission-banner', 'intermission', 'starting', 'brb', 'ending'].includes(currentView)) {
+    bgClass = "bg-[#120924]";
   }
 
   return (

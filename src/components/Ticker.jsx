@@ -23,11 +23,11 @@ export function Ticker({
       {/* 1. Dedicated Non-Moving White Logo Block on the Left (90px height) */}
       <div 
         className="absolute left-0 bottom-0 w-[260px] h-[90px] flex items-center pl-8 pr-12 z-50"
-        style={{ filter: 'drop-shadow(0px 6px 20px rgba(0, 0, 0, 0.65))' }}
+        style={{ filter: 'drop-shadow(0px 8px 28px rgba(26, 11, 46, 0.7))' }}
       >
         <svg className="absolute inset-0 w-full h-full pointer-events-none" preserveAspectRatio="none" viewBox="0 0 260 90">
           <polygon points="0,0 228,0 260,90 0,90" fill="#ffffff" />
-          <polyline points="228,0 260,90 0,90" fill="none" stroke="#D4AF37" strokeWidth="4" />
+          <polyline points="228,0 260,90 0,90" fill="none" stroke="#9D5CFF" strokeWidth="4" />
         </svg>
         {/* Full Essensa Naturale logo (charcoal text on clean white backdrop) */}
         <Logo showText={true} light={false} logoUrl={logoUrl} className="relative z-10 scale-110 origin-left" />
@@ -35,40 +35,40 @@ export function Ticker({
 
       {/* 2. Central Recessed Scrolling Ticker Channel (80px height, starts at 228px, ends at 1920-228 = 1692px) */}
       <div 
-        className="absolute bottom-0 left-[228px] right-[228px] h-[80px] bg-brand-charcoal text-white flex items-center border-t border-black/20 shadow-[0_-8px_24px_rgba(0,0,0,0.15)] select-none overflow-hidden z-40"
+        className="absolute bottom-0 left-[228px] right-[228px] h-[80px] bg-[#120924] text-white flex items-center border-t border-[#9D5CFF]/30 shadow-[0_-8px_24px_rgba(0,0,0,0.35)] select-none overflow-hidden z-40"
       >
         {/* Scrolling Marquee Area */}
-        <div className="flex-1 h-full flex items-center overflow-hidden bg-brand-charcoal relative">
+        <div className="flex-1 h-full flex items-center overflow-hidden bg-[#120924] relative">
           <div key={`${combinedText}_${speed}`} className="marquee-container text-2xl font-black tracking-widest text-white uppercase flex items-center">
             {/* Scroll items twice to ensure infinite, seamless repeating loops */}
             <div className="marquee-content gap-8 flex items-center pr-8" style={{ animationDuration: `${speed}s`, animationDelay: `${delay}s` }}>
               <span>{combinedText}</span>
-              <span>•</span>
+              <span className="text-[#9D5CFF]">•</span>
               <span>{combinedText}</span>
-              <span>•</span>
+              <span className="text-[#9D5CFF]">•</span>
             </div>
             <div className="marquee-content gap-8 flex items-center pr-8" aria-hidden="true" style={{ animationDuration: `${speed}s`, animationDelay: `${delay}s` }}>
               <span>{combinedText}</span>
-              <span>•</span>
+              <span className="text-[#9D5CFF]">•</span>
               <span>{combinedText}</span>
-              <span>•</span>
+              <span className="text-[#9D5CFF]">•</span>
             </div>
           </div>
           
           {/* Symmetrical left and right edge fade overlays for premium scrolling text transitions */}
-          <div className="absolute top-0 left-0 h-full w-12 bg-gradient-to-r from-brand-charcoal to-transparent pointer-events-none z-10" />
-          <div className="absolute top-0 right-0 h-full w-12 bg-gradient-to-l from-brand-charcoal to-transparent pointer-events-none z-10" />
+          <div className="absolute top-0 left-0 h-full w-12 bg-gradient-to-r from-[#120924] to-transparent pointer-events-none z-10" />
+          <div className="absolute top-0 right-0 h-full w-12 bg-gradient-to-l from-[#120924] to-transparent pointer-events-none z-10" />
         </div>
       </div>
 
       {/* 3. Mirrored Dedicated White Sponsor Logo Block on the Right (90px height) */}
       <div 
         className="absolute right-0 bottom-0 w-[260px] h-[90px] flex items-center justify-center pl-12 pr-8 z-50"
-        style={{ filter: 'drop-shadow(0px 6px 20px rgba(0, 0, 0, 0.65))' }}
+        style={{ filter: 'drop-shadow(0px 8px 28px rgba(26, 11, 46, 0.7))' }}
       >
         <svg className="absolute inset-0 w-full h-full pointer-events-none" preserveAspectRatio="none" viewBox="0 0 260 90">
           <polygon points="32,0 260,0 260,90 0,90" fill="#ffffff" />
-          <polyline points="260,90 0,90 32,0" fill="none" stroke="#D4AF37" strokeWidth="4" />
+          <polyline points="260,90 0,90 32,0" fill="none" stroke="#9D5CFF" strokeWidth="4" />
         </svg>
         {tickerRightLogoUrl ? (
           <img src={tickerRightLogoUrl} className="h-[82px] max-w-[210px] object-contain relative z-10" alt="Sponsor Logo" />

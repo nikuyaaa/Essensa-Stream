@@ -164,17 +164,17 @@ body {
 
 /* Glassmorphism panel base */
 .glass-panel {
-  background: rgba(33, 33, 33, 0.75);
+  background: rgba(18, 9, 36, 0.85);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(157, 92, 255, 0.3);
 }
 
 .glass-panel-light {
   background: rgba(255, 255, 255, 0.95);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(27, 115, 57, 0.08);
+  border: 1px solid rgba(157, 92, 255, 0.2);
 }
 
 .sage-bg {
@@ -187,20 +187,20 @@ body {
 
 /* Broadcast Polish Styles */
 
-/* Subtle ambient brand-green glow */
+/* Subtle ambient brand-purple glow */
 .gold-ambient-glow {
-  box-shadow: 0 0 25px rgba(27, 115, 57, 0.12), inset 0 0 15px rgba(27, 115, 57, 0.05);
-  border: 1px solid rgba(27, 115, 57, 0.25) !important;
-  background: linear-gradient(135deg, rgba(16, 22, 18, 0.98) 0%, rgba(24, 32, 26, 0.96) 100%) !important;
+  box-shadow: 0 0 25px rgba(157, 92, 255, 0.2), inset 0 0 15px rgba(123, 63, 228, 0.1);
+  border: 1px solid rgba(157, 92, 255, 0.35) !important;
+  background: linear-gradient(135deg, rgba(18, 9, 36, 0.98) 0%, rgba(38, 16, 74, 0.96) 100%) !important;
 }
 
 .gold-ambient-glow-soft {
-  filter: drop-shadow(0 0 10px rgba(27, 115, 57, 0.18));
+  filter: drop-shadow(0 0 10px rgba(157, 92, 255, 0.3));
 }
 
 /* Base text shadow for split-tone layouts */
 .brand-text-glow {
-  text-shadow: 0 0 12px rgba(255, 255, 255, 0.08);
+  text-shadow: 0 0 12px rgba(157, 92, 255, 0.2);
 }
 
 /* Split-tone text keyword accent styles */
@@ -213,27 +213,27 @@ body {
   }
 }
 
-.keyword-green {
+.keyword-green, .keyword-[#9D5CFF], .keyword-purple {
   background: linear-gradient(
     120deg, 
-    #1b7339 0%, 
-    #4caf50 25%, 
-    #81c784 45%, 
+    #7B3FE4 0%, 
+    #9D5CFF 25%, 
+    #E2D1FF 45%, 
     #ffffff 50%, 
-    #81c784 55%, 
-    #4caf50 75%, 
-    #1b7339 100%
+    #E2D1FF 55%, 
+    #9D5CFF 75%, 
+    #7B3FE4 100%
   );
   background-size: 200% auto;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   animation: green-sunray-shimmer var(--green-speed, 4s) infinite linear;
-  filter: drop-shadow(0 0 10px rgba(76, 175, 80, var(--green-glow, 0.45)));
+  filter: drop-shadow(0 0 10px rgba(157, 92, 255, var(--green-glow, 0.5)));
   font-weight: 900;
   display: inline-block;
 }
 
-/* Looping hardware-accelerated Golden Sunray text sweep animation */
+/* Looping hardware-accelerated Sunray text sweep animation */
 @keyframes gold-sunray-shimmer {
   0% {
     background-position: -200% 0;
@@ -246,19 +246,19 @@ body {
 .gold-sunray-text, .keyword-gold {
   background: linear-gradient(
     120deg, 
-    #b8860b 0%, 
-    #e6c875 25%, 
-    #ffe89c 45%, 
+    #7B3FE4 0%, 
+    #9D5CFF 25%, 
+    #E2D1FF 45%, 
     #ffffff 50%, 
-    #ffe89c 55%, 
-    #e6c875 75%, 
-    #b8860b 100%
+    #E2D1FF 55%, 
+    #9D5CFF 75%, 
+    #7B3FE4 100%
   );
   background-size: 200% auto;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   animation: gold-sunray-shimmer var(--sunray-speed, 4s) infinite linear;
-  filter: drop-shadow(0 0 10px rgba(230, 200, 117, var(--sunray-glow, 0.3)));
+  filter: drop-shadow(0 0 10px rgba(157, 92, 255, var(--sunray-glow, 0.4)));
   font-weight: 900;
   display: inline-block;
 }
@@ -281,7 +281,7 @@ body {
   animation: text-reveal-slide 1.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
-/* Color-Corrected Sweeping Shimmer Alert Banner (Essensa Naturale Green Theme) */
+/* Color-Corrected Sweeping Shimmer Alert Banner (Beyond Talks Violet/Purple Theme) */
 @keyframes alert-shimmer-sweep {
   0% {
     background-position: -200% 0;
@@ -292,13 +292,13 @@ body {
 }
 
 .alert-banner-premium {
-  background: linear-gradient(90deg, #0A1C0E 0%, #12331A 25%, #246634 50%, #12331A 75%, #0A1C0E 100%);
+  background: linear-gradient(90deg, #120924 0%, #2A1054 25%, #4A2080 50%, #2A1054 75%, #120924 100%);
   background-size: 200% 100%;
   animation: alert-shimmer-sweep 6s infinite linear;
-  border: 1px solid rgba(76, 175, 80, 0.35) !important;
-  box-shadow: 0 0 25px rgba(76, 175, 80, 0.15);
-  color: #E2ECE9 !important;
-  text-shadow: 0 0 6px rgba(76, 175, 80, 0.3);
+  border: 1px solid rgba(157, 92, 255, 0.5) !important;
+  box-shadow: 0 0 25px rgba(157, 92, 255, 0.25);
+  color: #FFFFFF !important;
+  text-shadow: 0 0 8px rgba(157, 92, 255, 0.5);
 }
 
 .tooltip-fade-in {

@@ -35,8 +35,8 @@ export function LowerThird({
           }}
           className={`absolute bottom-[130px] left-[80px] z-30 select-none flex flex-col items-start ${className}`}
         >
-          {/* Layer 1: Host Name (Solid Black block with white text and forest green left border) */}
-          <div className="bg-brand-charcoal h-[64px] flex items-center px-8 border-l-[6px] border-brand-green shadow-xl rounded-tr-lg relative">
+          {/* Layer 1: Host Name (Solid Dark Midnight block with white text and electric purple left border) */}
+          <div className="bg-[#120924] h-[64px] flex items-center px-8 border-l-[6px] border-[#9D5CFF] shadow-[0_8px_24px_rgba(26,11,46,0.8)] rounded-tr-lg relative">
             <motion.h3 
               initial={{ opacity: 0, x: -15 }}
               animate={{ opacity: 1, x: 0 }}
@@ -47,18 +47,18 @@ export function LowerThird({
             </motion.h3>
           </div>
 
-          {/* Layer 2: Host Title (Organic Gold tag resting directly below the name block) */}
+          {/* Layer 2: Host Title (Beyond Talks Purple gradient tag) */}
           <motion.div
             initial={{ scaleX: 0 }}
             animate={{ scaleX: 1 }}
             transition={{ delay: 0.1, duration: 0.4 }}
-            className="origin-left h-[32px] bg-brand-gold flex items-center px-6 shadow-md rounded-br-lg"
+            className="origin-left h-[32px] bg-gradient-to-r from-[#7B3FE4] to-[#4A2080] border border-[#9D5CFF]/30 flex items-center px-6 shadow-md rounded-br-lg"
           >
             <motion.span 
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.3, duration: 0.3 }}
-              className="font-sans text-xs font-black tracking-[0.2em] text-brand-charcoal uppercase truncate"
+              className="font-sans text-xs font-black tracking-[0.2em] text-white uppercase truncate"
             >
               {title}
             </motion.span>

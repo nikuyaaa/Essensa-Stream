@@ -29,10 +29,10 @@ export function ProductCard({
           {/* Main Card Container */}
           <div className="bg-white rounded-2xl overflow-hidden shadow-[8px_8px_32px_rgba(0,0,0,0.18)] flex flex-col border border-brand-green/15">
             
-            {/* Header Tag / Active Flash - Solid Brand Green */}
-            <div className="bg-brand-green text-white text-xs uppercase font-black tracking-[0.2em] px-6 py-3 flex items-center justify-between rounded-t-2xl">
+            {/* Header Tag / Active Flash - Beyond Talks Purple Gradient */}
+            <div className="bg-gradient-to-r from-[#7B3FE4] to-[#4A2080] text-white text-xs uppercase font-black tracking-[0.2em] px-6 py-3 flex items-center justify-between rounded-t-2xl">
               <span className="flex items-center gap-2">
-                <Sparkles className="w-4 h-4 text-brand-gold animate-pulse" />
+                <Sparkles className="w-4 h-4 text-[#9D5CFF] animate-pulse" />
                 Featured Product
               </span>
               <span className="bg-red-600 text-white px-2.5 py-0.5 rounded text-[10px] font-black tracking-widest animate-pulse">
@@ -44,7 +44,7 @@ export function ProductCard({
             <div className="p-6 flex gap-5 items-center bg-white">
               
               {/* Product Image Wrapper */}
-              <div className="w-[110px] h-[110px] bg-brand-cream rounded-xl border border-brand-green/10 flex items-center justify-center overflow-hidden shrink-0 shadow-inner p-3">
+              <div className="w-[110px] h-[110px] bg-zinc-50 rounded-xl border border-[#7B3FE4]/15 flex items-center justify-center overflow-hidden shrink-0 shadow-inner p-3">
                 {imageUrl ? (
                   (imageUrl.match(/\.(mp4|webm|ogg)$/i) || imageUrl.startsWith('data:video/')) ? (
                     <video src={imageUrl} autoPlay loop muted playsInline className="w-full h-full object-contain" />
@@ -56,17 +56,17 @@ export function ProductCard({
                   <svg viewBox="0 0 60 80" className="w-14 h-20" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <defs>
                       <linearGradient id="liquidGrad" x1="0" y1="1" x2="0" y2="0">
-                        <stop offset="0%" stopColor="#1B7339" />
-                        <stop offset="70%" stopColor="#4CAF50" />
-                        <stop offset="100%" stopColor="#A5D6A7" />
+                        <stop offset="0%" stopColor="#4A2080" />
+                        <stop offset="70%" stopColor="#7B3FE4" />
+                        <stop offset="100%" stopColor="#9D5CFF" />
                       </linearGradient>
                     </defs>
                     {/* Bottle Neck */}
-                    <rect x="23" y="10" width="14" height="10" rx="2" fill="#FFFFFF" stroke="#1B7339" strokeWidth="2" />
+                    <rect x="23" y="10" width="14" height="10" rx="2" fill="#FFFFFF" stroke="#7B3FE4" strokeWidth="2" />
                     {/* Cap */}
-                    <rect x="20" y="5" width="20" height="6" rx="1" fill="#1B7339" />
+                    <rect x="20" y="5" width="20" height="6" rx="1" fill="#7B3FE4" />
                     {/* Bottle Body */}
-                    <rect x="12" y="20" width="36" height="52" rx="8" fill="#FFFFFF" stroke="#1B7339" strokeWidth="2" />
+                    <rect x="12" y="20" width="36" height="52" rx="8" fill="#FFFFFF" stroke="#7B3FE4" strokeWidth="2" />
                     {/* Liquid fill */}
                     <rect x="15" y="32" width="30" height="36" rx="4" fill="url(#liquidGrad)" opacity="0.85" />
                     {/* Leaf Label symbol */}
@@ -78,16 +78,16 @@ export function ProductCard({
               {/* Product Text details */}
               <div className="flex-1 flex flex-col justify-between h-[110px] py-1">
                 {/* Product Name */}
-                <h4 className="font-display font-black text-2xl text-brand-charcoal leading-tight line-clamp-2 uppercase">
+                <h4 className="font-display font-black text-2xl text-[#120924] leading-tight line-clamp-2 uppercase">
                   {name}
                 </h4>
                 
-                {/* Price Pill (Gold/Ochre) */}
+                {/* Price Pill (Beyond Talks Purple) */}
                 <div className="flex items-center gap-2 mt-2">
-                  <div className="bg-brand-gold text-brand-charcoal font-mono font-black text-2xl px-5 py-1 rounded-full shadow-md tracking-wider">
+                  <div className="bg-gradient-to-r from-[#7B3FE4] to-[#4A2080] text-white font-mono font-black text-2xl px-5 py-1 rounded-full shadow-md tracking-wider">
                     {price}
                   </div>
-                  <span className="text-[10px] text-brand-charcoal/50 font-black uppercase tracking-wider">
+                  <span className="text-[10px] text-zinc-500 font-black uppercase tracking-wider">
                     VAT INCL.
                   </span>
                 </div>

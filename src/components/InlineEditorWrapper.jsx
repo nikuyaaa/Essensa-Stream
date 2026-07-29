@@ -180,10 +180,10 @@ export function InlineEditorWrapper({ state, onStateChange, children, currentVie
           {/* Top Header Shield Hotspot */}
           <div 
             onDoubleClick={openHeaderLogoModal}
-            className="absolute top-0 left-1/2 -translate-x-1/2 w-[520px] h-[85px] z-[60] cursor-pointer hover:outline hover:outline-2 hover:outline-dashed hover:outline-[#D4AF37] rounded-b-2xl transition-all group"
+            className="absolute top-0 left-1/2 -translate-x-1/2 w-[520px] h-[85px] z-[60] cursor-pointer hover:outline hover:outline-2 hover:outline-dashed hover:outline-[#9D5CFF] rounded-b-2xl transition-all group"
             title="Double-click to edit Top Header Shield Logo"
           >
-            <div className="hidden group-hover:flex absolute top-2 left-1/2 -translate-x-1/2 px-2.5 py-1 bg-black/80 text-brand-gold text-[10px] font-bold uppercase tracking-wider rounded border border-[#D4AF37]/40 shadow pointer-events-none">
+            <div className="hidden group-hover:flex absolute top-2 left-1/2 -translate-x-1/2 px-2.5 py-1 bg-[#120924]/90 text-[#9D5CFF] text-[10px] font-bold uppercase tracking-wider rounded border border-[#9D5CFF]/40 shadow pointer-events-none">
               Edit Top Logo
             </div>
           </div>
@@ -191,10 +191,10 @@ export function InlineEditorWrapper({ state, onStateChange, children, currentVie
           {/* Bottom Ticker Hotspot */}
           <div 
             onDoubleClick={openTickerModal}
-            className="absolute bottom-0 left-0 w-full h-[90px] z-[60] cursor-pointer hover:outline hover:outline-2 hover:outline-dashed hover:outline-[#D4AF37] transition-all group"
+            className="absolute bottom-0 left-0 w-full h-[90px] z-[60] cursor-pointer hover:outline hover:outline-2 hover:outline-dashed hover:outline-[#9D5CFF] transition-all group"
             title="Double-click to edit News Ticker & Sponsor Logos"
           >
-            <div className="hidden group-hover:flex absolute bottom-3 left-1/2 -translate-x-1/2 px-2.5 py-1 bg-black/80 text-brand-gold text-[10px] font-bold uppercase tracking-wider rounded border border-[#D4AF37]/40 shadow pointer-events-none">
+            <div className="hidden group-hover:flex absolute bottom-3 left-1/2 -translate-x-1/2 px-2.5 py-1 bg-[#120924]/90 text-[#9D5CFF] text-[10px] font-bold uppercase tracking-wider rounded border border-[#9D5CFF]/40 shadow pointer-events-none">
               Edit Ticker & Sponsor Logos
             </div>
           </div>
@@ -202,14 +202,14 @@ export function InlineEditorWrapper({ state, onStateChange, children, currentVie
           {/* Left Frame Border Hotspot */}
           <div 
             onDoubleClick={openFrameModal}
-            className="absolute left-0 top-0 w-[16px] h-[calc(100%-90px)] z-[60] cursor-pointer hover:outline hover:outline-2 hover:outline-dashed hover:outline-[#D4AF37] transition-all group"
+            className="absolute left-0 top-0 w-[16px] h-[calc(100%-90px)] z-[60] cursor-pointer hover:outline hover:outline-2 hover:outline-dashed hover:outline-[#9D5CFF] transition-all group"
             title="Double-click to edit Frame Thickness & Colors"
           />
 
           {/* Right Frame Border Hotspot */}
           <div 
             onDoubleClick={openFrameModal}
-            className="absolute right-0 top-0 w-[16px] h-[calc(100%-90px)] z-[60] cursor-pointer hover:outline hover:outline-2 hover:outline-dashed hover:outline-[#D4AF37] transition-all group"
+            className="absolute right-0 top-0 w-[16px] h-[calc(100%-90px)] z-[60] cursor-pointer hover:outline hover:outline-2 hover:outline-dashed hover:outline-[#9D5CFF] transition-all group"
             title="Double-click to edit Frame Thickness & Colors"
           />
 
@@ -217,10 +217,10 @@ export function InlineEditorWrapper({ state, onStateChange, children, currentVie
           {['intermission-banner', 'intermission', 'starting', 'brb', 'ending'].includes(currentView) && (
             <div 
               onDoubleClick={openHeadlineModal}
-              className="absolute left-[15%] top-[15%] w-[70%] h-[60%] z-[55] cursor-pointer hover:outline hover:outline-2 hover:outline-dashed hover:outline-[#D4AF37] rounded-3xl transition-all group"
+              className="absolute left-[15%] top-[15%] w-[70%] h-[60%] z-[55] cursor-pointer hover:outline hover:outline-2 hover:outline-dashed hover:outline-[#9D5CFF] rounded-3xl transition-all group"
               title="Double-click to edit Headlines & Scene Text"
             >
-              <div className="hidden group-hover:flex absolute top-4 left-1/2 -translate-x-1/2 px-3 py-1.5 bg-black/80 text-brand-gold text-xs font-bold uppercase tracking-wider rounded-lg border border-[#D4AF37]/40 shadow pointer-events-none">
+              <div className="hidden group-hover:flex absolute top-4 left-1/2 -translate-x-1/2 px-3 py-1.5 bg-[#120924]/90 text-[#9D5CFF] text-xs font-bold uppercase tracking-wider rounded-lg border border-[#9D5CFF]/40 shadow pointer-events-none">
                 Edit Scene Text & Headlines
               </div>
             </div>
@@ -233,10 +233,10 @@ export function InlineEditorWrapper({ state, onStateChange, children, currentVie
         <div className="fixed bottom-4 right-4 z-[100] select-none">
           <button
             onClick={() => setEditMode(!editMode)}
-            className="flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-black/40 backdrop-blur-md border border-[#D4AF37]/30 text-white text-xs font-bold shadow-2xl transition-all duration-300 opacity-40 hover:opacity-100 hover:scale-105 hover:bg-black/80 hover:border-[#D4AF37]"
+            className="flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#7B3FE4]/25 backdrop-blur-md border border-[#9D5CFF]/40 text-white text-xs font-bold shadow-2xl transition-all duration-300 opacity-40 hover:opacity-100 hover:scale-105 hover:bg-[#120924]/90 hover:border-[#9D5CFF]"
             title="Toggle Edit / Broadcast Mode"
           >
-            <span className={`w-2.5 h-2.5 rounded-full ${editMode ? 'bg-emerald-400 animate-pulse shadow-[0_0_8px_#34d399]' : 'bg-red-500'}`} />
+            <span className={`w-2.5 h-2.5 rounded-full ${editMode ? 'bg-[#9D5CFF] animate-pulse shadow-[0_0_10px_#9D5CFF]' : 'bg-red-500'}`} />
             <span className="tracking-wider uppercase font-mono text-[11px]">
               {editMode ? 'EDIT MODE (ON)' : 'BROADCAST MODE'}
             </span>
@@ -397,17 +397,17 @@ export function InlineEditorWrapper({ state, onStateChange, children, currentVie
 // Reusable Modal Component
 function ModalContainer({ title, onClose, onSave, children }) {
   return (
-    <div className="fixed inset-0 z-[200] flex items-center justify-center bg-black/70 backdrop-blur-md p-4 animate-in fade-in duration-200">
-      <div className="w-full max-w-lg bg-[#141414] border border-[#D4AF37]/40 rounded-2xl shadow-2xl overflow-hidden flex flex-col">
+    <div className="fixed inset-0 z-[200] flex items-center justify-center bg-[#120924]/75 backdrop-blur-md p-4 animate-in fade-in duration-200">
+      <div className="w-full max-w-lg bg-[#120924] border border-[#9D5CFF]/40 rounded-2xl shadow-2xl overflow-hidden flex flex-col">
         {/* Header */}
-        <div className="px-6 py-4 border-b border-zinc-800 flex items-center justify-between bg-zinc-900/50">
+        <div className="px-6 py-4 border-b border-[#9D5CFF]/20 flex items-center justify-between bg-[#1A0C36]">
           <h3 className="text-base font-black uppercase text-white tracking-wider flex items-center gap-2">
-            <Edit3 className="w-4 h-4 text-brand-gold" />
+            <Edit3 className="w-4 h-4 text-[#9D5CFF]" />
             {title}
           </h3>
           <button 
             onClick={onClose} 
-            className="p-1 text-zinc-400 hover:text-white rounded-lg hover:bg-zinc-800 transition"
+            className="p-1 text-zinc-400 hover:text-white rounded-lg hover:bg-white/10 transition"
           >
             <X className="w-5 h-5" />
           </button>
@@ -419,16 +419,16 @@ function ModalContainer({ title, onClose, onSave, children }) {
         </div>
 
         {/* Footer */}
-        <div className="px-6 py-4 border-t border-zinc-800 flex justify-end gap-3 bg-zinc-900/50">
+        <div className="px-6 py-4 border-t border-[#9D5CFF]/20 flex justify-end gap-3 bg-[#1A0C36]">
           <button 
             onClick={onClose} 
-            className="px-4 py-2 rounded-lg text-xs font-bold uppercase text-zinc-400 hover:text-white hover:bg-zinc-800 transition"
+            className="px-4 py-2 rounded-lg text-xs font-bold uppercase text-zinc-400 hover:text-white hover:bg-white/10 transition"
           >
             Cancel
           </button>
           <button 
             onClick={onSave} 
-            className="px-5 py-2 rounded-lg text-xs font-bold uppercase text-black bg-brand-gold hover:bg-[#E5C158] transition shadow flex items-center gap-2"
+            className="px-5 py-2 rounded-lg text-xs font-bold uppercase text-white bg-gradient-to-r from-[#7B3FE4] to-[#4A2080] hover:brightness-110 border border-[#9D5CFF]/40 transition shadow flex items-center gap-2"
           >
             <Save className="w-4 h-4" />
             Save Changes
