@@ -6,6 +6,9 @@ export function Countdown({
   isRunning = false, 
   onTick = null, 
   textColor = 'text-white',
+  useGradient = false,
+  numberSizeClass = '',
+  showLabel = false,
   className = '' 
 }) {
   const [localSeconds, setLocalSeconds] = useState(secondsLeft);
@@ -41,10 +44,15 @@ export function Countdown({
 
   const isZero = localSeconds === 0;
 
+  const sizeClass = numberSizeClass || 'text-[54px] sm:text-[80px] md:text-[96px]';
+  const colorClass = useGradient 
+    ? 'bg-gradient-to-r from-[#7B3FE4] to-[#4A2080] bg-clip-text text-transparent drop-shadow-[0_4px_12px_rgba(123,63,228,0.2)]'
+    : textColor;
+
   return (
     <div className={`flex flex-col items-center justify-center ${className}`}>
       {/* Timer Display Container */}
-      <div className="relative">
+      <div className="relative flex items-center justify-center">
         {/* Glow backdrop when timer is active or hits 0 */}
         <AnimatePresence>
           {isZero ? (
@@ -52,15 +60,15 @@ export function Countdown({
               initial={{ opacity: 0, scale: 0.8 }}
               animate={{ opacity: 1, scale: 1.1 }}
               exit={{ opacity: 0 }}
-              className="absolute inset-0 bg-brand-accent/25 blur-3xl rounded-full animate-flare"
+              className="absolute inset-0 bg-[#9D5CFF]/30 blur-3xl rounded-full animate-flare"
             />
           ) : (
             isRunning && (
               <motion.div
                 initial={{ opacity: 0 }}
-                animate={{ opacity: 0.15 }}
+                animate={{ opacity: 0.2 }}
                 exit={{ opacity: 0 }}
-                className="absolute inset-0 bg-brand-accent/10 blur-xl rounded-full"
+                className="absolute inset-0 bg-[#7B3FE4]/15 blur-2xl rounded-full"
               />
             )
           )}
@@ -70,35 +78,32 @@ export function Countdown({
         <motion.div
           animate={isZero ? {
             scale: [1, 1.03, 1],
-            color: ['#FFFFFF', '#4CAF50', '#FFFFFF']
           } : {}}
           transition={isZero ? {
             repeat: Infinity,
             duration: 1.5,
             ease: "easeInOut"
           } : {}}
-          className={`font-display font-black tracking-widest tabular-nums leading-none select-none relative z-10
-            ${isZero ? 'text-brand-accent animate-flare text-[54px] sm:text-[80px] md:text-[96px]' : `${textColor} text-[54px] sm:text-[80px] md:text-[96px]`}
-          `}
+          className={`font-display font-black tracking-widest tabular-nums leading-none select-none relative z-10 ${sizeClass} ${isZero ? 'text-[#9D5CFF] animate-flare' : colorClass}`}
         >
           {formatTime(localSeconds)}
         </motion.div>
       </div>
 
-      {/* Label under Countdown */}
-      <AnimatePresence mode="wait">
-        <motion.p
-          key={isZero ? 'started' : 'starting'}
-          initial={{ opacity: 0, y: 5 }}
-          animate={{ opacity: 0.7, y: 0 }}
-          exit={{ opacity: 0, y: -5 }}
-          className={`text-[9px] sm:text-xs uppercase tracking-[0.3em] font-bold mt-4 z-10
-            ${textColor === 'text-brand-gold' ? 'text-brand-charcoal/60' : 'text-brand-cream/85'}
-          `}
-        >
-          {isZero ? "The Show Has Begun!" : "STREAM STARTING SOON"}
-        </motion.p>
-      </AnimatePresence>
+      {/* Label under Countdown (Optional) */}
+      {showLabel && (
+        <AnimatePresence mode="wait">
+          <motion.p
+            key={isZero ? 'started' : 'starting'}
+            initial={{ opacity: 0, y: 5 }}
+            animate={{ opacity: 0.7, y: 0 }}
+            exit={{ opacity: 0, y: -5 }}
+            className={`text-xs uppercase tracking-[0.25em] font-bold mt-4 z-10 text-zinc-600`}
+          >
+            {isZero ? "The Show Has Begun!" : "STREAM STARTING SOON"}
+          </motion.p>
+        </AnimatePresence>
+      )}
     </div>
   );
 }

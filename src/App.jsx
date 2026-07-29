@@ -810,19 +810,20 @@ function App() {
               </div>
             </div>
 
-            {/* Right Half: Pure White */}
-            <div className="w-[960px] h-[1080px] bg-[#FFFFFF] flex flex-col justify-between p-24 text-brand-charcoal relative pb-32">
-              {/* Top spacing */}
-              <div className="hidden md:block" />
-
-              {/* Countdown in the center */}
-              <div className="flex flex-col items-center justify-center gap-4 py-8 relative z-10">
-                <span className="text-zinc-600 text-base font-black uppercase tracking-[0.3em] mb-2 text-reveal-active">
+            {/* Right Half: Pure White (Balanced Vertical Layout) */}
+            <div className="w-[960px] h-[1080px] bg-[#FFFFFF] flex flex-col justify-between p-16 md:p-20 text-brand-charcoal relative select-none">
+              
+              {/* Upper Half: Enlarged Countdown Block */}
+              <div className="flex flex-col items-center justify-center py-6 relative z-10 mt-4">
+                <span className="text-zinc-600 text-lg md:text-xl font-black uppercase tracking-[0.25em] mb-6 text-reveal-active">
                   {renderSplitToneText(state.starting.subTitle || "Stream Starting <b>Soon</b>", "text-zinc-600", "keyword-green", "keyword-gold")}
                 </span>
+                
                 <Countdown 
                   secondsLeft={state.starting.countdownSeconds} 
                   isRunning={state.starting.countdownRunning} 
+                  useGradient={true}
+                  numberSizeClass="text-[12rem] md:text-[14.5rem]"
                   onTick={(seconds) => {
                     setState(prev => ({
                       ...prev,
@@ -832,12 +833,14 @@ function App() {
                       }
                     }));
                   }}
-                  textColor="text-[#7B3FE4]"
                 />
               </div>
 
-              {/* Social Media Grid & Official Contact Footer */}
-              <div className="w-full border-t border-black/10 pt-8 mt-4 relative z-10 flex flex-col gap-4">
+              {/* Subtle Horizontal Trim Line */}
+              <div className="w-full h-px bg-zinc-200/80 my-2 relative z-10" />
+
+              {/* Lower Half: Elevate Social Media Grid & Official Contact Footer */}
+              <div className="w-full relative z-10 flex flex-col gap-4 mb-2">
                 {renderGlobalSocials(false)}
                 
                 {/* Official Address & Contact Bar */}
