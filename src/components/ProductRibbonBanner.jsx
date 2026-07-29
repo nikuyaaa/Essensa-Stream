@@ -92,12 +92,6 @@ export function ProductRibbonBanner({
                 </div>
               </div>
 
-              {/* Right Spotlight Status Badge */}
-              <div className="flex items-center gap-1.5 shrink-0 ml-4 bg-[#120924]/5 px-2.5 py-1 rounded-full border border-[#9D5CFF]/30">
-                <span className="w-2 h-2 rounded-full bg-[#9D5CFF] animate-ping" />
-                <span className="text-[10px] font-black uppercase tracking-widest text-[#7B3FE4]">SPOTLIGHT</span>
-              </div>
-
             </div>
           </motion.div>
 
