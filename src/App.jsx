@@ -503,6 +503,54 @@ function App() {
     };
   }, []);
 
+  // OBS WebSocket / Touch Portal Global Function Bindings
+  // Allows external macro decks to control the Product Spotlight Banner via
+  // OBS Browser Source → Execute JavaScript (window.showProductBanner(), etc.)
+  useEffect(() => {
+    // 1. Toggle Banner Visibility
+    window.toggleProductBanner = () => {
+      setState(prev => ({
+        ...prev,
+        productRibbon: {
+          ...prev.productRibbon,
+          visible: !prev.productRibbon?.visible,
+          triggerKey: Date.now()
+        }
+      }));
+    };
+
+    // 2. Show Banner (with optional dynamic product data)
+    window.showProductBanner = (productData) => {
+      setState(prev => ({
+        ...prev,
+        productRibbon: {
+          ...prev.productRibbon,
+          ...(productData || {}),
+          visible: true,
+          triggerKey: Date.now()
+        }
+      }));
+    };
+
+    // 3. Hide Banner
+    window.hideProductBanner = () => {
+      setState(prev => ({
+        ...prev,
+        productRibbon: {
+          ...prev.productRibbon,
+          visible: false
+        }
+      }));
+    };
+
+    // Cleanup on unmount
+    return () => {
+      delete window.toggleProductBanner;
+      delete window.showProductBanner;
+      delete window.hideProductBanner;
+    };
+  }, []);
+
   const isControlView = !urlView || urlView === 'control' || urlView === 'dashboard';
   const currentView = isControlView 
     ? (urlView || 'control') 
