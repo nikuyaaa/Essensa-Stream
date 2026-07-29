@@ -990,6 +990,7 @@ export function OperatorPanel({ initialState, onStateChange }) {
                         }}
                         className="bg-zinc-950 border border-zinc-800 text-xs rounded p-1.5 font-bold text-zinc-350 cursor-pointer"
                       >
+                        <option value="tiktok">TikTok</option>
                         <option value="facebook">Facebook</option>
                         <option value="instagram">Instagram</option>
                         <option value="youtube">YouTube</option>
@@ -2564,6 +2565,7 @@ export function OperatorPanel({ initialState, onStateChange }) {
                         }}
                         className="bg-zinc-900 border border-zinc-800 text-xs rounded p-1.5 font-bold text-zinc-355 cursor-pointer"
                       >
+                        <option value="tiktok">TikTok</option>
                         <option value="facebook">Facebook</option>
                         <option value="instagram">Instagram</option>
                         <option value="youtube">YouTube</option>

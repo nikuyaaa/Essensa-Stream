@@ -14,6 +14,18 @@ import { Countdown } from './components/Countdown';
 import { OperatorPanel } from './components/OperatorPanel';
 import { CommentsWidget } from './components/CommentsWidget';
 import { InlineEditorWrapper } from './components/InlineEditorWrapper';
+import { MapPin, Phone } from 'lucide-react';
+
+const TikTokIcon = ({ className = "w-6 h-6" }) => (
+  <svg 
+    viewBox="0 0 24 24" 
+    fill="currentColor" 
+    className={className} 
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path d="M12.53.02C13.84 0 15.14.01 16.44 0c.08 1.53.84 2.91 2.08 3.67.01 1.25.01 2.5 0 3.75-1.34-.01-2.58-.69-3.37-1.78-.02 1.93-.01 3.86-.01 5.79 0 2.27-1.02 4.41-2.88 5.48-2.39 1.48-5.69.84-7.29-1.42-1.76-2.38-.85-6.09 1.91-7.18.97-.39 2.05-.39 3.03-.02v3.91c-.69-.26-1.48-.19-2.09.24-.87.56-1.12 1.76-.56 2.62.53.84 1.63 1.13 2.5.6.87-.51 1.16-1.63.74-2.58-.02-3.41-.01-6.82-.01-10.23.01-.22-.05-.48.1-.67.35-.46.9-.62 1.47-.56Z" />
+  </svg>
+);
 
 // Error Boundary – catches React render crashes and shows a diagnostic panel
 // instead of a blank white screen, making future issues easy to diagnose.
@@ -182,11 +194,16 @@ const defaultState = {
     "borderThickness": 6
   },
   "socials": [
-    { "platform": "facebook", "text": "@EssensaNaturaleOfficial" },
-    { "platform": "instagram", "text": "@essensanaturale" },
-    { "platform": "globe", "text": "www.essensanaturale.org" },
-    { "platform": "youtube", "text": "Essensa Naturale TV" }
+    { "platform": "tiktok", "text": "@essensa.naturale" },
+    { "platform": "facebook", "text": "Essensa Naturale" },
+    { "platform": "instagram", "text": "@essensanaturaleofficial" },
+    { "platform": "globe", "text": "essensanaturale.org" }
   ],
+  "contactInfo": {
+    "address": "108 West Insula Condominium, 135 West Avenue, 1105 Quezon City, Philippines",
+    "phone": "+(632) 8284-3577",
+    "website": "essensanaturale.org"
+  },
   "socialsStyle": {
     "format": "icon-text",
     "layout": "grid"
@@ -587,10 +604,11 @@ function App() {
   // Social handles helpers
   const getSocialIcon = (platform) => {
     switch (platform?.toLowerCase()) {
-      case 'facebook': return <Facebook className="w-6 h-6 text-brand-green shrink-0" />;
-      case 'instagram': return <Instagram className="w-6 h-6 text-brand-green shrink-0" />;
-      case 'youtube': return <Youtube className="w-6 h-6 text-brand-green shrink-0" />;
-      default: return <Globe className="w-6 h-6 text-brand-green shrink-0" />;
+      case 'facebook': return <Facebook className="w-6 h-6 text-[#9D5CFF] shrink-0" />;
+      case 'instagram': return <Instagram className="w-6 h-6 text-[#9D5CFF] shrink-0" />;
+      case 'tiktok': return <TikTokIcon className="w-6 h-6 text-[#9D5CFF] shrink-0" />;
+      case 'youtube': return <Youtube className="w-6 h-6 text-[#9D5CFF] shrink-0" />;
+      default: return <Globe className="w-6 h-6 text-[#9D5CFF] shrink-0" />;
     }
   };
 
@@ -717,9 +735,28 @@ function App() {
                 )}
               </div>
 
-              {/* Social Media Grid */}
-              <div className="w-full border-t border-black/10 pt-8 mt-4 relative z-10">
+              {/* Social Media Grid & Official Contact Footer */}
+              <div className="w-full border-t border-black/10 pt-8 mt-4 relative z-10 flex flex-col gap-4">
                 {renderGlobalSocials(false, state['intermission-banner'].socials)}
+                
+                {/* Official Address & Contact Bar */}
+                <div className="flex flex-col items-center gap-1.5 text-xs text-zinc-500 font-bold text-center pt-2">
+                  <div className="flex items-center justify-center gap-1.5">
+                    <MapPin className="w-3.5 h-3.5 text-[#9D5CFF] shrink-0" />
+                    <span>108 West Insula Condominium, 135 West Avenue, 1105 Quezon City, Philippines</span>
+                  </div>
+                  <div className="flex items-center justify-center gap-3">
+                    <span className="flex items-center gap-1">
+                      <Phone className="w-3.5 h-3.5 text-[#9D5CFF] shrink-0" />
+                      <span>+(632) 8284-3577</span>
+                    </span>
+                    <span className="text-[#9D5CFF]">•</span>
+                    <span className="flex items-center gap-1">
+                      <Globe className="w-3.5 h-3.5 text-[#9D5CFF] shrink-0" />
+                      <span>essensanaturale.org</span>
+                    </span>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -796,9 +833,28 @@ function App() {
                 />
               </div>
 
-              {/* Social Media Grid */}
-              <div className="w-full border-t border-black/10 pt-8 mt-4 relative z-10">
+              {/* Social Media Grid & Official Contact Footer */}
+              <div className="w-full border-t border-black/10 pt-8 mt-4 relative z-10 flex flex-col gap-4">
                 {renderGlobalSocials(false)}
+                
+                {/* Official Address & Contact Bar */}
+                <div className="flex flex-col items-center justify-center gap-1.5 text-xs text-zinc-500 font-bold text-center pt-2">
+                  <div className="flex items-center justify-center gap-1.5">
+                    <MapPin className="w-3.5 h-3.5 text-[#9D5CFF] shrink-0" />
+                    <span>108 West Insula Condominium, 135 West Avenue, 1105 Quezon City, Philippines</span>
+                  </div>
+                  <div className="flex items-center justify-center gap-3">
+                    <span className="flex items-center gap-1">
+                      <Phone className="w-3.5 h-3.5 text-[#9D5CFF] shrink-0" />
+                      <span>+(632) 8284-3577</span>
+                    </span>
+                    <span className="text-[#9D5CFF]">•</span>
+                    <span className="flex items-center gap-1">
+                      <Globe className="w-3.5 h-3.5 text-[#9D5CFF] shrink-0" />
+                      <span>essensanaturale.org</span>
+                    </span>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
