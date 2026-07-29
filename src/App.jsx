@@ -1177,8 +1177,8 @@ function DualPOVOverlay({ state }) {
       <div className="absolute left-[24px] top-[216px] w-[920px] h-[528px] bg-transparent border-[12px] border-white rounded-[28px] shadow-lg z-20 pointer-events-auto" />
       <div className="absolute left-[22px] top-[214px] w-[924px] h-[532px] bg-transparent border-2 rounded-[30px] animate-border-glow z-30 pointer-events-auto">
         {/* Camera label */}
-        <div className="absolute top-4 left-4 px-3 py-1 bg-black/80 border border-[#D4AF37]/30 rounded text-xs font-black uppercase text-brand-gold tracking-widest text-protected z-10">
-          {renderSplitToneText(dualPOVConfig.cam1Label || "CAM 01 - HOST", "text-brand-gold", "keyword-green", "keyword-gold")}
+        <div className="absolute top-4 left-4 px-3.5 py-1.5 bg-[#120924]/90 border border-[#9D5CFF]/50 rounded-lg text-xs font-black uppercase text-white tracking-widest text-protected z-10 shadow-md">
+          {renderSplitToneText(dualPOVConfig.cam1Label || "CAM 01 - HOST", "text-white", "keyword-green", "keyword-gold")}
         </div>
       </div>
 
@@ -1189,8 +1189,8 @@ function DualPOVOverlay({ state }) {
       <div className="absolute left-[976px] top-[216px] w-[920px] h-[528px] bg-transparent border-[12px] border-white rounded-[28px] shadow-lg z-20 pointer-events-auto" />
       <div className="absolute left-[974px] top-[214px] w-[924px] h-[532px] bg-transparent border-2 rounded-[30px] animate-border-glow z-30 pointer-events-auto">
         {/* Camera label */}
-        <div className="absolute top-4 left-4 px-3 py-1 bg-black/80 border border-[#D4AF37]/30 rounded text-xs font-black uppercase text-brand-gold tracking-widest text-protected z-10">
-          {renderSplitToneText(dualPOVConfig.cam2Label || "CAM 02 - GUEST", "text-brand-gold", "keyword-green", "keyword-gold")}
+        <div className="absolute top-4 left-4 px-3.5 py-1.5 bg-[#120924]/90 border border-[#9D5CFF]/50 rounded-lg text-xs font-black uppercase text-white tracking-widest text-protected z-10 shadow-md">
+          {renderSplitToneText(dualPOVConfig.cam2Label || "CAM 02 - GUEST", "text-white", "keyword-green", "keyword-gold")}
         </div>
       </div>
     </div>
