@@ -39,7 +39,7 @@ export function ProductRibbonBanner({
             key={`skew-card-${triggerKey}`}
             initial={{ x: 450, opacity: 0 }}
             animate={{ x: 0, opacity: 1 }}
-            exit={{ x: -900, opacity: 0 }}
+            exit={{ x: -2000 }}
             transition={{ 
               duration: 0.65, 
               ease: [0.34, 1.56, 0.64, 1] // Elastic Overshoot Snap
@@ -100,7 +100,7 @@ export function ProductRibbonBanner({
             key={`skew-accent-${triggerKey}`}
             initial={{ x: 450, opacity: 0 }}
             animate={{ x: 0, opacity: 1 }}
-            exit={{ x: -900, opacity: 0 }}
+            exit={{ x: -2000 }}
             transition={{ 
               delay: 0.08,
               duration: 0.55, 
