@@ -286,14 +286,14 @@ export function InlineEditorWrapper({ state, onStateChange, children, currentVie
               };
               saveState(nextState);
             }}
-            className={`flex items-center gap-2 px-3.5 py-1.5 rounded-full border text-xs font-bold shadow-2xl transition-all duration-300 ${
+            className={`flex items-center gap-2 px-3.5 py-1.5 rounded-full border text-xs font-bold shadow-2xl transition-all duration-300 opacity-40 hover:opacity-100 hover:scale-105 backdrop-blur-md ${
               state.productRibbon?.visible 
-                ? 'bg-gradient-to-r from-[#7B3FE4] to-[#4A2080] border-[#9D5CFF] text-white animate-pulse' 
-                : 'bg-[#120924]/80 backdrop-blur-md border-[#9D5CFF]/40 text-white/80 hover:text-white hover:bg-[#120924]'
+                ? 'bg-[#7B3FE4]/50 border-[#9D5CFF] text-white' 
+                : 'bg-[#7B3FE4]/25 border-[#9D5CFF]/40 text-white hover:bg-[#120924]/90 hover:border-[#9D5CFF]'
             }`}
             title="Trigger Right-to-Left Product Ribbon Slide"
           >
-            <span className="w-2 h-2 rounded-full bg-[#9D5CFF]" />
+            <span className={`w-2 h-2 rounded-full ${state.productRibbon?.visible ? 'bg-[#9D5CFF] animate-pulse shadow-[0_0_8px_#9D5CFF]' : 'bg-[#9D5CFF]/60'}`} />
             <span className="tracking-wider uppercase font-mono text-[11px]">
               {state.productRibbon?.visible ? 'RIBBON ON AIR' : 'TRIGGER PRODUCT RIBBON'}
             </span>
