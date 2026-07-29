@@ -270,9 +270,9 @@ export function InlineEditorWrapper({ state, onStateChange, children, currentVie
         </>
       )}
 
-      {/* SUBTLE QUICK-TOGGLE MODE BUTTON & LIVE STREAM PRODUCT TRIGGER DOCK (Hidden when ?mode=broadcast) */}
+      {/* INVISIBLE AT IDLE, FADES IN ON HOVER IN BOTTOM-RIGHT CORNER (Hidden when ?mode=broadcast) */}
       {!isObsBroadcast && (
-        <div className="fixed bottom-4 right-4 z-[100] select-none flex items-center gap-3">
+        <div className="fixed bottom-3 right-3 z-[100] select-none flex items-center gap-3 opacity-0 hover:opacity-100 transition-opacity duration-300 p-2 rounded-2xl">
           {/* Quick Trigger Button for Product Ribbon */}
           <button
             onClick={() => {
@@ -286,14 +286,14 @@ export function InlineEditorWrapper({ state, onStateChange, children, currentVie
               };
               saveState(nextState);
             }}
-            className={`flex items-center gap-2 px-3.5 py-1.5 rounded-full border text-xs font-bold shadow-2xl transition-all duration-300 opacity-40 hover:opacity-100 hover:scale-105 backdrop-blur-md ${
+            className={`flex items-center gap-2 px-3.5 py-1.5 rounded-full border text-xs font-bold shadow-2xl transition-all duration-300 hover:scale-105 backdrop-blur-md ${
               state.productRibbon?.visible 
-                ? 'bg-[#7B3FE4]/50 border-[#9D5CFF] text-white' 
-                : 'bg-[#7B3FE4]/25 border-[#9D5CFF]/40 text-white hover:bg-[#120924]/90 hover:border-[#9D5CFF]'
+                ? 'bg-[#7B3FE4] border-[#9D5CFF] text-white shadow-[0_0_15px_rgba(157,92,255,0.5)]' 
+                : 'bg-[#120924]/90 border-[#9D5CFF]/60 text-white hover:bg-[#120924] hover:border-[#9D5CFF]'
             }`}
             title="Trigger Right-to-Left Product Ribbon Slide"
           >
-            <span className={`w-2 h-2 rounded-full ${state.productRibbon?.visible ? 'bg-[#9D5CFF] animate-pulse shadow-[0_0_8px_#9D5CFF]' : 'bg-[#9D5CFF]/60'}`} />
+            <span className={`w-2 h-2 rounded-full ${state.productRibbon?.visible ? 'bg-[#9D5CFF] animate-pulse shadow-[0_0_8px_#9D5CFF]' : 'bg-[#9D5CFF]'}`} />
             <span className="tracking-wider uppercase font-mono text-[11px]">
               {state.productRibbon?.visible ? 'RIBBON ON AIR' : 'TRIGGER PRODUCT RIBBON'}
             </span>
@@ -301,7 +301,7 @@ export function InlineEditorWrapper({ state, onStateChange, children, currentVie
 
           <button
             onClick={() => setEditMode(!editMode)}
-            className="flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#7B3FE4]/25 backdrop-blur-md border border-[#9D5CFF]/40 text-white text-xs font-bold shadow-2xl transition-all duration-300 opacity-40 hover:opacity-100 hover:scale-105 hover:bg-[#120924]/90 hover:border-[#9D5CFF]"
+            className="flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#120924]/90 backdrop-blur-md border border-[#9D5CFF]/60 text-white text-xs font-bold shadow-2xl transition-all duration-300 hover:scale-105 hover:border-[#9D5CFF]"
             title="Toggle Edit / Broadcast Mode"
           >
             <span className={`w-2.5 h-2.5 rounded-full ${editMode ? 'bg-[#9D5CFF] animate-pulse shadow-[0_0_10px_#9D5CFF]' : 'bg-red-500'}`} />
