@@ -39,7 +39,7 @@ export function Ticker({
       >
         {/* Scrolling Marquee Area */}
         <div className="flex-1 h-full flex items-center overflow-hidden bg-[#120924] relative">
-          <div key={`${combinedText}_${speed}`} className="marquee-container text-2xl font-black tracking-widest text-white uppercase flex items-center">
+          <div key={`${combinedText}_${speed}`} className="marquee-container text-3xl font-black tracking-widest text-white uppercase flex items-center">
             {/* Scroll items twice to ensure infinite, seamless repeating loops */}
             <div className="marquee-content gap-8 flex items-center pr-8" style={{ animationDuration: `${speed}s`, animationDelay: `${delay}s` }}>
               <span>{combinedText}</span>

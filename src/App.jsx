@@ -639,13 +639,13 @@ function App() {
           return (
             <div 
               key={idx} 
-              className={`flex items-center gap-4 ${bgClass} border px-6 py-4 rounded-2xl transition-all duration-300 hover:border-brand-green/30 group shadow-md shrink-0`}
+              className={`flex items-center gap-4 ${bgClass} border px-6 py-4.5 rounded-2xl transition-all duration-300 hover:border-[#9D5CFF]/50 group shadow-md shrink-0`}
             >
               {showIcon && React.cloneElement(icon, { 
-                className: `w-6 h-6 ${isDarkBg ? "text-brand-gold group-hover:text-white" : "text-brand-green group-hover:text-brand-gold"} transition-colors duration-300 shrink-0` 
+                className: `w-7 h-7 ${isDarkBg ? "text-brand-gold group-hover:text-white" : "text-[#9D5CFF] group-hover:text-brand-purple"} transition-colors duration-300 shrink-0` 
               })}
               {showText && (
-                <span className={`text-lg font-bold ${textClass} transition-colors duration-300 truncate`}>
+                <span className={`text-xl font-black ${textClass} transition-colors duration-300 truncate`}>
                   {handle.text}
                 </span>
               )}
@@ -700,16 +700,16 @@ function App() {
 
               {/* Elegant Title */}
               <div className="flex flex-col gap-4 mt-8 relative z-10 text-reveal-active brand-text-glow text-protected">
-                <span className="font-sans text-sm font-black text-white/90 tracking-[0.4em] uppercase">
+                <span className="font-sans text-xl font-black text-white/90 tracking-[0.4em] uppercase">
                   {renderSplitToneText(state['intermission-banner'].welcomeText, "text-white/90", "keyword-green", "keyword-gold")}
                 </span>
-                <h1 className="font-display font-black text-5xl text-white tracking-wide uppercase leading-tight">
+                <h1 className="font-display font-black text-6xl text-white tracking-wide uppercase leading-tight">
                   {renderSplitToneText(state['intermission-banner'].announcement, "text-white", "keyword-green", "keyword-gold")}
                 </h1>
               </div>
 
               {/* Tagline */}
-              <div className="text-xs text-white/90 uppercase tracking-[0.3em] font-black mt-8 relative z-10 text-protected">
+              <div className="text-base text-white/90 uppercase tracking-[0.3em] font-black mt-8 relative z-10 text-protected">
                 {state['intermission-banner'].tagline}
               </div>
             </div>
@@ -721,15 +721,15 @@ function App() {
 
               {/* Welcome Notice in the center */}
               <div className="flex flex-col items-center justify-center gap-6 py-8 relative z-10 text-center px-12">
-                <h2 className="text-3xl font-black text-brand-charcoal uppercase tracking-wider">
-                  {renderSplitToneText(state['intermission-banner'].rightHeader || "Live Stream <b>Starting Soon</b>", "text-brand-charcoal", "keyword-green", "keyword-gold")}
+                <h2 className="text-5xl font-black text-[#120924] uppercase tracking-wider leading-snug">
+                  {renderSplitToneText(state['intermission-banner'].rightHeader || "Live Stream <b>Starting Soon</b>", "text-[#120924]", "keyword-green", "keyword-gold")}
                 </h2>
-                <div className="w-24 h-1 bg-brand-green rounded-full" />
-                <p className="text-zinc-600 text-lg font-bold max-w-[400px] leading-relaxed">
+                <div className="w-32 h-1.5 bg-[#9D5CFF] rounded-full" />
+                <p className="text-zinc-800 text-2xl font-extrabold max-w-[540px] leading-relaxed">
                   {state['intermission-banner'].rightBody}
                 </p>
                 {state['intermission-banner'].alertText && (
-                  <div className="mt-4 alert-banner-premium font-black uppercase text-xs tracking-widest px-8 py-4 rounded-2xl shadow-lg">
+                  <div className="mt-4 alert-banner-premium font-black uppercase text-base tracking-widest px-10 py-5 rounded-2xl shadow-xl">
                     {state['intermission-banner'].alertText}
                   </div>
                 )}
@@ -740,19 +740,19 @@ function App() {
                 {renderGlobalSocials(false, state['intermission-banner'].socials)}
                 
                 {/* Official Address & Contact Bar */}
-                <div className="flex flex-col items-center gap-1.5 text-xs text-zinc-500 font-bold text-center pt-2">
-                  <div className="flex items-center justify-center gap-1.5">
-                    <MapPin className="w-3.5 h-3.5 text-[#9D5CFF] shrink-0" />
+                <div className="flex flex-col items-center justify-center gap-1.5 text-sm text-zinc-800 font-extrabold text-center pt-2">
+                  <div className="flex items-center justify-center gap-2">
+                    <MapPin className="w-4 h-4 text-[#9D5CFF] shrink-0" />
                     <span>108 West Insula Condominium, 135 West Avenue, 1105 Quezon City, Philippines</span>
                   </div>
-                  <div className="flex items-center justify-center gap-3">
-                    <span className="flex items-center gap-1">
-                      <Phone className="w-3.5 h-3.5 text-[#9D5CFF] shrink-0" />
+                  <div className="flex items-center justify-center gap-4">
+                    <span className="flex items-center gap-1.5">
+                      <Phone className="w-4 h-4 text-[#9D5CFF] shrink-0" />
                       <span>+(632) 8284-3577</span>
                     </span>
                     <span className="text-[#9D5CFF]">•</span>
-                    <span className="flex items-center gap-1">
-                      <Globe className="w-3.5 h-3.5 text-[#9D5CFF] shrink-0" />
+                    <span className="flex items-center gap-1.5">
+                      <Globe className="w-4 h-4 text-[#9D5CFF] shrink-0" />
                       <span>essensanaturale.org</span>
                     </span>
                   </div>
@@ -793,16 +793,16 @@ function App() {
 
               {/* Elegant Title */}
               <div className="flex flex-col gap-4 mt-8 relative z-10 text-reveal-active brand-text-glow text-protected">
-                <span className="font-sans text-sm font-black text-white/90 tracking-[0.4em] uppercase">
+                <span className="font-sans text-xl font-black text-white/90 tracking-[0.4em] uppercase">
                   {renderSplitToneText(state.starting.superTitle || "Anniversary <b>Live Stream</b>", "text-white/90", "keyword-green", "keyword-gold")}
                 </span>
-                <h1 className="font-display font-black text-5xl text-white tracking-wide uppercase leading-tight">
+                <h1 className="font-display font-black text-6xl text-white tracking-wide uppercase leading-tight">
                   {renderSplitToneText(state.starting.announcement, "text-white", "keyword-green", "keyword-gold")}
                 </h1>
               </div>
 
               {/* Tagline */}
-              <div className="text-xs text-white/90 uppercase tracking-[0.3em] font-black mt-8 relative z-10 text-protected">
+              <div className="text-base text-white/90 uppercase tracking-[0.3em] font-black mt-8 relative z-10 text-protected">
                 {state.starting.tagline}
               </div>
             </div>
@@ -814,8 +814,8 @@ function App() {
 
               {/* Countdown in the center */}
               <div className="flex flex-col items-center justify-center gap-4 py-8 relative z-10">
-                <span className="text-zinc-400 text-xs font-black uppercase tracking-[0.3em] mb-2 text-reveal-active">
-                  {renderSplitToneText(state.starting.subTitle || "Stream Starting <b>Soon</b>", "text-zinc-400", "keyword-green", "keyword-gold")}
+                <span className="text-zinc-600 text-base font-black uppercase tracking-[0.3em] mb-2 text-reveal-active">
+                  {renderSplitToneText(state.starting.subTitle || "Stream Starting <b>Soon</b>", "text-zinc-600", "keyword-green", "keyword-gold")}
                 </span>
                 <Countdown 
                   secondsLeft={state.starting.countdownSeconds} 
@@ -829,7 +829,7 @@ function App() {
                       }
                     }));
                   }}
-                  textColor="text-brand-green"
+                  textColor="text-[#7B3FE4]"
                 />
               </div>
 
@@ -838,19 +838,19 @@ function App() {
                 {renderGlobalSocials(false)}
                 
                 {/* Official Address & Contact Bar */}
-                <div className="flex flex-col items-center justify-center gap-1.5 text-xs text-zinc-500 font-bold text-center pt-2">
-                  <div className="flex items-center justify-center gap-1.5">
-                    <MapPin className="w-3.5 h-3.5 text-[#9D5CFF] shrink-0" />
+                <div className="flex flex-col items-center justify-center gap-1.5 text-sm text-zinc-800 font-extrabold text-center pt-2">
+                  <div className="flex items-center justify-center gap-2">
+                    <MapPin className="w-4 h-4 text-[#9D5CFF] shrink-0" />
                     <span>108 West Insula Condominium, 135 West Avenue, 1105 Quezon City, Philippines</span>
                   </div>
-                  <div className="flex items-center justify-center gap-3">
-                    <span className="flex items-center gap-1">
-                      <Phone className="w-3.5 h-3.5 text-[#9D5CFF] shrink-0" />
+                  <div className="flex items-center justify-center gap-4">
+                    <span className="flex items-center gap-1.5">
+                      <Phone className="w-4 h-4 text-[#9D5CFF] shrink-0" />
                       <span>+(632) 8284-3577</span>
                     </span>
                     <span className="text-[#9D5CFF]">•</span>
-                    <span className="flex items-center gap-1">
-                      <Globe className="w-3.5 h-3.5 text-[#9D5CFF] shrink-0" />
+                    <span className="flex items-center gap-1.5">
+                      <Globe className="w-4 h-4 text-[#9D5CFF] shrink-0" />
                       <span>essensanaturale.org</span>
                     </span>
                   </div>
@@ -887,17 +887,17 @@ function App() {
               <Logo showText={true} light={false} logoUrl={state.brb.logoUrl || state.globalLogoUrl} className="scale-150 mb-6" />
 
               <div className="flex flex-col items-center gap-4">
-                <h2 className="font-display font-black text-6xl text-brand-charcoal tracking-widest uppercase">
-                  {renderSplitToneText(state.brb.bannerText, "text-brand-charcoal", "keyword-green", "keyword-gold")}
+                <h2 className="font-display font-black text-7xl text-[#120924] tracking-widest uppercase">
+                  {renderSplitToneText(state.brb.bannerText, "text-[#120924]", "keyword-green", "keyword-gold")}
                 </h2>
-                {/* Thin forest green highlight line */}
-                <div className="w-36 h-2 bg-brand-green rounded-full" />
+                {/* Thin purple highlight line */}
+                <div className="w-44 h-2 bg-[#9D5CFF] rounded-full" />
               </div>
 
               {/* Expected return countdown block */}
-              <div className="flex items-center gap-4 bg-brand-cream border border-brand-sage/80 px-10 py-4 rounded-full shadow-inner mt-4">
-                <span className="text-sm font-black text-brand-charcoal/60 uppercase tracking-widest">Expected Return in</span>
-                <span className="font-mono text-3xl font-black text-brand-gold tracking-wider tabular-nums">
+              <div className="flex items-center gap-4 bg-[#120924]/5 border border-[#9D5CFF]/30 px-12 py-5 rounded-full shadow-inner mt-4">
+                <span className="text-lg font-black text-zinc-600 uppercase tracking-widest">Expected Return in</span>
+                <span className="font-mono text-4xl font-black text-[#7B3FE4] tracking-wider tabular-nums">
                   {Math.floor(state.brb.countdownSeconds / 60).toString().padStart(2, '0')}:
                   {(state.brb.countdownSeconds % 60).toString().padStart(2, '0')}
                 </span>
@@ -905,18 +905,36 @@ function App() {
 
               {/* Dynamic Notification / Status fields */}
               {state.brb.announcements && state.brb.announcements.length > 0 && (
-                <div className="flex flex-col gap-3 w-full max-w-[600px] mt-2">
+                <div className="flex flex-col gap-3 w-full max-w-[700px] mt-2">
                   {state.brb.announcements.map((text, idx) => (
-                    <div key={idx} className="bg-brand-cream border border-brand-sage/40 px-6 py-3.5 rounded-2xl text-base font-bold text-brand-charcoal/80 shadow-sm">
+                    <div key={idx} className="bg-[#120924]/5 border border-[#9D5CFF]/30 px-8 py-4 rounded-2xl text-xl font-black text-zinc-900 shadow-sm">
                       {text}
                     </div>
                   ))}
                 </div>
               )}
 
-              {/* Social Grid */}
-              <div className="w-full border-t border-brand-sage pt-8 mt-4">
+              {/* Social Grid & Contact Footer */}
+              <div className="w-full border-t border-zinc-200 pt-8 mt-4 flex flex-col gap-4">
                 {renderGlobalSocials(false)}
+                
+                <div className="flex flex-col items-center justify-center gap-1.5 text-sm text-zinc-800 font-extrabold text-center pt-2">
+                  <div className="flex items-center justify-center gap-2">
+                    <MapPin className="w-4 h-4 text-[#9D5CFF] shrink-0" />
+                    <span>108 West Insula Condominium, 135 West Avenue, 1105 Quezon City, Philippines</span>
+                  </div>
+                  <div className="flex items-center justify-center gap-4">
+                    <span className="flex items-center gap-1.5">
+                      <Phone className="w-4 h-4 text-[#9D5CFF] shrink-0" />
+                      <span>+(632) 8284-3577</span>
+                    </span>
+                    <span className="text-[#9D5CFF]">•</span>
+                    <span className="flex items-center gap-1.5">
+                      <Globe className="w-4 h-4 text-[#9D5CFF] shrink-0" />
+                      <span>essensanaturale.org</span>
+                    </span>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -955,21 +973,38 @@ function App() {
               </motion.div>
 
               <div className="flex flex-col gap-4">
-                <h2 className="font-display font-black text-4xl text-brand-charcoal uppercase tracking-wider">
-                  {renderSplitToneText(state.ending.title, "text-brand-charcoal", "keyword-green", "keyword-gold")}
+                <h2 className="font-display font-black text-6xl text-[#120924] uppercase tracking-wider">
+                  {renderSplitToneText(state.ending.title, "text-[#120924]", "keyword-green", "keyword-gold")}
                 </h2>
-                <p className="font-sans text-brand-charcoal/80 text-xl max-w-[700px] leading-relaxed mx-auto font-bold">
+                <p className="font-sans text-zinc-800 text-2xl max-w-[800px] leading-relaxed mx-auto font-black">
                   {state.ending.description}
                 </p>
               </div>
 
-              {/* Outro Social handles block */}
-              <div className="w-full border-t border-brand-sage pt-8 mt-4">
+              {/* Outro Social handles block & Contact Footer */}
+              <div className="w-full border-t border-zinc-200 pt-8 mt-4 flex flex-col gap-4">
                 {renderGlobalSocials(false)}
+
+                <div className="flex flex-col items-center justify-center gap-1.5 text-sm text-zinc-800 font-extrabold text-center pt-2">
+                  <div className="flex items-center justify-center gap-2">
+                    <MapPin className="w-4 h-4 text-[#9D5CFF] shrink-0" />
+                    <span>108 West Insula Condominium, 135 West Avenue, 1105 Quezon City, Philippines</span>
+                  </div>
+                  <div className="flex items-center justify-center gap-4">
+                    <span className="flex items-center gap-1.5">
+                      <Phone className="w-4 h-4 text-[#9D5CFF] shrink-0" />
+                      <span>+(632) 8284-3577</span>
+                    </span>
+                    <span className="text-[#9D5CFF]">•</span>
+                    <span className="flex items-center gap-1.5">
+                      <Globe className="w-4 h-4 text-[#9D5CFF] shrink-0" />
+                      <span>essensanaturale.org</span>
+                    </span>
+                  </div>
+                </div>
               </div>
-              
               {/* Heart signature */}
-              <div className="text-xs text-brand-charcoal/40 uppercase tracking-[0.3em] font-black mt-4 flex items-center gap-1.5">
+              <div className="text-sm text-zinc-600 uppercase tracking-[0.3em] font-black mt-4 flex items-center justify-center gap-1.5">
                 {state.ending.signature}
               </div>
             </div>

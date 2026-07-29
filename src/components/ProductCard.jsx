@@ -30,12 +30,12 @@ export function ProductCard({
           <div className="bg-white rounded-2xl overflow-hidden shadow-[8px_8px_32px_rgba(0,0,0,0.18)] flex flex-col border border-brand-green/15">
             
             {/* Header Tag / Active Flash - Beyond Talks Purple Gradient */}
-            <div className="bg-gradient-to-r from-[#7B3FE4] to-[#4A2080] text-white text-xs uppercase font-black tracking-[0.2em] px-6 py-3 flex items-center justify-between rounded-t-2xl">
+            <div className="bg-gradient-to-r from-[#7B3FE4] to-[#4A2080] text-white text-sm uppercase font-black tracking-[0.2em] px-6 py-3.5 flex items-center justify-between rounded-t-2xl">
               <span className="flex items-center gap-2">
                 <Sparkles className="w-4 h-4 text-[#9D5CFF] animate-pulse" />
                 Featured Product
               </span>
-              <span className="bg-red-600 text-white px-2.5 py-0.5 rounded text-[10px] font-black tracking-widest animate-pulse">
+              <span className="bg-red-600 text-white px-3 py-1 rounded text-xs font-black tracking-widest animate-pulse">
                 ON AIR
               </span>
             </div>
@@ -44,7 +44,7 @@ export function ProductCard({
             <div className="p-6 flex gap-5 items-center bg-white">
               
               {/* Product Image Wrapper */}
-              <div className="w-[110px] h-[110px] bg-zinc-50 rounded-xl border border-[#7B3FE4]/15 flex items-center justify-center overflow-hidden shrink-0 shadow-inner p-3">
+              <div className="w-[120px] h-[120px] bg-zinc-50 rounded-xl border border-[#7B3FE4]/20 flex items-center justify-center overflow-hidden shrink-0 shadow-inner p-3">
                 {imageUrl ? (
                   (imageUrl.match(/\.(mp4|webm|ogg)$/i) || imageUrl.startsWith('data:video/')) ? (
                     <video src={imageUrl} autoPlay loop muted playsInline className="w-full h-full object-contain" />
@@ -76,18 +76,18 @@ export function ProductCard({
               </div>
 
               {/* Product Text details */}
-              <div className="flex-1 flex flex-col justify-between h-[110px] py-1">
+              <div className="flex-1 flex flex-col justify-between h-[120px] py-1">
                 {/* Product Name */}
-                <h4 className="font-display font-black text-2xl text-[#120924] leading-tight line-clamp-2 uppercase">
+                <h4 className="font-display font-black text-3xl text-[#120924] leading-tight line-clamp-2 uppercase">
                   {name}
                 </h4>
                 
                 {/* Price Pill (Beyond Talks Purple) */}
                 <div className="flex items-center gap-2 mt-2">
-                  <div className="bg-gradient-to-r from-[#7B3FE4] to-[#4A2080] text-white font-mono font-black text-2xl px-5 py-1 rounded-full shadow-md tracking-wider">
+                  <div className="bg-gradient-to-r from-[#7B3FE4] to-[#4A2080] text-white font-mono font-black text-3xl px-6 py-1.5 rounded-full shadow-md tracking-wider">
                     {price}
                   </div>
-                  <span className="text-[10px] text-zinc-500 font-black uppercase tracking-wider">
+                  <span className="text-xs text-zinc-600 font-black uppercase tracking-wider">
                     VAT INCL.
                   </span>
                 </div>
@@ -96,7 +96,7 @@ export function ProductCard({
             </div>
 
             {/* Bottom Marquee Promo Tag - Solid Black */}
-            <div className="bg-brand-charcoal text-white border-t border-zinc-800 flex items-center relative overflow-hidden h-[44px] rounded-b-2xl select-none">
+            <div className="bg-[#120924] text-white border-t border-zinc-800 flex items-center relative overflow-hidden h-[48px] rounded-b-2xl select-none">
               {/* 1. Left static tag icon block (mimics main ticker logo block) */}
               <div className="h-full bg-brand-charcoal flex items-center px-4 relative z-20 shrink-0 border-r border-zinc-800/65 text-brand-gold">
                 <Tag className="w-4 h-4" />
