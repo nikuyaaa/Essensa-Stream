@@ -10,7 +10,7 @@ import { Header } from './components/Header';
 import { Ticker } from './components/Ticker';
 import { LowerThird } from './components/LowerThird';
 import { ProductCard } from './components/ProductCard';
-import { ProductRibbonBanner } from './components/ProductRibbonBanner';
+
 import { Countdown } from './components/Countdown';
 import { OperatorPanel } from './components/OperatorPanel';
 import { CommentsWidget } from './components/CommentsWidget';
@@ -256,16 +256,7 @@ const defaultState = {
     "greenSpeed": 4,
     "greenIntensity": 0.45
   },
-  "productRibbon": {
-    "visible": false,
-    "name": "Buah Merah Mix",
-    "subtext": "Buah Merah Mix • All-Natural Organic Antioxidant",
-    "price": "₱350.00",
-    "imageUrl": "",
-    "badgeText": "FEATURED PRODUCT",
-    "holdDuration": 12,
-    "triggerKey": 0
-  },
+
   "main": {
     "headerVisible": true,
     "segmentName": "Revitalizing Health [gold]Anytime, Anywhere[/gold].",
@@ -500,54 +491,6 @@ function App() {
       }
       clearTimeout(reconnectTimeout);
       clearInterval(pollInterval);
-    };
-  }, []);
-
-  // OBS WebSocket / Touch Portal Global Function Bindings
-  // Allows external macro decks to control the Product Spotlight Banner via
-  // OBS Browser Source → Execute JavaScript (window.showProductBanner(), etc.)
-  useEffect(() => {
-    // 1. Toggle Banner Visibility
-    window.toggleProductBanner = () => {
-      setState(prev => ({
-        ...prev,
-        productRibbon: {
-          ...prev.productRibbon,
-          visible: !prev.productRibbon?.visible,
-          triggerKey: Date.now()
-        }
-      }));
-    };
-
-    // 2. Show Banner (with optional dynamic product data)
-    window.showProductBanner = (productData) => {
-      setState(prev => ({
-        ...prev,
-        productRibbon: {
-          ...prev.productRibbon,
-          ...(productData || {}),
-          visible: true,
-          triggerKey: Date.now()
-        }
-      }));
-    };
-
-    // 3. Hide Banner
-    window.hideProductBanner = () => {
-      setState(prev => ({
-        ...prev,
-        productRibbon: {
-          ...prev.productRibbon,
-          visible: false
-        }
-      }));
-    };
-
-    // Cleanup on unmount
-    return () => {
-      delete window.toggleProductBanner;
-      delete window.showProductBanner;
-      delete window.hideProductBanner;
     };
   }, []);
 
@@ -1137,25 +1080,7 @@ function App() {
             ))}
           </div>
 
-          {/* Edge-to-Edge Lower-Third Product Ribbon Banner */}
-          <ProductRibbonBanner
-            isVisible={state.productRibbon?.visible}
-            name={state.productRibbon?.name || "Buah Merah Mix"}
-            subtext={state.productRibbon?.subtext || "Buah Merah Mix • All-Natural Organic Antioxidant"}
-            price={state.productRibbon?.price || "₱350.00"}
-            imageUrl={state.productRibbon?.imageUrl || ""}
-            badgeText={state.productRibbon?.badgeText || "FEATURED PRODUCT"}
-            triggerKey={state.productRibbon?.triggerKey || 0}
-            holdDuration={state.productRibbon?.holdDuration || 12}
-            sheenSpeed={state.productRibbon?.sheenSpeed || 3.5}
-            onAutoHide={() => setState(prev => ({
-              ...prev,
-              productRibbon: {
-                ...prev.productRibbon,
-                visible: false
-              }
-            }))}
-          />
+
 
           <Ticker items={state.main.tickerItems} logoUrl={state.globalLogoUrl} tickerRightLogoUrl={state.tickerRightLogoUrl || state.main.tickerRightLogoUrl} speed={state.main.tickerSpeed || 60} />
         </OverlayWrapper>
@@ -1224,25 +1149,7 @@ function App() {
               ))}
             </div>
 
-            {/* Edge-to-Edge Lower-Third Product Ribbon Banner */}
-            <ProductRibbonBanner
-              isVisible={state.productRibbon?.visible}
-              name={state.productRibbon?.name || "Buah Merah Mix"}
-              subtext={state.productRibbon?.subtext || "Buah Merah Mix • All-Natural Organic Antioxidant"}
-              price={state.productRibbon?.price || "₱350.00"}
-              imageUrl={state.productRibbon?.imageUrl || ""}
-              badgeText={state.productRibbon?.badgeText || "FEATURED PRODUCT"}
-              triggerKey={state.productRibbon?.triggerKey || 0}
-              holdDuration={state.productRibbon?.holdDuration || 12}
-              sheenSpeed={state.productRibbon?.sheenSpeed || 3.5}
-              onAutoHide={() => setState(prev => ({
-                ...prev,
-                productRibbon: {
-                  ...prev.productRibbon,
-                  visible: false
-                }
-              }))}
-            />
+
 
             {/* Bottom News Ticker */}
             <AnimatePresence>
