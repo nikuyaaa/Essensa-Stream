@@ -220,16 +220,15 @@ body {
   }
 }
 
-.keyword-green, .keyword-[#9D5CFF], .keyword-purple {
-  background: linear-gradient(
-    120deg, 
-    #7B3FE4 0%, 
-    #9D5CFF 25%, 
-    #E2D1FF 45%, 
-    #ffffff 50%, 
-    #E2D1FF 55%, 
-    #9D5CFF 75%, 
-    #7B3FE4 100%
+.keyword-green, .keyword-purple {
+  position: relative;
+  display: inline-block;
+  background: linear-gradient(90deg, 
+    var(--product-primary) 0%, 
+    var(--product-accent) 25%, 
+    #FFFFFF 50%, 
+    var(--product-accent) 75%, 
+    var(--product-primary) 100%
   );
   background-size: 200% auto;
   -webkit-background-clip: text;
@@ -253,13 +252,13 @@ body {
 .gold-sunray-text, .keyword-gold {
   background: linear-gradient(
     120deg, 
-    #7B3FE4 0%, 
-    #9D5CFF 25%, 
+    var(--product-primary) 0%, 
+    var(--product-accent) 25%, 
     #E2D1FF 45%, 
     #ffffff 50%, 
     #E2D1FF 55%, 
-    #9D5CFF 75%, 
-    #7B3FE4 100%
+    var(--product-accent) 75%, 
+    var(--product-primary) 100%
   );
   background-size: 200% auto;
   -webkit-background-clip: text;
@@ -460,7 +459,7 @@ body {
 /* Premium Animated Beyond Talks Purple-to-White Camera Border Glow */
 @keyframes borderGlowLoop {
   0%, 100% {
-    border-color: #9D5CFF;
+    border-color: var(--product-accent);
     box-shadow: 0 0 22px rgba(157, 92, 255, 0.85), 
                 0 0 44px rgba(157, 92, 255, 0.45);
   }
@@ -532,7 +531,7 @@ body {
 }
 
 .animated-pinstripe {
-  background: linear-gradient(90deg, #7B3FE4, #9D5CFF, #E2D1FF, #4A2080, #9D5CFF, #7B3FE4);
+  background: linear-gradient(90deg, var(--product-primary), var(--product-accent), #E2D1FF, var(--product-secondary), var(--product-accent), var(--product-primary));
   background-size: 300% 300%;
   animation: pinstripeRun 4s linear infinite;
 }

@@ -671,11 +671,11 @@ function App() {
   // Social handles helpers
   const getSocialIcon = (platform) => {
     switch (platform?.toLowerCase()) {
-      case 'facebook': return <Facebook className="w-6 h-6 text-[#9D5CFF] shrink-0" />;
-      case 'instagram': return <Instagram className="w-6 h-6 text-[#9D5CFF] shrink-0" />;
-      case 'tiktok': return <TikTokIcon className="w-6 h-6 text-[#9D5CFF] shrink-0" />;
-      case 'youtube': return <Youtube className="w-6 h-6 text-[#9D5CFF] shrink-0" />;
-      default: return <Globe className="w-6 h-6 text-[#9D5CFF] shrink-0" />;
+      case 'facebook': return <Facebook className="w-6 h-6 text-[var(--product-accent)] shrink-0" />;
+      case 'instagram': return <Instagram className="w-6 h-6 text-[var(--product-accent)] shrink-0" />;
+      case 'tiktok': return <TikTokIcon className="w-6 h-6 text-[var(--product-accent)] shrink-0" />;
+      case 'youtube': return <Youtube className="w-6 h-6 text-[var(--product-accent)] shrink-0" />;
+      default: return <Globe className="w-6 h-6 text-[var(--product-accent)] shrink-0" />;
     }
   };
 
@@ -706,10 +706,10 @@ function App() {
           return (
             <div 
               key={idx} 
-              className={`flex items-center gap-4 ${bgClass} border px-6 py-4.5 rounded-2xl transition-all duration-300 hover:border-[#9D5CFF]/50 group shadow-md shrink-0`}
+              className={`flex items-center gap-4 ${bgClass} border px-6 py-4.5 rounded-2xl transition-all duration-300 hover:border-[var(--product-accent)]/50 group shadow-md shrink-0`}
             >
               {showIcon && React.cloneElement(icon, { 
-                className: `w-7 h-7 ${isDarkBg ? "text-brand-gold group-hover:text-white" : "text-[#9D5CFF] group-hover:text-brand-purple"} transition-colors duration-300 shrink-0` 
+                className: `w-7 h-7 ${isDarkBg ? "text-brand-gold group-hover:text-white" : "text-[var(--product-accent)] group-hover:text-brand-purple"} transition-colors duration-300 shrink-0` 
               })}
               {showText && (
                 <span className={`text-xl font-black ${textClass} transition-colors duration-300 truncate`}>
@@ -789,7 +789,7 @@ function App() {
                 <h2 className="text-5xl font-black text-[#120924] uppercase tracking-wider leading-snug">
                   {renderSplitToneText(state['intermission-banner'].rightHeader || "Live Stream <b>Starting Soon</b>", "text-[#120924]", "keyword-green", "keyword-gold")}
                 </h2>
-                <div className="w-32 h-1.5 bg-[#9D5CFF] rounded-full" />
+                <div className="w-32 h-1.5 bg-[var(--product-accent)] rounded-full" />
                 <p className="text-zinc-800 text-2xl font-extrabold max-w-[540px] leading-relaxed">
                   {state['intermission-banner'].rightBody}
                 </p>
@@ -810,17 +810,17 @@ function App() {
                 {/* Official Address & Contact Bar */}
                 <div className="flex flex-col items-center justify-center gap-1.5 text-sm md:text-base text-zinc-900 font-bold text-center pt-2.5 border-t border-black/5 mt-1.5">
                   <div className="flex items-center justify-center gap-2">
-                    <MapPin className="w-4 h-4 text-[#9D5CFF] shrink-0" />
+                    <MapPin className="w-4 h-4 text-[var(--product-accent)] shrink-0" />
                     <span>108 West Insula Condominium, 135 West Avenue, 1105 Quezon City, Philippines</span>
                   </div>
                   <div className="flex items-center justify-center gap-5">
                     <span className="flex items-center gap-1.5">
-                      <Phone className="w-4 h-4 text-[#9D5CFF] shrink-0" />
+                      <Phone className="w-4 h-4 text-[var(--product-accent)] shrink-0" />
                       <span>+(632) 8284-3577</span>
                     </span>
-                    <span className="text-[#9D5CFF] font-black">•</span>
+                    <span className="text-[var(--product-accent)] font-black">•</span>
                     <span className="flex items-center gap-1.5">
-                      <Globe className="w-4 h-4 text-[#9D5CFF] shrink-0" />
+                      <Globe className="w-4 h-4 text-[var(--product-accent)] shrink-0" />
                       <span>essensanaturale.org</span>
                     </span>
                   </div>
@@ -911,17 +911,17 @@ function App() {
                 {/* Official Address & Contact Bar */}
                 <div className="flex flex-col items-center justify-center gap-1.5 text-sm md:text-base text-zinc-900 font-bold text-center pt-2.5 border-t border-black/5 mt-1.5">
                   <div className="flex items-center justify-center gap-2">
-                    <MapPin className="w-4 h-4 text-[#9D5CFF] shrink-0" />
+                    <MapPin className="w-4 h-4 text-[var(--product-accent)] shrink-0" />
                     <span>108 West Insula Condominium, 135 West Avenue, 1105 Quezon City, Philippines</span>
                   </div>
                   <div className="flex items-center justify-center gap-5">
                     <span className="flex items-center gap-1.5">
-                      <Phone className="w-4 h-4 text-[#9D5CFF] shrink-0" />
+                      <Phone className="w-4 h-4 text-[var(--product-accent)] shrink-0" />
                       <span>+(632) 8284-3577</span>
                     </span>
-                    <span className="text-[#9D5CFF] font-black">•</span>
+                    <span className="text-[var(--product-accent)] font-black">•</span>
                     <span className="flex items-center gap-1.5">
-                      <Globe className="w-4 h-4 text-[#9D5CFF] shrink-0" />
+                      <Globe className="w-4 h-4 text-[var(--product-accent)] shrink-0" />
                       <span>essensanaturale.org</span>
                     </span>
                   </div>
@@ -962,13 +962,13 @@ function App() {
                   {renderSplitToneText(state.brb.bannerText, "text-[#120924]", "keyword-green", "keyword-gold")}
                 </h2>
                 {/* Thin purple highlight line */}
-                <div className="w-44 h-2 bg-[#9D5CFF] rounded-full" />
+                <div className="w-44 h-2 bg-[var(--product-accent)] rounded-full" />
               </div>
 
               {/* Expected return countdown block */}
-              <div className="flex items-center gap-4 bg-[#120924]/5 border border-[#9D5CFF]/30 px-12 py-5 rounded-full shadow-inner mt-4">
+              <div className="flex items-center gap-4 bg-[#120924]/5 border border-[var(--product-accent)]/30 px-12 py-5 rounded-full shadow-inner mt-4">
                 <span className="text-lg font-black text-zinc-600 uppercase tracking-widest">Expected Return in</span>
-                <span className="font-mono text-4xl font-black text-[#7B3FE4] tracking-wider tabular-nums">
+                <span className="font-mono text-4xl font-black text-[var(--product-primary)] tracking-wider tabular-nums">
                   {Math.floor(state.brb.countdownSeconds / 60).toString().padStart(2, '0')}:
                   {(state.brb.countdownSeconds % 60).toString().padStart(2, '0')}
                 </span>
@@ -978,7 +978,7 @@ function App() {
               {state.brb.announcements && state.brb.announcements.length > 0 && (
                 <div className="flex flex-col gap-3 w-full max-w-[700px] mt-2">
                   {state.brb.announcements.map((text, idx) => (
-                    <div key={idx} className="bg-[#120924]/5 border border-[#9D5CFF]/30 px-8 py-4 rounded-2xl text-xl font-black text-zinc-900 shadow-sm">
+                    <div key={idx} className="bg-[#120924]/5 border border-[var(--product-accent)]/30 px-8 py-4 rounded-2xl text-xl font-black text-zinc-900 shadow-sm">
                       {text}
                     </div>
                   ))}
@@ -991,17 +991,17 @@ function App() {
                 
                 <div className="flex flex-col items-center justify-center gap-1.5 text-sm md:text-base text-zinc-900 font-bold text-center pt-2.5 border-t border-black/5 mt-1.5">
                   <div className="flex items-center justify-center gap-2">
-                    <MapPin className="w-4 h-4 text-[#9D5CFF] shrink-0" />
+                    <MapPin className="w-4 h-4 text-[var(--product-accent)] shrink-0" />
                     <span>108 West Insula Condominium, 135 West Avenue, 1105 Quezon City, Philippines</span>
                   </div>
                   <div className="flex items-center justify-center gap-5">
                     <span className="flex items-center gap-1.5">
-                      <Phone className="w-4 h-4 text-[#9D5CFF] shrink-0" />
+                      <Phone className="w-4 h-4 text-[var(--product-accent)] shrink-0" />
                       <span>+(632) 8284-3577</span>
                     </span>
-                    <span className="text-[#9D5CFF] font-black">•</span>
+                    <span className="text-[var(--product-accent)] font-black">•</span>
                     <span className="flex items-center gap-1.5">
-                      <Globe className="w-4 h-4 text-[#9D5CFF] shrink-0" />
+                      <Globe className="w-4 h-4 text-[var(--product-accent)] shrink-0" />
                       <span>essensanaturale.org</span>
                     </span>
                   </div>
@@ -1058,17 +1058,17 @@ function App() {
 
                 <div className="flex flex-col items-center justify-center gap-1.5 text-sm md:text-base text-zinc-900 font-bold text-center pt-2.5 border-t border-black/5 mt-1.5">
                   <div className="flex items-center justify-center gap-2">
-                    <MapPin className="w-4 h-4 text-[#9D5CFF] shrink-0" />
+                    <MapPin className="w-4 h-4 text-[var(--product-accent)] shrink-0" />
                     <span>108 West Insula Condominium, 135 West Avenue, 1105 Quezon City, Philippines</span>
                   </div>
                   <div className="flex items-center justify-center gap-5">
                     <span className="flex items-center gap-1.5">
-                      <Phone className="w-4 h-4 text-[#9D5CFF] shrink-0" />
+                      <Phone className="w-4 h-4 text-[var(--product-accent)] shrink-0" />
                       <span>+(632) 8284-3577</span>
                     </span>
-                    <span className="text-[#9D5CFF] font-black">•</span>
+                    <span className="text-[var(--product-accent)] font-black">•</span>
                     <span className="flex items-center gap-1.5">
-                      <Globe className="w-4 h-4 text-[#9D5CFF] shrink-0" />
+                      <Globe className="w-4 h-4 text-[var(--product-accent)] shrink-0" />
                       <span>essensanaturale.org</span>
                     </span>
                   </div>
@@ -1281,7 +1281,7 @@ function DualPOVOverlay({ state }) {
       <div className="absolute left-[24px] top-[216px] w-[920px] h-[528px] bg-transparent border-[12px] border-white rounded-[28px] shadow-lg z-20 pointer-events-auto" />
       <div className="absolute left-[22px] top-[214px] w-[924px] h-[532px] bg-transparent border-2 rounded-[30px] animate-border-glow z-30 pointer-events-auto">
         {/* Camera label */}
-        <div className="absolute top-4 left-4 px-3.5 py-1.5 bg-[#120924]/90 border border-[#9D5CFF]/50 rounded-lg text-xs font-black uppercase text-white tracking-widest text-protected z-10 shadow-md">
+        <div className="absolute top-4 left-4 px-3.5 py-1.5 bg-[#120924]/90 border border-[var(--product-accent)]/50 rounded-lg text-xs font-black uppercase text-white tracking-widest text-protected z-10 shadow-md">
           {renderSplitToneText(dualPOVConfig.cam1Label || "CAM 01 - HOST", "text-white", "keyword-green", "keyword-gold")}
         </div>
       </div>
@@ -1293,7 +1293,7 @@ function DualPOVOverlay({ state }) {
       <div className="absolute left-[976px] top-[216px] w-[920px] h-[528px] bg-transparent border-[12px] border-white rounded-[28px] shadow-lg z-20 pointer-events-auto" />
       <div className="absolute left-[974px] top-[214px] w-[924px] h-[532px] bg-transparent border-2 rounded-[30px] animate-border-glow z-30 pointer-events-auto">
         {/* Camera label */}
-        <div className="absolute top-4 left-4 px-3.5 py-1.5 bg-[#120924]/90 border border-[#9D5CFF]/50 rounded-lg text-xs font-black uppercase text-white tracking-widest text-protected z-10 shadow-md">
+        <div className="absolute top-4 left-4 px-3.5 py-1.5 bg-[#120924]/90 border border-[var(--product-accent)]/50 rounded-lg text-xs font-black uppercase text-white tracking-widest text-protected z-10 shadow-md">
           {renderSplitToneText(dualPOVConfig.cam2Label || "CAM 02 - GUEST", "text-white", "keyword-green", "keyword-gold")}
         </div>
       </div>

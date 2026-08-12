@@ -292,12 +292,12 @@ export function InlineEditorWrapper({ state, onStateChange, children, currentVie
             }}
             className={`flex items-center gap-2 px-3.5 py-1.5 rounded-full border text-xs font-bold shadow-2xl transition-all duration-300 hover:scale-105 backdrop-blur-md ${
               state.productRibbon?.visible 
-                ? 'bg-[var(--product-primary)] border-[var(--product-accent)] text-white shadow-[0_0_15px_rgba(157,92,255,0.5)]' 
+                ? 'bg-[var(--product-primary)] border-[var(--product-accent)] text-white shadow-[0_0_15px_var(--product-accent)]' 
                 : 'bg-[#120924]/90 border-[var(--product-accent)]/60 text-white hover:bg-[#120924] hover:border-[var(--product-accent)]'
             }`}
             title="Trigger Right-to-Left Product Ribbon Slide"
           >
-            <span className={`w-2 h-2 rounded-full ${state.productRibbon?.visible ? 'bg-[var(--product-accent)] animate-pulse shadow-[0_0_8px_#9D5CFF]' : 'bg-[var(--product-accent)]'}`} />
+            <span className={`w-2 h-2 rounded-full ${state.productRibbon?.visible ? 'bg-[var(--product-accent)] animate-pulse shadow-[0_0_8px_var(--product-accent)]' : 'bg-[var(--product-accent)]'}`} />
             <span className="tracking-wider uppercase font-mono text-[11px]">
               {state.productRibbon?.visible ? 'RIBBON ON AIR' : 'TRIGGER PRODUCT RIBBON'}
             </span>
@@ -308,7 +308,7 @@ export function InlineEditorWrapper({ state, onStateChange, children, currentVie
             className="flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#120924]/90 backdrop-blur-md border border-[var(--product-accent)]/60 text-white text-xs font-bold shadow-2xl transition-all duration-300 hover:scale-105 hover:border-[var(--product-accent)]"
             title="Toggle Edit / Broadcast Mode"
           >
-            <span className={`w-2.5 h-2.5 rounded-full ${editMode ? 'bg-[var(--product-accent)] animate-pulse shadow-[0_0_10px_#9D5CFF]' : 'bg-red-500'}`} />
+            <span className={`w-2.5 h-2.5 rounded-full ${editMode ? 'bg-[var(--product-accent)] animate-pulse shadow-[0_0_10px_var(--product-accent)]' : 'bg-red-500'}`} />
             <span className="tracking-wider uppercase font-mono text-[11px]">
               {editMode ? 'EDIT MODE (ON)' : 'BROADCAST MODE'}
             </span>
