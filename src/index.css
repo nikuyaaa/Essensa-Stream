@@ -1,6 +1,13 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Montserrat:wght@400;500;600;700;800;900&display=swap');
 @import "tailwindcss";
 
+:root {
+  /* Dynamic Product Theme Engine (Default: Beyond Talks Signature Theme) */
+  --product-primary: #7B3FE4;
+  --product-secondary: #4A2080;
+  --product-accent: #9D5CFF;
+  --product-surface-tint: rgba(123, 63, 228, 0.15);
+}
 @theme {
   --color-brand-green: #1B7339;
   --color-brand-accent: #4CAF50;

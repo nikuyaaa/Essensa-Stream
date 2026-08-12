@@ -46,7 +46,7 @@ export function Countdown({
 
   const sizeClass = numberSizeClass || 'text-[54px] sm:text-[80px] md:text-[96px]';
   const colorClass = useGradient 
-    ? 'bg-gradient-to-r from-[#7B3FE4] to-[#4A2080] bg-clip-text text-transparent drop-shadow-[0_4px_12px_rgba(123,63,228,0.2)]'
+    ? 'bg-gradient-to-r from-[var(--product-primary)] to-[var(--product-secondary)] bg-clip-text text-transparent drop-shadow-[0_4px_12px_var(--product-surface-tint)]'
     : textColor;
 
   return (
@@ -60,7 +60,7 @@ export function Countdown({
               initial={{ opacity: 0, scale: 0.8 }}
               animate={{ opacity: 1, scale: 1.1 }}
               exit={{ opacity: 0 }}
-              className="absolute inset-0 bg-[#9D5CFF]/30 blur-3xl rounded-full animate-flare"
+              className="absolute inset-0 bg-[var(--product-surface-tint)] blur-3xl rounded-full animate-flare"
             />
           ) : (
             isRunning && (
@@ -68,7 +68,7 @@ export function Countdown({
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 0.2 }}
                 exit={{ opacity: 0 }}
-                className="absolute inset-0 bg-[#7B3FE4]/15 blur-2xl rounded-full"
+                className="absolute inset-0 bg-[var(--product-surface-tint)] blur-2xl rounded-full"
               />
             )
           )}
@@ -84,7 +84,7 @@ export function Countdown({
             duration: 1.5,
             ease: "easeInOut"
           } : {}}
-          className={`font-display font-black tracking-widest tabular-nums leading-none select-none relative z-10 ${sizeClass} ${isZero ? 'text-[#9D5CFF] animate-flare' : colorClass}`}
+          className={`font-display font-black tracking-widest tabular-nums leading-none select-none relative z-10 ${sizeClass} ${isZero ? 'text-[var(--product-accent)] animate-flare' : colorClass}`}
         >
           {formatTime(localSeconds)}
         </motion.div>

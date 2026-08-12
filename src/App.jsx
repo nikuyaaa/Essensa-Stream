@@ -16,6 +16,7 @@ import { OperatorPanel } from './components/OperatorPanel';
 import { CommentsWidget } from './components/CommentsWidget';
 import { InlineEditorWrapper } from './components/InlineEditorWrapper';
 import { MapPin, Phone } from 'lucide-react';
+import { useProductBrandTheme } from './hooks/useProductBrandTheme';
 
 const TikTokIcon = ({ className = "w-6 h-6" }) => (
   <svg 
@@ -374,6 +375,9 @@ function App() {
   const [state, setState] = useState(defaultState);
   const [urlView, setUrlView] = useState(null);
   const [lock, setLock] = useState(false);
+
+  // Dynamic Theme Extraction
+  useProductBrandTheme(state.productRibbon?.imageUrl);
 
   // Read view parameter from URL query string or pathname
   useEffect(() => {

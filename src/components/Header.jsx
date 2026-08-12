@@ -19,7 +19,7 @@ export function Header({
         {/* SVG Background for crisp rendering of the trapezoid and the 2px Electric Purple pinstripe */}
         <svg className="absolute inset-0 w-full h-full pointer-events-none" preserveAspectRatio="none" viewBox="0 0 520 80">
           <polygon points="0,0 520,0 492,80 28,80" fill="#ffffff" />
-          <polyline points="0,0 28,80 492,80 520,0" fill="none" stroke="#9D5CFF" strokeWidth="4" />
+          <polyline points="0,0 28,80 492,80 520,0" fill="none" stroke="var(--product-accent)" strokeWidth="4" />
         </svg>
 
         {/* Subtle Premium Shimmer Overlay constrained to the shield shape */}
