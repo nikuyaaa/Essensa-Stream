@@ -359,7 +359,7 @@ function OverlayWrapper({ children, currentView, style, state, onStateChange }) 
   if (isChromaKey) {
     bgClass = "bg-[#00ff00]";
   } else if (['intermission-banner', 'intermission', 'starting', 'brb', 'ending'].includes(currentView)) {
-    bgClass = "bg-[#120924]";
+    bgClass = "bg-[var(--product-dark)]";
   }
 
   return (
@@ -786,8 +786,8 @@ function App() {
               
               {/* Upper Section: Vertically Centered Welcome Notice */}
               <div className="flex-1 flex flex-col items-center justify-center gap-6 relative z-10 text-center px-8">
-                <h2 className="text-5xl font-black text-[#120924] uppercase tracking-wider leading-snug">
-                  {renderSplitToneText(state['intermission-banner'].rightHeader || "Live Stream <b>Starting Soon</b>", "text-[#120924]", "keyword-green", "keyword-gold")}
+                <h2 className="text-5xl font-black text-[var(--product-dark)] uppercase tracking-wider leading-snug">
+                  {renderSplitToneText(state['intermission-banner'].rightHeader || "Live Stream <b>Starting Soon</b>", "text-[var(--product-dark)]", "keyword-green", "keyword-gold")}
                 </h2>
                 <div className="w-32 h-1.5 bg-[var(--product-accent)] rounded-full" />
                 <p className="text-zinc-800 text-2xl font-extrabold max-w-[540px] leading-relaxed">
@@ -958,15 +958,15 @@ function App() {
               <Logo showText={true} light={false} logoUrl={state.brb.logoUrl || state.globalLogoUrl} className="scale-150 mb-6" />
 
               <div className="flex flex-col items-center gap-4">
-                <h2 className="font-display font-black text-7xl text-[#120924] tracking-widest uppercase">
-                  {renderSplitToneText(state.brb.bannerText, "text-[#120924]", "keyword-green", "keyword-gold")}
+                <h2 className="font-display font-black text-7xl text-[var(--product-dark)] tracking-widest uppercase">
+                  {renderSplitToneText(state.brb.bannerText, "text-[var(--product-dark)]", "keyword-green", "keyword-gold")}
                 </h2>
                 {/* Thin purple highlight line */}
                 <div className="w-44 h-2 bg-[var(--product-accent)] rounded-full" />
               </div>
 
               {/* Expected return countdown block */}
-              <div className="flex items-center gap-4 bg-[#120924]/5 border border-[var(--product-accent)]/30 px-12 py-5 rounded-full shadow-inner mt-4">
+              <div className="flex items-center gap-4 bg-[var(--product-dark)]/5 border border-[var(--product-accent)]/30 px-12 py-5 rounded-full shadow-inner mt-4">
                 <span className="text-lg font-black text-zinc-600 uppercase tracking-widest">Expected Return in</span>
                 <span className="font-mono text-4xl font-black text-[var(--product-primary)] tracking-wider tabular-nums">
                   {Math.floor(state.brb.countdownSeconds / 60).toString().padStart(2, '0')}:
@@ -978,7 +978,7 @@ function App() {
               {state.brb.announcements && state.brb.announcements.length > 0 && (
                 <div className="flex flex-col gap-3 w-full max-w-[700px] mt-2">
                   {state.brb.announcements.map((text, idx) => (
-                    <div key={idx} className="bg-[#120924]/5 border border-[var(--product-accent)]/30 px-8 py-4 rounded-2xl text-xl font-black text-zinc-900 shadow-sm">
+                    <div key={idx} className="bg-[var(--product-dark)]/5 border border-[var(--product-accent)]/30 px-8 py-4 rounded-2xl text-xl font-black text-zinc-900 shadow-sm">
                       {text}
                     </div>
                   ))}
@@ -1044,8 +1044,8 @@ function App() {
               </motion.div>
 
               <div className="flex flex-col gap-4">
-                <h2 className="font-display font-black text-6xl text-[#120924] uppercase tracking-wider">
-                  {renderSplitToneText(state.ending.title, "text-[#120924]", "keyword-green", "keyword-gold")}
+                <h2 className="font-display font-black text-6xl text-[var(--product-dark)] uppercase tracking-wider">
+                  {renderSplitToneText(state.ending.title, "text-[var(--product-dark)]", "keyword-green", "keyword-gold")}
                 </h2>
                 <p className="font-sans text-zinc-800 text-2xl max-w-[800px] leading-relaxed mx-auto font-black">
                   {state.ending.description}
@@ -1281,7 +1281,7 @@ function DualPOVOverlay({ state }) {
       <div className="absolute left-[24px] top-[216px] w-[920px] h-[528px] bg-transparent border-[12px] border-white rounded-[28px] shadow-lg z-20 pointer-events-auto" />
       <div className="absolute left-[22px] top-[214px] w-[924px] h-[532px] bg-transparent border-2 rounded-[30px] animate-border-glow z-30 pointer-events-auto">
         {/* Camera label */}
-        <div className="absolute top-4 left-4 px-3.5 py-1.5 bg-[#120924]/90 border border-[var(--product-accent)]/50 rounded-lg text-xs font-black uppercase text-white tracking-widest text-protected z-10 shadow-md">
+        <div className="absolute top-4 left-4 px-3.5 py-1.5 bg-[var(--product-dark)]/90 border border-[var(--product-accent)]/50 rounded-lg text-xs font-black uppercase text-white tracking-widest text-protected z-10 shadow-md">
           {renderSplitToneText(dualPOVConfig.cam1Label || "CAM 01 - HOST", "text-white", "keyword-green", "keyword-gold")}
         </div>
       </div>
@@ -1293,7 +1293,7 @@ function DualPOVOverlay({ state }) {
       <div className="absolute left-[976px] top-[216px] w-[920px] h-[528px] bg-transparent border-[12px] border-white rounded-[28px] shadow-lg z-20 pointer-events-auto" />
       <div className="absolute left-[974px] top-[214px] w-[924px] h-[532px] bg-transparent border-2 rounded-[30px] animate-border-glow z-30 pointer-events-auto">
         {/* Camera label */}
-        <div className="absolute top-4 left-4 px-3.5 py-1.5 bg-[#120924]/90 border border-[var(--product-accent)]/50 rounded-lg text-xs font-black uppercase text-white tracking-widest text-protected z-10 shadow-md">
+        <div className="absolute top-4 left-4 px-3.5 py-1.5 bg-[var(--product-dark)]/90 border border-[var(--product-accent)]/50 rounded-lg text-xs font-black uppercase text-white tracking-widest text-protected z-10 shadow-md">
           {renderSplitToneText(dualPOVConfig.cam2Label || "CAM 02 - GUEST", "text-white", "keyword-green", "keyword-gold")}
         </div>
       </div>

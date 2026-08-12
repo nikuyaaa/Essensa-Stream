@@ -218,7 +218,7 @@ export function InlineEditorWrapper({ state, onStateChange, children, currentVie
             className="absolute top-0 left-1/2 -translate-x-1/2 w-[520px] h-[85px] z-[60] cursor-pointer hover:outline hover:outline-2 hover:outline-dashed hover:outline-[var(--product-accent)] rounded-b-2xl transition-all group"
             title="Double-click to edit Top Header Shield Logo"
           >
-            <div className="hidden group-hover:flex absolute top-2 left-1/2 -translate-x-1/2 px-2.5 py-1 bg-[#120924]/90 text-[var(--product-accent)] text-[10px] font-bold uppercase tracking-wider rounded border border-[var(--product-accent)]/40 shadow pointer-events-none">
+            <div className="hidden group-hover:flex absolute top-2 left-1/2 -translate-x-1/2 px-2.5 py-1 bg-[var(--product-dark)]/90 text-[var(--product-accent)] text-[10px] font-bold uppercase tracking-wider rounded border border-[var(--product-accent)]/40 shadow pointer-events-none">
               Edit Top Logo
             </div>
           </div>
@@ -229,7 +229,7 @@ export function InlineEditorWrapper({ state, onStateChange, children, currentVie
             className="absolute bottom-0 left-0 w-full h-[90px] z-[60] cursor-pointer hover:outline hover:outline-2 hover:outline-dashed hover:outline-[var(--product-accent)] transition-all group"
             title="Double-click to edit News Ticker & Sponsor Logos"
           >
-            <div className="hidden group-hover:flex absolute bottom-3 left-1/2 -translate-x-1/2 px-2.5 py-1 bg-[#120924]/90 text-[var(--product-accent)] text-[10px] font-bold uppercase tracking-wider rounded border border-[var(--product-accent)]/40 shadow pointer-events-none">
+            <div className="hidden group-hover:flex absolute bottom-3 left-1/2 -translate-x-1/2 px-2.5 py-1 bg-[var(--product-dark)]/90 text-[var(--product-accent)] text-[10px] font-bold uppercase tracking-wider rounded border border-[var(--product-accent)]/40 shadow pointer-events-none">
               Edit Ticker & Sponsor Logos
             </div>
           </div>
@@ -255,7 +255,7 @@ export function InlineEditorWrapper({ state, onStateChange, children, currentVie
               className="absolute left-[15%] top-[15%] w-[70%] h-[60%] z-[55] cursor-pointer hover:outline hover:outline-2 hover:outline-dashed hover:outline-[var(--product-accent)] rounded-3xl transition-all group"
               title="Double-click to edit Headlines & Scene Text"
             >
-              <div className="hidden group-hover:flex absolute top-4 left-1/2 -translate-x-1/2 px-3 py-1.5 bg-[#120924]/90 text-[var(--product-accent)] text-xs font-bold uppercase tracking-wider rounded-lg border border-[var(--product-accent)]/40 shadow pointer-events-none">
+              <div className="hidden group-hover:flex absolute top-4 left-1/2 -translate-x-1/2 px-3 py-1.5 bg-[var(--product-dark)]/90 text-[var(--product-accent)] text-xs font-bold uppercase tracking-wider rounded-lg border border-[var(--product-accent)]/40 shadow pointer-events-none">
                 Edit Scene Text & Headlines
               </div>
             </div>
@@ -267,7 +267,7 @@ export function InlineEditorWrapper({ state, onStateChange, children, currentVie
             className="absolute bottom-[118px] right-12 w-[640px] h-[95px] z-[60] cursor-pointer hover:outline hover:outline-2 hover:outline-dashed hover:outline-[var(--product-accent)] bg-[var(--product-accent)]/5 transition-all group rounded-xl"
             title="Double-click to edit Lower-Third Product Ribbon Banner"
           >
-            <div className="hidden group-hover:flex absolute top-2 left-1/2 -translate-x-1/2 px-3 py-1 bg-[#120924]/90 text-[var(--product-accent)] text-xs font-bold uppercase tracking-wider rounded-lg border border-[var(--product-accent)]/40 shadow pointer-events-none">
+            <div className="hidden group-hover:flex absolute top-2 left-1/2 -translate-x-1/2 px-3 py-1 bg-[var(--product-dark)]/90 text-[var(--product-accent)] text-xs font-bold uppercase tracking-wider rounded-lg border border-[var(--product-accent)]/40 shadow pointer-events-none">
               Edit Product Ribbon
             </div>
           </div>
@@ -293,7 +293,7 @@ export function InlineEditorWrapper({ state, onStateChange, children, currentVie
             className={`flex items-center gap-2 px-3.5 py-1.5 rounded-full border text-xs font-bold shadow-2xl transition-all duration-300 hover:scale-105 backdrop-blur-md ${
               state.productRibbon?.visible 
                 ? 'bg-[var(--product-primary)] border-[var(--product-accent)] text-white shadow-[0_0_15px_var(--product-accent)]' 
-                : 'bg-[#120924]/90 border-[var(--product-accent)]/60 text-white hover:bg-[#120924] hover:border-[var(--product-accent)]'
+                : 'bg-[var(--product-dark)]/90 border-[var(--product-accent)]/60 text-white hover:bg-[var(--product-dark)] hover:border-[var(--product-accent)]'
             }`}
             title="Trigger Right-to-Left Product Ribbon Slide"
           >
@@ -305,7 +305,7 @@ export function InlineEditorWrapper({ state, onStateChange, children, currentVie
 
           <button
             onClick={() => setEditMode(!editMode)}
-            className="flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#120924]/90 backdrop-blur-md border border-[var(--product-accent)]/60 text-white text-xs font-bold shadow-2xl transition-all duration-300 hover:scale-105 hover:border-[var(--product-accent)]"
+            className="flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[var(--product-dark)]/90 backdrop-blur-md border border-[var(--product-accent)]/60 text-white text-xs font-bold shadow-2xl transition-all duration-300 hover:scale-105 hover:border-[var(--product-accent)]"
             title="Toggle Edit / Broadcast Mode"
           >
             <span className={`w-2.5 h-2.5 rounded-full ${editMode ? 'bg-[var(--product-accent)] animate-pulse shadow-[0_0_10px_var(--product-accent)]' : 'bg-red-500'}`} />
@@ -563,10 +563,10 @@ export function InlineEditorWrapper({ state, onStateChange, children, currentVie
 // Reusable Modal Component
 function ModalContainer({ title, onClose, onSave, children }) {
   return (
-    <div className="fixed inset-0 z-[200] flex items-center justify-center bg-[#120924]/75 backdrop-blur-md p-4 animate-in fade-in duration-200">
-      <div className="w-full max-w-lg bg-[#120924] border border-[var(--product-accent)]/40 rounded-2xl shadow-2xl overflow-hidden flex flex-col">
+    <div className="fixed inset-0 z-[200] flex items-center justify-center bg-[var(--product-dark)]/75 backdrop-blur-md p-4 animate-in fade-in duration-200">
+      <div className="w-full max-w-lg bg-[var(--product-dark)] border border-[var(--product-accent)]/40 rounded-2xl shadow-2xl overflow-hidden flex flex-col">
         {/* Header */}
-        <div className="px-6 py-4 border-b border-[var(--product-accent)]/20 flex items-center justify-between bg-[#1A0C36]">
+        <div className="px-6 py-4 border-b border-[var(--product-accent)]/20 flex items-center justify-between bg-[var(--product-mid)]">
           <h3 className="text-base font-black uppercase text-white tracking-wider flex items-center gap-2">
             <Edit3 className="w-4 h-4 text-[var(--product-accent)]" />
             {title}
@@ -585,7 +585,7 @@ function ModalContainer({ title, onClose, onSave, children }) {
         </div>
 
         {/* Footer */}
-        <div className="px-6 py-4 border-t border-[var(--product-accent)]/20 flex justify-end gap-3 bg-[#1A0C36]">
+        <div className="px-6 py-4 border-t border-[var(--product-accent)]/20 flex justify-end gap-3 bg-[var(--product-mid)]">
           <button 
             onClick={onClose} 
             className="px-4 py-2 rounded-lg text-xs font-bold uppercase text-zinc-400 hover:text-white hover:bg-white/10 transition"

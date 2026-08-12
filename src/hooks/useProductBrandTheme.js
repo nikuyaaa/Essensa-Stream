@@ -83,8 +83,12 @@ export function useProductBrandTheme(imageUrl) {
           
           const surfaceTint = `rgba(${avgR}, ${avgG}, ${avgB}, 0.15)`;
           
-          applyTheme(primaryHex, secondaryHex, accentHex, surfaceTint);
-          setExtractedColors({ primary: primaryHex, secondary: secondaryHex, accent: accentHex, tint: surfaceTint });
+          const darkHex = rgbToHex(Math.max(0, Math.round(avgR * 0.15)), Math.max(0, Math.round(avgG * 0.15)), Math.max(0, Math.round(avgB * 0.15)));
+          const midHex = rgbToHex(Math.max(0, Math.round(avgR * 0.25)), Math.max(0, Math.round(avgG * 0.25)), Math.max(0, Math.round(avgB * 0.25)));
+          const lightHex = rgbToHex(Math.min(255, avgR + 150), Math.min(255, avgG + 150), Math.min(255, avgB + 150));
+          
+          applyTheme(primaryHex, secondaryHex, accentHex, surfaceTint, darkHex, midHex, lightHex);
+          setExtractedColors({ primary: primaryHex, secondary: secondaryHex, accent: accentHex, tint: surfaceTint, dark: darkHex, mid: midHex, light: lightHex });
         } else {
           resetTheme();
         }
@@ -106,16 +110,19 @@ export function useProductBrandTheme(imageUrl) {
     };
   }, [imageUrl]);
 
-  const applyTheme = (primary, secondary, accent, tint) => {
+  const applyTheme = (primary, secondary, accent, tint, dark, mid, light) => {
     const root = document.documentElement;
     root.style.setProperty('--product-primary', primary);
     root.style.setProperty('--product-secondary', secondary);
     root.style.setProperty('--product-accent', accent);
     root.style.setProperty('--product-surface-tint', tint);
+    root.style.setProperty('--product-dark', dark);
+    root.style.setProperty('--product-mid', mid);
+    root.style.setProperty('--product-light', light);
   };
 
   const resetTheme = () => {
-    applyTheme('#D32F2F', '#8E0000', '#FF5252', 'rgba(211, 47, 47, 0.15)');
+    applyTheme('#D32F2F', '#8E0000', '#FF5252', 'rgba(211, 47, 47, 0.15)', '#1a0505', '#3b0909', '#ffd1d1');
     setExtractedColors(null);
   };
 

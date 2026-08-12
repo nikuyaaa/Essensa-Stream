@@ -37,7 +37,7 @@ export function Header({
             alt="Top Header Shield Logo" 
           />
         ) : (
-          <span className="text-2xl font-display font-black tracking-widest text-[#120924] uppercase select-none relative z-10 mt-[-4px]">
+          <span className="text-2xl font-display font-black tracking-widest text-[var(--product-dark)] uppercase select-none relative z-10 mt-[-4px]">
             BEYOND TALKS
           </span>
         )}

@@ -7,6 +7,10 @@
   --product-secondary: #8E0000;
   --product-accent: #FF5252;
   --product-surface-tint: rgba(211, 47, 47, 0.15);
+  
+  --product-dark: #1a0505;
+  --product-mid: #3b0909;
+  --product-light: #ffd1d1;
 }
 @theme {
   --color-brand-green: #1B7339;
@@ -254,9 +258,9 @@ body {
     120deg, 
     var(--product-primary) 0%, 
     var(--product-accent) 25%, 
-    #E2D1FF 45%, 
+    var(--product-light) 45%, 
     #ffffff 50%, 
-    #E2D1FF 55%, 
+    var(--product-light) 55%, 
     var(--product-accent) 75%, 
     var(--product-primary) 100%
   );
@@ -298,13 +302,13 @@ body {
 }
 
 .alert-banner-premium {
-  background: linear-gradient(90deg, #120924 0%, #2A1054 25%, #4A2080 50%, #2A1054 75%, #120924 100%);
+  background: linear-gradient(90deg, var(--product-dark) 0%, var(--product-mid) 25%, var(--product-secondary) 50%, var(--product-mid) 75%, var(--product-dark) 100%);
   background-size: 200% 100%;
   animation: alert-shimmer-sweep 6s infinite linear;
-  border: 1px solid rgba(157, 92, 255, 0.5) !important;
-  box-shadow: 0 0 25px rgba(157, 92, 255, 0.25);
+  border: 1px solid var(--product-surface-tint) !important;
+  box-shadow: 0 0 25px var(--product-surface-tint);
   color: #FFFFFF !important;
-  text-shadow: 0 0 8px rgba(157, 92, 255, 0.5);
+  text-shadow: 0 0 8px var(--product-surface-tint);
 }
 
 .tooltip-fade-in {
@@ -531,7 +535,7 @@ body {
 }
 
 .animated-pinstripe {
-  background: linear-gradient(90deg, var(--product-primary), var(--product-accent), #E2D1FF, var(--product-secondary), var(--product-accent), var(--product-primary));
+  background: linear-gradient(90deg, var(--product-primary), var(--product-accent), var(--product-light), var(--product-secondary), var(--product-accent), var(--product-primary));
   background-size: 300% 300%;
   animation: pinstripeRun 4s linear infinite;
 }

@@ -36,7 +36,7 @@ export function LowerThird({
           className={`absolute bottom-[130px] left-[80px] z-30 select-none flex flex-col items-start ${className}`}
         >
           {/* Layer 1: Host Name (Solid Dark Midnight block with white text and electric purple left border) */}
-          <div className="bg-[#120924] h-[72px] flex items-center px-10 border-l-[6px] border-[var(--product-accent)] shadow-[0_8px_24px_rgba(26,11,46,0.8)] rounded-tr-xl relative">
+          <div className="bg-[var(--product-dark)] h-[72px] flex items-center px-10 border-l-[6px] border-[var(--product-accent)] shadow-[0_8px_24px_rgba(26,11,46,0.8)] rounded-tr-xl relative">
             <motion.h3 
               initial={{ opacity: 0, x: -15 }}
               animate={{ opacity: 1, x: 0 }}

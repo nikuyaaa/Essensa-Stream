@@ -78,7 +78,7 @@ export function ProductCard({
               {/* Product Text details */}
               <div className="flex-1 flex flex-col justify-between h-[120px] py-1">
                 {/* Product Name */}
-                <h4 className="font-display font-black text-3xl text-[#120924] leading-tight line-clamp-2 uppercase">
+                <h4 className="font-display font-black text-3xl text-[var(--product-dark)] leading-tight line-clamp-2 uppercase">
                   {name}
                 </h4>
                 
@@ -96,7 +96,7 @@ export function ProductCard({
             </div>
 
             {/* Bottom Marquee Promo Tag - Solid Black */}
-            <div className="bg-[#120924] text-white border-t border-zinc-800 flex items-center relative overflow-hidden h-[48px] rounded-b-2xl select-none">
+            <div className="bg-[var(--product-dark)] text-white border-t border-zinc-800 flex items-center relative overflow-hidden h-[48px] rounded-b-2xl select-none">
               {/* 1. Left static tag icon block (mimics main ticker logo block) */}
               <div className="h-full bg-brand-charcoal flex items-center px-4 relative z-20 shrink-0 border-r border-zinc-800/65 text-brand-gold">
                 <Tag className="w-4 h-4" />

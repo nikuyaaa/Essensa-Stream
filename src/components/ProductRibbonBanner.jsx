@@ -84,7 +84,7 @@ export function ProductRibbonBanner({
 
                 {/* Product Name & Subtext */}
                 <div className="flex flex-col justify-center pl-1">
-                  <h3 className="font-display font-extrabold text-2xl text-[#120924] tracking-[0.04em] uppercase leading-none">
+                  <h3 className="font-display font-extrabold text-2xl text-[var(--product-dark)] tracking-[0.04em] uppercase leading-none">
                     {name}
                   </h3>
                   <p className="font-sans text-xs font-semibold text-[#3A3A4A] tracking-wide mt-1 line-clamp-1">
@@ -112,13 +112,13 @@ export function ProductRibbonBanner({
             {/* Un-skewed Accent Content */}
             <div className="skew-x-[12deg] flex items-center justify-between w-full text-white font-mono font-black tracking-wider pt-2">
               {/* Left Badge */}
-              <span className="bg-[#120924] text-[var(--product-accent)] text-[10px] font-black uppercase tracking-widest px-3 py-0.5 rounded border border-[var(--product-accent)] shadow-sm">
+              <span className="bg-[var(--product-dark)] text-[var(--product-accent)] text-[10px] font-black uppercase tracking-widest px-3 py-0.5 rounded border border-[var(--product-accent)] shadow-sm">
                 {badgeText || "FEATURED PRODUCT"}
               </span>
 
               {/* Right Price Tag Readout */}
               <div className="flex items-center gap-2">
-                <span className="text-xs font-black uppercase tracking-widest text-[#E2D1FF]">PRICE:</span>
+                <span className="text-xs font-black uppercase tracking-widest text-[var(--product-light)]">PRICE:</span>
                 <span className="text-white text-2xl font-mono font-black tracking-wide drop-shadow-md">{price}</span>
               </div>
             </div>

@@ -35,10 +35,10 @@ export function Ticker({
 
       {/* 2. Central Recessed Scrolling Ticker Channel (80px height, starts at 228px, ends at 1920-228 = 1692px) */}
       <div 
-        className="absolute bottom-0 left-[228px] right-[228px] h-[80px] bg-[#120924] text-white flex items-center border-t border-[var(--product-primary)] shadow-[0_-8px_24px_rgba(0,0,0,0.35)] select-none overflow-hidden z-40"
+        className="absolute bottom-0 left-[228px] right-[228px] h-[80px] bg-[var(--product-dark)] text-white flex items-center border-t border-[var(--product-primary)] shadow-[0_-8px_24px_rgba(0,0,0,0.35)] select-none overflow-hidden z-40"
       >
         {/* Scrolling Marquee Area */}
-        <div className="flex-1 h-full flex items-center overflow-hidden bg-[#120924] relative">
+        <div className="flex-1 h-full flex items-center overflow-hidden bg-[var(--product-dark)] relative">
           <div key={`${combinedText}_${speed}`} className="marquee-container text-3xl font-black tracking-widest text-white uppercase flex items-center">
             {/* Scroll items twice to ensure infinite, seamless repeating loops */}
             <div className="marquee-content gap-8 flex items-center pr-8" style={{ animationDuration: `${speed}s`, animationDelay: `${delay}s` }}>
@@ -56,8 +56,8 @@ export function Ticker({
           </div>
           
           {/* Symmetrical left and right edge fade overlays for premium scrolling text transitions */}
-          <div className="absolute top-0 left-0 h-full w-12 bg-gradient-to-r from-[#120924] to-transparent pointer-events-none z-10" />
-          <div className="absolute top-0 right-0 h-full w-12 bg-gradient-to-l from-[#120924] to-transparent pointer-events-none z-10" />
+          <div className="absolute top-0 left-0 h-full w-12 bg-gradient-to-r from-[var(--product-dark)] to-transparent pointer-events-none z-10" />
+          <div className="absolute top-0 right-0 h-full w-12 bg-gradient-to-l from-[var(--product-dark)] to-transparent pointer-events-none z-10" />
         </div>
       </div>
 
