@@ -33,8 +33,8 @@ export function ProductRibbonBanner({
         <div className="absolute inset-0 pointer-events-none z-30 select-none overflow-hidden">
           
           {/* =========================================================================
-             PHASE 2 & 3: LAYER 1 (BACK SVG RIBBON STRAND - Behind Product Card)
-             0.2s Delay: Weaves behind card & sweeps edge-to-edge left (Zero block fill)
+             PHASE 2 & 3: LAYER 1 (BACK TAPERED SVG RIBBON STRANDS - Behind Product Card)
+             0.15s Delay: Weaves behind card & sweeps edge-to-edge left with pointed tips
              ========================================================================= */}
           <motion.div
             key={`organic-ribbon-back-${triggerKey}`}
@@ -47,34 +47,53 @@ export function ProductRibbonBanner({
               ease: [0.25, 1, 0.5, 1],
               exit: { duration: 0.75, ease: [0.25, 1, 0.5, 1] }
             }}
-            className="absolute bottom-[90px] left-0 right-0 h-[120px] pointer-events-none z-10 origin-right"
+            className="absolute bottom-[85px] left-0 right-0 h-[130px] pointer-events-none z-10 origin-right"
           >
             <svg 
-              viewBox="0 0 1920 120" 
+              viewBox="0 0 1920 130" 
               fill="none" 
               xmlns="http://www.w3.org/2000/svg" 
               className="w-full h-full object-cover animate-wave-undulate"
               preserveAspectRatio="none"
             >
               <defs>
-                <linearGradient id="seqRibbonBackGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-                  <stop offset="0%" stopColor="#4A2080" stopOpacity="0.1" />
-                  <stop offset="35%" stopColor="#7B3FE4" stopOpacity="0.8" />
-                  <stop offset="70%" stopColor="#9D5CFF" stopOpacity="0.9" />
-                  <stop offset="100%" stopColor="#E056FD" stopOpacity="0.85" />
+                {/* Strand 1 Tapered Opacity Gradient */}
+                <linearGradient id="taperedBackGrad1" x1="0%" y1="0%" x2="100%" y2="0%">
+                  <stop offset="0%" stopColor="#7B3FE4" stopOpacity="0" />
+                  <stop offset="12%" stopColor="#7B3FE4" stopOpacity="0.85" />
+                  <stop offset="65%" stopColor="#9D5CFF" stopOpacity="0.95" />
+                  <stop offset="92%" stopColor="#E056FD" stopOpacity="0.85" />
+                  <stop offset="100%" stopColor="#E056FD" stopOpacity="0" />
+                </linearGradient>
+
+                {/* Strand 2 Tapered Opacity Gradient */}
+                <linearGradient id="taperedBackGrad2" x1="0%" y1="0%" x2="100%" y2="0%">
+                  <stop offset="0%" stopColor="#9D5CFF" stopOpacity="0" />
+                  <stop offset="18%" stopColor="#9D5CFF" stopOpacity="0.75" />
+                  <stop offset="70%" stopColor="#E056FD" stopOpacity="0.9" />
+                  <stop offset="90%" stopColor="#7B3FE4" stopOpacity="0.7" />
+                  <stop offset="100%" stopColor="#7B3FE4" stopOpacity="0" />
                 </linearGradient>
               </defs>
 
-              {/* Pure Organic Vector Wave Path (No flat rectangular block fills) */}
+              {/* Tapered Ribbon Strand 1: Pointed Curved Bezier Ends (No flat box cuts) */}
               <path 
-                d="M-100,50 C400,110 800,10 1200,80 C1550,130 1800,40 2020,60 L2020,120 L-100,120 Z" 
-                fill="url(#seqRibbonBackGrad)" 
+                d="M-60,65 C350,15 800,105 1300,25 C1650,75 1900,35 1980,50 C1900,65 1650,95 1300,55 C800,125 350,45 -60,65 Z" 
+                fill="url(#taperedBackGrad1)" 
               />
+
+              {/* Tapered Ribbon Strand 2: Staggered Pointed Tail */}
               <path 
-                d="M-100,90 C450,40 850,90 1300,30 C1650,-10 1850,70 2020,80" 
-                stroke="#9D5CFF" 
-                strokeWidth="2" 
-                strokeOpacity="0.5"
+                d="M-20,40 C380,85 850,20 1350,75 C1700,25 1920,60 1960,45 C1920,70 1700,45 1350,100 C850,45 380,105 -20,40 Z" 
+                fill="url(#taperedBackGrad2)" 
+              />
+
+              {/* Fine Accent Vector Pinstripe Tail */}
+              <path 
+                d="M-40,55 C360,40 820,70 1320,40 C1675,55 1910,40 1970,48" 
+                stroke="#E2D1FF" 
+                strokeWidth="2.5" 
+                strokeOpacity="0.75"
               />
             </svg>
           </motion.div>
@@ -120,7 +139,7 @@ export function ProductRibbonBanner({
                       /* Fallback SVG 3D Organic Bottle */
                       <svg viewBox="0 0 60 80" className="w-10 h-14" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <defs>
-                          <linearGradient id="seqSpotlightBottleGrad" x1="0" y1="1" x2="0" y2="0">
+                          <linearGradient id="taperedSpotlightBottleGrad" x1="0" y1="1" x2="0" y2="0">
                             <stop offset="0%" stopColor="#4A2080" />
                             <stop offset="70%" stopColor="#7B3FE4" />
                             <stop offset="100%" stopColor="#9D5CFF" />
@@ -129,7 +148,7 @@ export function ProductRibbonBanner({
                         <rect x="23" y="10" width="14" height="10" rx="2" fill="#FFFFFF" stroke="#7B3FE4" strokeWidth="2" />
                         <rect x="20" y="5" width="20" height="6" rx="1" fill="#7B3FE4" />
                         <rect x="12" y="20" width="36" height="52" rx="8" fill="#FFFFFF" stroke="#7B3FE4" strokeWidth="2" />
-                        <rect x="15" y="32" width="30" height="36" rx="4" fill="url(#seqSpotlightBottleGrad)" />
+                        <rect x="15" y="32" width="30" height="36" rx="4" fill="url(#taperedSpotlightBottleGrad)" />
                         <path d="M30 38 C34 42, 34 46, 30 48 C26 46, 26 42, 30 38 Z" fill="#FFF" />
                       </svg>
                     )}
@@ -180,7 +199,7 @@ export function ProductRibbonBanner({
           </div>
 
           {/* =========================================================================
-             PHASE 2: LAYER 2 (FRONT OVERLAPPING SVG RIBBON STRAND - Overlaps Card Edge)
+             PHASE 2: LAYER 2 (FRONT OVERLAPPING TAPERED SVG RIBBON STRAND)
              0.25s Delay: Weaves over bottom edge of card, physically wrapping it
              ========================================================================= */}
           <motion.div
@@ -194,34 +213,29 @@ export function ProductRibbonBanner({
               ease: [0.25, 1, 0.5, 1],
               exit: { duration: 0.8, ease: [0.25, 1, 0.5, 1] }
             }}
-            className="absolute bottom-[80px] left-0 right-0 h-[100px] pointer-events-none z-30"
+            className="absolute bottom-[75px] left-0 right-0 h-[110px] pointer-events-none z-30"
           >
             <svg 
-              viewBox="0 0 1920 100" 
+              viewBox="0 0 1920 110" 
               fill="none" 
               xmlns="http://www.w3.org/2000/svg" 
               className="w-full h-full object-cover animate-wave-undulate"
               preserveAspectRatio="none"
             >
               <defs>
-                <linearGradient id="seqRibbonFrontGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-                  <stop offset="0%" stopColor="#E056FD" stopOpacity="0.2" />
-                  <stop offset="40%" stopColor="#7B3FE4" stopOpacity="0.85" />
-                  <stop offset="80%" stopColor="#9D5CFF" stopOpacity="0.95" />
-                  <stop offset="100%" stopColor="#E056FD" stopOpacity="0.9" />
+                <linearGradient id="taperedFrontGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                  <stop offset="0%" stopColor="#E056FD" stopOpacity="0" />
+                  <stop offset="20%" stopColor="#E056FD" stopOpacity="0.85" />
+                  <stop offset="75%" stopColor="#7B3FE4" stopOpacity="0.95" />
+                  <stop offset="90%" stopColor="#9D5CFF" stopOpacity="0.8" />
+                  <stop offset="100%" stopColor="#9D5CFF" stopOpacity="0" />
                 </linearGradient>
               </defs>
 
-              {/* Overlapping Ribbon Strand Path Wrapping Front Bottom Edge of Card */}
+              {/* Overlapping Front Tapered Ribbon Strand Path Wrapping Card Front Edge */}
               <path 
-                d="M-100,70 C300,20 600,100 1000,30 C1400,-10 1700,80 2020,20 L2020,100 L-100,100 Z" 
-                fill="url(#seqRibbonFrontGrad)" 
-              />
-              <path 
-                d="M-100,45 C400,95 800,25 1200,65 C1550,105 1800,35 2020,45" 
-                stroke="#E056FD" 
-                strokeWidth="3" 
-                strokeOpacity="0.8"
+                d="M10,55 C420,15 880,95 1380,30 C1720,80 1940,25 1970,38 C1940,55 1720,100 1380,60 C880,120 420,40 10,55 Z" 
+                fill="url(#taperedFrontGrad)" 
               />
             </svg>
           </motion.div>
