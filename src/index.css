@@ -2,15 +2,15 @@
 @import "tailwindcss";
 
 :root {
-  /* Dynamic Product Theme Engine (Default: Red Theme) */
-  --product-primary: #D32F2F;
-  --product-secondary: #8E0000;
-  --product-accent: #FF5252;
-  --product-surface-tint: rgba(211, 47, 47, 0.15);
+  /* Dynamic Product Theme Engine (Default: Beyond Talks Signature Theme) */
+  --product-primary: #7B3FE4;
+  --product-secondary: #4A2080;
+  --product-accent: #9D5CFF;
+  --product-surface-tint: rgba(123, 63, 228, 0.15);
   
-  --product-dark: #1a0505;
-  --product-mid: #3b0909;
-  --product-light: #ffd1d1;
+  --product-dark: #120924;
+  --product-mid: #2A1054;
+  --product-light: #E2D1FF;
 }
 @theme {
   --color-brand-green: #1B7339;
