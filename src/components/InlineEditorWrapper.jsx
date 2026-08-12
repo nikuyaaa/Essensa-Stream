@@ -229,16 +229,8 @@ export function InlineEditorWrapper({ state, onStateChange, children, currentVie
             </div>
           )}
 
-          {/* Lower-Third Product Ribbon Hotspot (Focused on Right Side) */}
-          <div 
-            onDoubleClick={openProductRibbonModal}
-            className="absolute bottom-[118px] right-12 w-[640px] h-[95px] z-[60] cursor-pointer hover:outline hover:outline-2 hover:outline-dashed hover:outline-[#9D5CFF] bg-[#9D5CFF]/5 transition-all group rounded-xl"
-            title="Double-click to edit Lower-Third Product Ribbon Banner"
-          >
-            <div className="hidden group-hover:flex absolute top-2 left-1/2 -translate-x-1/2 px-3 py-1 bg-[#120924]/90 text-[#9D5CFF] text-xs font-bold uppercase tracking-wider rounded-lg border border-[#9D5CFF]/40 shadow pointer-events-none">
-              Edit Product Ribbon
-            </div>
-          </div>
+
+
         </>
       )}
 
