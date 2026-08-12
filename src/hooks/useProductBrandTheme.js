@@ -115,7 +115,7 @@ export function useProductBrandTheme(imageUrl) {
   };
 
   const resetTheme = () => {
-    applyTheme('#7B3FE4', '#4A2080', '#9D5CFF', 'rgba(123, 63, 228, 0.15)');
+    applyTheme('#D32F2F', '#8E0000', '#FF5252', 'rgba(211, 47, 47, 0.15)');
     setExtractedColors(null);
   };
 
