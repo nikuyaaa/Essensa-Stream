@@ -530,5 +530,20 @@ body {
   animation: pinstripeRun 4s linear infinite;
 }
 
+/* 4. Organic Flowing Ribbon Wave Undulation Loop */
+@keyframes waveUndulate {
+  0%, 100% {
+    transform: translateY(0px) scaleY(1);
+  }
+  50% {
+    transform: translateY(-6px) scaleY(1.06);
+  }
+}
+
+.animate-wave-undulate {
+  animation: waveUndulate 4s ease-in-out infinite;
+}
+
+
 
 

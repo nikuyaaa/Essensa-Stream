@@ -30,98 +30,160 @@ export function ProductRibbonBanner({
   return (
     <AnimatePresence>
       {isVisible && (
-        <div 
-          className="absolute bottom-[118px] right-12 w-[640px] z-30 pointer-events-auto select-none cursor-pointer flex flex-col items-end"
-          onDoubleClick={onDoubleClick}
-        >
-          {/* LAYER 1: Primary Skewed White Card (Top / Front) */}
+        <div className="absolute inset-0 pointer-events-none z-30 select-none overflow-hidden">
+          
+          {/* 1. Multi-Stranded Organic SVG Silk Ribbon Sweeping Layer */}
           <motion.div
-            key={`skew-card-${triggerKey}`}
-            initial={{ x: 450, opacity: 0 }}
-            animate={{ x: 0, opacity: 1 }}
-            exit={{ x: -2000 }}
+            key={`organic-ribbon-bg-${triggerKey}`}
+            initial={{ x: '100%', opacity: 0 }}
+            animate={{ x: '0%', opacity: 1 }}
+            exit={{ x: '-120%', opacity: 0 }}
             transition={{ 
-              duration: 0.65, 
-              ease: [0.34, 1.56, 0.64, 1] // Elastic Overshoot Snap
+              duration: 0.95, 
+              ease: [0.25, 1, 0.5, 1],
+              exit: { duration: 0.85, ease: [0.25, 1, 0.5, 1] }
             }}
-            className={`relative w-[620px] h-[64px] bg-white border-l-4 border-b-2 border-[#9D5CFF] rounded-tl-xl shadow-[-8px_8px_30px_rgba(18,9,36,0.35)] z-20 flex items-center justify-between px-6 -skew-x-[12deg] overflow-visible ${className}`}
+            className="absolute bottom-[90px] left-0 right-0 h-[120px] pointer-events-none z-10"
           >
-            {/* Liquid Sheen Sweep Layer */}
-            <div className="absolute inset-0 pointer-events-none silk-sheen-overlay z-10 rounded-tl-xl" />
+            <svg 
+              viewBox="0 0 1920 120" 
+              fill="none" 
+              xmlns="http://www.w3.org/2000/svg" 
+              className="w-full h-full object-cover animate-wave-undulate"
+              preserveAspectRatio="none"
+            >
+              <defs>
+                {/* Ribbon Strand 1: Primary Beyond Talks Purple */}
+                <linearGradient id="ribbonGrad1" x1="0%" y1="0%" x2="100%" y2="0%">
+                  <stop offset="0%" stopColor="#4A2080" stopOpacity="0.2" />
+                  <stop offset="30%" stopColor="#7B3FE4" stopOpacity="0.85" />
+                  <stop offset="70%" stopColor="#9D5CFF" stopOpacity="0.95" />
+                  <stop offset="100%" stopColor="#E056FD" stopOpacity="0.8" />
+                </linearGradient>
 
-            {/* Un-skewed Inner Content */}
-            <div className="skew-x-[12deg] flex items-center justify-between w-full relative z-20">
-              
-              {/* Left Section: 3D Floating Product Cutout & Title */}
-              <div className="flex items-center gap-5">
-                {/* 3D Floating Product Thumbnail */}
-                <div className="relative -mt-6 w-[80px] h-[80px] bg-white rounded-2xl border-2 border-[#9D5CFF] shadow-[0_8px_24px_rgba(157,92,255,0.45)] flex items-center justify-center p-1.5 z-30 shrink-0 animate-product-float">
-                  {imageUrl ? (
-                    (imageUrl.match(/\.(mp4|webm|ogg)$/i) || imageUrl.startsWith('data:video/')) ? (
-                      <video src={imageUrl} autoPlay loop muted playsInline className="w-full h-full object-contain" />
+                {/* Ribbon Strand 2: Magenta Accent Flow */}
+                <linearGradient id="ribbonGrad2" x1="0%" y1="0%" x2="100%" y2="0%">
+                  <stop offset="0%" stopColor="#E056FD" stopOpacity="0.15" />
+                  <stop offset="50%" stopColor="#7B3FE4" stopOpacity="0.75" />
+                  <stop offset="100%" stopColor="#4A2080" stopOpacity="0.9" />
+                </linearGradient>
+              </defs>
+
+              {/* Organic Flowing Silk Vector Wave Paths */}
+              <path 
+                d="M-100,80 C300,20 600,110 1000,40 C1400,-20 1700,90 2020,30 L2020,120 L-100,120 Z" 
+                fill="url(#ribbonGrad2)" 
+              />
+              <path 
+                d="M-100,50 C400,110 800,10 1200,80 C1550,130 1800,40 2020,60 L2020,120 L-100,120 Z" 
+                fill="url(#ribbonGrad1)" 
+              />
+              <path 
+                d="M-100,95 C450,45 850,95 1300,35 C1650,-5 1850,75 2020,85" 
+                stroke="#9D5CFF" 
+                strokeWidth="2.5" 
+                strokeOpacity="0.6"
+              />
+            </svg>
+          </motion.div>
+
+          {/* 2. Right-Anchored Product Spotlight Card (Morphing Reveal) */}
+          <div 
+            className="absolute bottom-[118px] right-12 w-[640px] z-30 pointer-events-auto cursor-pointer flex flex-col items-end"
+            onDoubleClick={onDoubleClick}
+          >
+            {/* LAYER 1: Primary Skewed White Card (Top / Front) */}
+            <motion.div
+              key={`skew-card-${triggerKey}`}
+              initial={{ x: 500, y: 30, opacity: 0, scale: 0.95 }}
+              animate={{ x: 0, y: 0, opacity: 1, scale: 1 }}
+              exit={{ x: -2000, opacity: 1 }}
+              transition={{ 
+                delay: 0.15,
+                duration: 0.75, 
+                ease: [0.25, 1, 0.5, 1],
+                exit: { duration: 0.75, ease: [0.25, 1, 0.5, 1] }
+              }}
+              className={`relative w-[620px] h-[64px] bg-white border-l-4 border-b-2 border-[#9D5CFF] rounded-tl-xl shadow-[-8px_8px_30px_rgba(18,9,36,0.35)] z-20 flex items-center justify-between px-6 -skew-x-[12deg] overflow-visible ${className}`}
+            >
+              {/* Liquid Sheen Sweep Layer */}
+              <div className="absolute inset-0 pointer-events-none silk-sheen-overlay z-10 rounded-tl-xl" />
+
+              {/* Un-skewed Inner Content */}
+              <div className="skew-x-[12deg] flex items-center justify-between w-full relative z-20">
+                
+                {/* Left Section: 3D Floating Product Cutout & Title */}
+                <div className="flex items-center gap-5">
+                  {/* 3D Floating Product Thumbnail */}
+                  <div className="relative -mt-6 w-[80px] h-[80px] bg-white rounded-2xl border-2 border-[#9D5CFF] shadow-[0_8px_24px_rgba(157,92,255,0.45)] flex items-center justify-center p-1.5 z-30 shrink-0 animate-product-float">
+                    {imageUrl ? (
+                      (imageUrl.match(/\.(mp4|webm|ogg)$/i) || imageUrl.startsWith('data:video/')) ? (
+                        <video src={imageUrl} autoPlay loop muted playsInline className="w-full h-full object-contain" />
+                      ) : (
+                        <img src={imageUrl} alt={name} className="w-full h-full object-contain filter drop-shadow-md" />
+                      )
                     ) : (
-                      <img src={imageUrl} alt={name} className="w-full h-full object-contain filter drop-shadow-md" />
-                    )
-                  ) : (
-                    /* Fallback SVG 3D Organic Bottle */
-                    <svg viewBox="0 0 60 80" className="w-10 h-14" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <defs>
-                        <linearGradient id="rightSpotlightBottleGrad" x1="0" y1="1" x2="0" y2="0">
-                          <stop offset="0%" stopColor="#4A2080" />
-                          <stop offset="70%" stopColor="#7B3FE4" />
-                          <stop offset="100%" stopColor="#9D5CFF" />
-                        </linearGradient>
-                      </defs>
-                      <rect x="23" y="10" width="14" height="10" rx="2" fill="#FFFFFF" stroke="#7B3FE4" strokeWidth="2" />
-                      <rect x="20" y="5" width="20" height="6" rx="1" fill="#7B3FE4" />
-                      <rect x="12" y="20" width="36" height="52" rx="8" fill="#FFFFFF" stroke="#7B3FE4" strokeWidth="2" />
-                      <rect x="15" y="32" width="30" height="36" rx="4" fill="url(#rightSpotlightBottleGrad)" />
-                      <path d="M30 38 C34 42, 34 46, 30 48 C26 46, 26 42, 30 38 Z" fill="#FFF" />
-                    </svg>
-                  )}
+                      /* Fallback SVG 3D Organic Bottle */
+                      <svg viewBox="0 0 60 80" className="w-10 h-14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <defs>
+                          <linearGradient id="organicSpotlightBottleGrad" x1="0" y1="1" x2="0" y2="0">
+                            <stop offset="0%" stopColor="#4A2080" />
+                            <stop offset="70%" stopColor="#7B3FE4" />
+                            <stop offset="100%" stopColor="#9D5CFF" />
+                          </linearGradient>
+                        </defs>
+                        <rect x="23" y="10" width="14" height="10" rx="2" fill="#FFFFFF" stroke="#7B3FE4" strokeWidth="2" />
+                        <rect x="20" y="5" width="20" height="6" rx="1" fill="#7B3FE4" />
+                        <rect x="12" y="20" width="36" height="52" rx="8" fill="#FFFFFF" stroke="#7B3FE4" strokeWidth="2" />
+                        <rect x="15" y="32" width="30" height="36" rx="4" fill="url(#organicSpotlightBottleGrad)" />
+                        <path d="M30 38 C34 42, 34 46, 30 38 Z" fill="#FFF" />
+                      </svg>
+                    )}
+                  </div>
+
+                  {/* Product Name & Subtext */}
+                  <div className="flex flex-col justify-center pl-1">
+                    <h3 className="font-display font-extrabold text-2xl text-[#120924] tracking-[0.04em] uppercase leading-none">
+                      {name}
+                    </h3>
+                    <p className="font-sans text-xs font-semibold text-[#3A3A4A] tracking-wide mt-1 line-clamp-1">
+                      {subtext}
+                    </p>
+                  </div>
                 </div>
 
-                {/* Product Name & Subtext */}
-                <div className="flex flex-col justify-center pl-1">
-                  <h3 className="font-display font-extrabold text-2xl text-[#120924] tracking-[0.04em] uppercase leading-none">
-                    {name}
-                  </h3>
-                  <p className="font-sans text-xs font-semibold text-[#3A3A4A] tracking-wide mt-1 line-clamp-1">
-                    {subtext}
-                  </p>
+              </div>
+            </motion.div>
+
+            {/* LAYER 2: Secondary Beyond Talks Purple Offset Accent Plate (Bottom / Stepped) */}
+            <motion.div
+              key={`skew-accent-${triggerKey}`}
+              initial={{ x: 500, y: 30, opacity: 0 }}
+              animate={{ x: 0, y: 0, opacity: 1 }}
+              exit={{ x: -2000, opacity: 1 }}
+              transition={{ 
+                delay: 0.22,
+                duration: 0.65, 
+                ease: [0.25, 1, 0.5, 1],
+                exit: { duration: 0.65, ease: [0.25, 1, 0.5, 1] }
+              }}
+              className="relative w-[590px] h-[40px] -mt-3 bg-gradient-to-r from-[#7B3FE4] via-[#9D5CFF] to-[#4A2080] rounded-br-xl shadow-[0_8px_25px_rgba(123,63,228,0.4)] border border-[#9D5CFF]/60 flex items-center justify-between px-6 -skew-x-[12deg] z-10"
+            >
+              {/* Un-skewed Accent Content */}
+              <div className="skew-x-[12deg] flex items-center justify-between w-full text-white font-mono font-black tracking-wider pt-2">
+                {/* Left Badge */}
+                <span className="bg-[#120924] text-[#9D5CFF] text-[10px] font-black uppercase tracking-widest px-3 py-0.5 rounded border border-[#9D5CFF]/40 shadow-sm">
+                  {badgeText || "FEATURED PRODUCT"}
+                </span>
+
+                {/* Right Price Tag Readout */}
+                <div className="flex items-center gap-2">
+                  <span className="text-xs font-black uppercase tracking-widest text-[#E2D1FF]">PRICE:</span>
+                  <span className="text-white text-2xl font-mono font-black tracking-wide drop-shadow-md">{price}</span>
                 </div>
               </div>
-
-            </div>
-          </motion.div>
-
-          {/* LAYER 2: Secondary Beyond Talks Purple Offset Accent Plate (Bottom / Stepped) */}
-          <motion.div
-            key={`skew-accent-${triggerKey}`}
-            initial={{ x: 450, opacity: 0 }}
-            animate={{ x: 0, opacity: 1 }}
-            exit={{ x: -2000 }}
-            transition={{ 
-              delay: 0.08,
-              duration: 0.55, 
-              ease: [0.16, 1, 0.3, 1]
-            }}
-            className="relative w-[590px] h-[40px] -mt-3 bg-gradient-to-r from-[#7B3FE4] via-[#9D5CFF] to-[#4A2080] rounded-br-xl shadow-[0_8px_25px_rgba(123,63,228,0.4)] border border-[#9D5CFF]/60 flex items-center justify-between px-6 -skew-x-[12deg] z-10"
-          >
-            {/* Un-skewed Accent Content */}
-            <div className="skew-x-[12deg] flex items-center justify-between w-full text-white font-mono font-black tracking-wider pt-2">
-              {/* Left Badge */}
-              <span className="bg-[#120924] text-[#9D5CFF] text-[10px] font-black uppercase tracking-widest px-3 py-0.5 rounded border border-[#9D5CFF]/40 shadow-sm">
-                {badgeText || "FEATURED PRODUCT"}
-              </span>
-
-              {/* Right Price Tag Readout */}
-              <div className="flex items-center gap-2">
-                <span className="text-xs font-black uppercase tracking-widest text-[#E2D1FF]">PRICE:</span>
-                <span className="text-white text-2xl font-mono font-black tracking-wide drop-shadow-md">{price}</span>
-              </div>
-            </div>
-          </motion.div>
+            </motion.div>
+          </div>
         </div>
       )}
     </AnimatePresence>
