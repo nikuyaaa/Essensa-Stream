@@ -11,6 +11,7 @@ export function ProductRibbonBanner({
   triggerKey = 0,
   holdDuration = 12,
   sheenSpeed = 3.5,
+  animationSpeed = 0.65,
   onAutoHide = null,
   onDoubleClick = null,
   className = '' 
@@ -41,7 +42,7 @@ export function ProductRibbonBanner({
             animate={{ x: 0, opacity: 1 }}
             exit={{ x: -2000 }}
             transition={{ 
-              duration: 0.65, 
+              duration: animationSpeed, 
               ease: [0.34, 1.56, 0.64, 1] // Elastic Overshoot Snap
             }}
             className={`relative w-[620px] h-[64px] bg-white border-l-4 border-b-2 border-[#9D5CFF] rounded-tl-xl shadow-[-8px_8px_30px_rgba(18,9,36,0.35)] z-20 flex items-center justify-between px-6 -skew-x-[12deg] overflow-visible ${className}`}
@@ -102,8 +103,8 @@ export function ProductRibbonBanner({
             animate={{ x: 0, opacity: 1 }}
             exit={{ x: -2000 }}
             transition={{ 
-              delay: 0.08,
-              duration: 0.55, 
+              delay: animationSpeed * 0.12,
+              duration: animationSpeed * 0.85, 
               ease: [0.16, 1, 0.3, 1]
             }}
             className="relative w-[590px] h-[40px] -mt-3 bg-gradient-to-r from-[#7B3FE4] via-[#9D5CFF] to-[#4A2080] rounded-br-xl shadow-[0_8px_25px_rgba(123,63,228,0.4)] border border-[#9D5CFF]/60 flex items-center justify-between px-6 -skew-x-[12deg] z-10"
