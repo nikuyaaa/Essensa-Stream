@@ -1167,7 +1167,33 @@ function App() {
         </OverlayWrapper>
       );
 
-    // View 6 (Default): Main Live Stream Overlay
+    // View 7: Full-Bleed Commercials Overlay
+    case 'commercials':
+      return (
+        <OverlayWrapper currentView={currentView} state={state} onStateChange={setState}>
+          <div className="canvas-1080p bg-transparent overflow-hidden relative">
+            {/* NO Top Banner Header */}
+            {/* NO Side Frame Borders */}
+            
+            {/* Unobstructed Video Canvas is handled naturally by bg-transparent */}
+            
+            {/* Bottom News Ticker (Elevated to z-[100] to float seamlessly over the playing commercial media in OBS) */}
+            <AnimatePresence>
+              {state.main.tickerVisible && (
+                 <Ticker 
+                   items={state.main.tickerItems} 
+                   logoUrl={state.globalLogoUrl} 
+                   tickerRightLogoUrl={state.tickerRightLogoUrl || state.main.tickerRightLogoUrl} 
+                   speed={state.main.tickerSpeed || 60} 
+                   className="!z-[100]"
+                 />
+              )}
+            </AnimatePresence>
+          </div>
+        </OverlayWrapper>
+      );
+
+    // View 8 (Default): Main Live Stream Overlay
     case 'main':
     default:
       return (
