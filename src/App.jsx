@@ -573,38 +573,6 @@ function App() {
     };
   }, [isControlView]);
 
-  // Let local state tick down if countdowns are active
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setState(prev => {
-        let updated = false;
-        const nextState = { ...prev };
-
-        if (prev.starting.countdownRunning && prev.starting.countdownSeconds > 0) {
-          nextState.starting = {
-            ...nextState.starting,
-            countdownSeconds: prev.starting.countdownSeconds - 1,
-            countdownRunning: prev.starting.countdownSeconds > 1
-          };
-          updated = true;
-        }
-
-        if (prev.brb.countdownRunning && prev.brb.countdownSeconds > 0) {
-          nextState.brb = {
-            ...nextState.brb,
-            countdownSeconds: prev.brb.countdownSeconds - 1,
-            countdownRunning: prev.brb.countdownSeconds > 1
-          };
-          updated = true;
-        }
-
-        return updated ? nextState : prev;
-      });
-    }, 1000);
-
-    return () => clearInterval(interval);
-  }, []);
-
   // Auto-hide handler for host nameplate
   useEffect(() => {
     if (state.main.hostVisible && state.main.hostAutoHide) {
@@ -885,19 +853,9 @@ function App() {
                 </span>
                 
                 <Countdown 
-                  secondsLeft={state.starting.countdownSeconds} 
-                  isRunning={state.starting.countdownRunning} 
                   useGradient={true}
                   numberSizeClass="text-[12rem] md:text-[14.5rem]"
-                  onTick={(seconds) => {
-                    setState(prev => ({
-                      ...prev,
-                      starting: {
-                        ...prev.starting,
-                        countdownSeconds: seconds
-                      }
-                    }));
-                  }}
+                  showLabel={true}
                 />
               </div>
 
@@ -966,12 +924,13 @@ function App() {
               </div>
 
               {/* Expected return countdown block */}
-              <div className="flex items-center gap-4 bg-[var(--product-dark)]/5 border border-[var(--product-accent)]/30 px-12 py-5 rounded-full shadow-inner mt-4">
+              <div className="flex items-center gap-4 bg-[var(--product-dark)]/5 border border-[var(--product-accent)]/30 px-12 py-5 rounded-full shadow-inner mt-4 relative z-10 hover:border-[var(--product-accent)]/80 transition-colors">
                 <span className="text-lg font-black text-zinc-600 uppercase tracking-widest">Expected Return in</span>
-                <span className="font-mono text-4xl font-black text-[var(--product-primary)] tracking-wider tabular-nums">
-                  {Math.floor(state.brb.countdownSeconds / 60).toString().padStart(2, '0')}:
-                  {(state.brb.countdownSeconds % 60).toString().padStart(2, '0')}
-                </span>
+                <Countdown 
+                  numberSizeClass="text-4xl font-mono"
+                  textColor="text-[var(--product-primary)] tracking-wider"
+                  showLabel={false}
+                />
               </div>
 
               {/* Dynamic Notification / Status fields */}
