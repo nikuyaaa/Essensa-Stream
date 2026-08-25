@@ -1,131 +1,36 @@
 import React from 'react';
 
 export function Logo({ className = '', showText = true, light = false, logoUrl = '' }) {
-  if (logoUrl) {
-    const isVideo = logoUrl.match(/\.(mp4|webm|ogg)$/i) || logoUrl.startsWith('data:video/');
-    // Maintain consistent aspect ratio containment sizes matching original SVG bounds
-    const sizeClass = showText ? "h-[48px] max-w-[200px]" : "w-[36px] sm:w-[48px] h-[36px] sm:h-[48px]";
-    return (
-      <div className={`flex items-center justify-center overflow-hidden shrink-0 ${className}`}>
-        {isVideo ? (
-          <video src={logoUrl} autoPlay loop muted playsInline className={`${sizeClass} object-contain`} />
-        ) : (
-          <img src={logoUrl} alt="Logo" className={`${sizeClass} object-contain`} />
-        )}
-      </div>
-    );
-  }
-
-  const primaryGreen = '#1B7339';
-  const accentGreen = '#4CAF50';
-  const charcoal = '#1A1A1A';
-  const cream = '#F8F9FA';
-
-  const textColor = light ? cream : charcoal;
-
-  // Semicircular arc calculations for Essensa logo spikes (14 spikes)
-  const R_inner = 28;
-  const R_outer = 44;
-  const cx = 52;
-  const cy = 50;
-  const startAngle = 135; // bottom-left (points down-left)
-  const endAngle = 315;   // top-right (points up-right)
-  const numSpikes = 14;
+  // Use the provided image as the new global default logo
+  const defaultLogo = "/essensa-logo.png";
+  const finalUrl = logoUrl || defaultLogo;
   
-  const spikes = [];
-  const angleStep = (endAngle - startAngle) / (numSpikes - 1);
-  const dAngle = 6.8; // half of spacing to touch base points
+  const isVideo = finalUrl.match(/\.(mp4|webm|ogg)$/i) || finalUrl.startsWith('data:video/');
   
-  for (let i = 0; i < numSpikes; i++) {
-    const angleDeg = startAngle + i * angleStep;
-    const angleRad = (angleDeg * Math.PI) / 180;
-    
-    // Tip vertex
-    const tx = cx + R_outer * Math.cos(angleRad);
-    const ty = cy + R_outer * Math.sin(angleRad);
-    
-    // Base vertex 1
-    const b1Rad = ((angleDeg - dAngle) * Math.PI) / 180;
-    const b1x = cx + R_inner * Math.cos(b1Rad);
-    const b1y = cy + R_inner * Math.sin(b1Rad);
-    
-    // Base vertex 2
-    const b2Rad = ((angleDeg + dAngle) * Math.PI) / 180;
-    const b2x = cx + R_inner * Math.cos(b2Rad);
-    const b2y = cy + R_inner * Math.sin(b2Rad);
-    
-    spikes.push({ tx, ty, b1x, b1y, b2x, b2y });
-  }
+  // Maintain responsive sizing matching the old SVG dimensions
+  const sizeClass = showText 
+    ? "h-[48px] sm:h-[64px] max-w-[200px] sm:max-w-[280px]" 
+    : "w-[48px] sm:w-[64px] h-[48px] sm:h-[64px]";
 
-  // Generate SVG path for the circular inner ribbon line
-  const startRad = (startAngle * Math.PI) / 180;
-  const endRad = (endAngle * Math.PI) / 180;
-  const startX = cx + R_inner * Math.cos(startRad);
-  const startY = cy + R_inner * Math.sin(startRad);
-  const endX = cx + R_inner * Math.cos(endRad);
-  const endY = cy + R_inner * Math.sin(endRad);
-  
-  const innerRibbonPath = `M ${startX} ${startY} A ${R_inner} ${R_inner} 0 0 1 ${endX} ${endY}`;
-
-  // ViewBox dynamic dimensions
-  const viewBox = showText ? "0 0 280 100" : "0 0 100 100";
-  // Responsive sizing classes
-  const svgClass = showText ? "w-[130px] sm:w-[160px] h-[48px]" : "w-[36px] sm:w-[48px] h-[36px] sm:h-[48px]";
+  // The 'light' prop can be used to conditionally invert or adjust brightness if needed,
+  // but since it's a fixed image, we'll just render it as is, with a slight brightness bump for dark mode if light=true.
+  const filterClass = light ? "brightness-0 invert" : ""; // If it's a black text logo, this makes it white when light=true is requested
 
   return (
-    <div className={`flex items-center ${className}`}>
-      <svg
-        viewBox={viewBox}
-        className={`${svgClass} shrink-0`}
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        {/* Draw the 14 Crescent Spikes */}
-        {spikes.map((s, idx) => (
-          <polygon
-            key={idx}
-            points={`${s.b1x},${s.b1y} ${s.tx},${s.ty} ${s.b2x},${s.b2y}`}
-            fill={light ? accentGreen : primaryGreen}
-          />
-        ))}
-
-        {/* Draw the connecting inner ribbon circle */}
-        <path
-          d={innerRibbonPath}
-          stroke={light ? accentGreen : primaryGreen}
-          strokeWidth="1.8"
-          fill="none"
-          strokeLinecap="round"
+    <div className={`flex items-center justify-center overflow-hidden shrink-0 ${className}`}>
+      {isVideo ? (
+        <video 
+          src={finalUrl} 
+          autoPlay loop muted playsInline 
+          className={`${sizeClass} object-contain`} 
         />
-
-        {/* Brand Text Inside SVG */}
-        {showText && (
-          <>
-            <text
-              x="96"
-              y="54"
-              fontFamily="Montserrat, Inter, sans-serif"
-              fontWeight="900"
-              fontSize="36"
-              fill={textColor}
-              letterSpacing="-0.5"
-            >
-              ESSENSA
-            </text>
-            <text
-              x="96"
-              y="80"
-              fontFamily="Montserrat, Inter, sans-serif"
-              fontWeight="500"
-              fontSize="15"
-              fill={light ? accentGreen : textColor}
-              letterSpacing="6.5"
-            >
-              NATURALE
-            </text>
-          </>
-        )}
-      </svg>
+      ) : (
+        <img 
+          src={finalUrl} 
+          alt="Essensa Naturale" 
+          className={`${sizeClass} object-contain ${filterClass}`} 
+        />
+      )}
     </div>
   );
 }
