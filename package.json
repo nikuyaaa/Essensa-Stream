@@ -1,0 +1,17 @@
+{
+  "name": "essensa-stream",
+  "version": "1.0.0",
+  "description": "OBS Stream Overlay & Control Hub for Itanong Mo Kay Doc!",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "@tesseract.js-data/eng": "^1.0.0",
+    "express": "^4.21.2",
+    "lucide": "^1.71.0",
+    "tesseract.js": "^7.0.0",
+    "tesseract.js-core": "^7.0.0",
+    "ws": "^8.18.0"
+  }
+}

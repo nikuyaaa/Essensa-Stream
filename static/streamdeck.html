@@ -1,0 +1,1103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Stream Deck Setup & Visual Documentation — Itanong Mo Kay Doc!</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/css/brand.css">
+  <style>
+    :root {
+      --bg-surface: #F8FAFC;
+      --card-bg: #FFFFFF;
+      --card-border: #E2E8F0;
+      --deck-matte: #0D161F;
+      --deck-bevel: #1E293B;
+      --key-active: #0284C7;
+    }
+
+    body {
+      background: var(--bg-surface);
+      color: #0F172A;
+      min-height: 100vh;
+      padding: 24px 32px;
+      overflow-y: auto;
+      user-select: auto;
+    }
+
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    /* Top Navigation Bar */
+    .top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #FFFFFF;
+      border: 1px solid #E2E8F0;
+      border-radius: 16px;
+      padding: 16px 28px;
+      margin-bottom: 24px;
+      box-shadow: 0 4px 20px rgba(15, 23, 42, 0.05);
+    }
+
+    .brand-group {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .brand-group img {
+      width: 44px;
+      height: 44px;
+      object-fit: contain;
+    }
+
+    .brand-title {
+      font-size: 19px;
+      font-weight: 900;
+      color: #0F172A;
+      letter-spacing: 0.3px;
+    }
+
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .btn-nav-back {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: #F1F5F9;
+      border: 1px solid #CBD5E1;
+      color: #0F172A;
+      font-weight: 700;
+      font-size: 13px;
+      padding: 8px 18px;
+      border-radius: 9999px;
+      text-decoration: none;
+      transition: all 0.2s;
+    }
+
+    .btn-nav-back:hover {
+      background: #0284C7;
+      border-color: #0284C7;
+      color: #FFFFFF;
+    }
+
+    .live-status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 14px;
+      border-radius: 9999px;
+      font-size: 12px;
+      font-weight: 800;
+      background: #DCFCE7;
+      border: 1px solid #86EFAC;
+      color: #15803D;
+    }
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #16A34A;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(0.9); }
+    }
+
+    /* Hero Banner */
+    .hero-banner {
+      background: linear-gradient(135deg, #063223 0%, #08494A 50%, #0B3C68 100%);
+      border-radius: 18px;
+      padding: 28px 36px;
+      color: #FFFFFF;
+      margin-bottom: 24px;
+      box-shadow: 0 8px 24px rgba(6, 50, 35, 0.15);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 24px;
+    }
+
+    .hero-text h2 {
+      font-size: 24px;
+      font-weight: 900;
+      letter-spacing: 0.5px;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .hero-text p {
+      font-size: 14px;
+      color: #BAE6FD;
+      line-height: 1.6;
+      max-width: 800px;
+    }
+
+    .hero-badge-tag {
+      background: rgba(82, 237, 255, 0.15);
+      border: 1px solid rgba(82, 237, 255, 0.4);
+      color: #52EDFF;
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      padding: 4px 10px;
+      border-radius: 6px;
+      letter-spacing: 0.8px;
+    }
+
+    /* Layout Grid */
+    .deck-studio-layout {
+      display: grid;
+      grid-template-columns: 1fr 480px;
+      gap: 24px;
+      margin-bottom: 32px;
+    }
+
+    /* Interactive Hardware Deck Simulator */
+    .hardware-card {
+      background: #FFFFFF;
+      border: 1px solid #E2E8F0;
+      border-radius: 18px;
+      padding: 28px;
+      box-shadow: 0 4px 16px rgba(15, 23, 42, 0.04);
+    }
+
+    .section-title {
+      font-size: 16px;
+      font-weight: 800;
+      color: #0F172A;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 20px;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+    }
+
+    .host-toggle-wrap {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: #F1F5F9;
+      padding: 4px;
+      border-radius: 10px;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .btn-host-toggle {
+      background: none;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 8px;
+      cursor: pointer;
+      color: #64748B;
+      font-family: inherit;
+      font-weight: 700;
+      font-size: 12px;
+      transition: all 0.2s;
+    }
+
+    .btn-host-toggle.active {
+      background: #FFFFFF;
+      color: #0F172A;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+    }
+
+    /* Realistic 15-Key Stream Deck Chassis */
+    .stream-deck-chassis {
+      background: linear-gradient(180deg, #1A232E 0%, #0F1722 100%);
+      border: 3px solid #334155;
+      border-radius: 24px;
+      padding: 28px 24px;
+      box-shadow: inset 0 2px 4px rgba(255,255,255,0.1), 0 16px 36px rgba(15, 23, 42, 0.25);
+      position: relative;
+    }
+
+    .chassis-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 18px;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      margin-bottom: 22px;
+    }
+
+    .chassis-logo {
+      font-size: 12px;
+      font-weight: 900;
+      letter-spacing: 2px;
+      color: #64748B;
+      text-transform: uppercase;
+    }
+
+    .chassis-indicator {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      color: #38BDF8;
+      font-weight: 700;
+    }
+
+    .keys-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 16px;
+    }
+
+    .deck-key {
+      background: linear-gradient(180deg, #1E293B 0%, #0F172A 100%);
+      border: 2px solid #334155;
+      border-radius: 14px;
+      aspect-ratio: 1 / 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 12px 6px;
+      cursor: pointer;
+      position: relative;
+      transition: all 0.15s ease;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.1);
+      user-select: none;
+    }
+
+    .deck-key:hover {
+      border-color: #52EDFF;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(82, 237, 255, 0.25);
+    }
+
+    .deck-key:active {
+      transform: translateY(1px);
+    }
+
+    .deck-key.selected {
+      border-color: #24FF44;
+      box-shadow: 0 0 18px rgba(36, 255, 68, 0.4), inset 0 0 12px rgba(36, 255, 68, 0.15);
+      background: linear-gradient(180deg, #133327 0%, #07221A 100%);
+    }
+
+    .deck-key-icon {
+      font-size: 24px;
+      line-height: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #38BDF8;
+    }
+
+    .deck-key-icon svg {
+      width: 24px;
+      height: 24px;
+      stroke-width: 2.2px;
+    }
+
+    .deck-key-label {
+      font-size: 11px;
+      font-weight: 800;
+      color: #F8FAFC;
+      text-align: center;
+      line-height: 1.2;
+      letter-spacing: 0.3px;
+    }
+
+    .deck-key-sub {
+      font-size: 9px;
+      font-weight: 700;
+      color: #94A3B8;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .key-badge-num {
+      position: absolute;
+      top: 6px;
+      left: 8px;
+      font-size: 9px;
+      font-weight: 800;
+      color: #64748B;
+    }
+
+    /* Key Inspector & Test Card */
+    .inspector-card {
+      background: #FFFFFF;
+      border: 1px solid #E2E8F0;
+      border-radius: 18px;
+      padding: 24px;
+      box-shadow: 0 4px 16px rgba(15, 23, 42, 0.04);
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+
+    .inspector-header {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid #E2E8F0;
+    }
+
+    .inspector-icon-large {
+      width: 52px;
+      height: 52px;
+      border-radius: 12px;
+      background: #F1F5F9;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 2px solid #CBD5E1;
+      color: #0284C7;
+    }
+
+    .inspector-icon-large svg {
+      width: 28px;
+      height: 28px;
+      stroke-width: 2.2px;
+    }
+
+    .inspector-titles h3 {
+      font-size: 17px;
+      font-weight: 800;
+      color: #0F172A;
+      margin-bottom: 4px;
+    }
+
+    .inspector-titles span {
+      font-size: 12px;
+      color: #0284C7;
+      font-weight: 700;
+    }
+
+    .prop-row {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .prop-label {
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      color: #64748B;
+    }
+
+    .code-snippet-box {
+      display: flex;
+      align-items: center;
+      background: #F8FAFC;
+      border: 1px solid #CBD5E1;
+      border-radius: 10px;
+      padding: 6px 8px 6px 12px;
+      gap: 8px;
+    }
+
+    .code-text {
+      flex: 1;
+      font-family: monospace;
+      font-size: 12px;
+      color: #0369A1;
+      font-weight: 600;
+      word-break: break-all;
+    }
+
+    .btn-copy-action {
+      background: #0284C7;
+      color: #FFFFFF;
+      border: none;
+      border-radius: 6px;
+      padding: 7px 14px;
+      font-size: 12px;
+      font-weight: 800;
+      cursor: pointer;
+      transition: all 0.2s;
+      white-space: nowrap;
+    }
+
+    .btn-copy-action:hover {
+      background: #0369A1;
+    }
+
+    .btn-test-trigger {
+      width: 100%;
+      background: linear-gradient(135deg, var(--brand-green-primary) 0%, #059669 100%);
+      color: #FFFFFF;
+      font-weight: 800;
+      font-size: 13px;
+      padding: 12px;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      box-shadow: 0 4px 12px rgba(18, 193, 45, 0.25);
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .btn-test-trigger:hover {
+      opacity: 0.95;
+      transform: translateY(-1px);
+    }
+
+    .test-result-indicator {
+      font-size: 12px;
+      font-weight: 700;
+      text-align: center;
+      min-height: 20px;
+      transition: color 0.2s;
+    }
+
+    /* Step-by-Step Instructions Grid */
+    .steps-section {
+      background: #FFFFFF;
+      border: 1px solid #E2E8F0;
+      border-radius: 18px;
+      padding: 28px;
+      margin-bottom: 32px;
+      box-shadow: 0 4px 16px rgba(15, 23, 42, 0.04);
+    }
+
+    .steps-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 20px;
+      margin-top: 20px;
+    }
+
+    .step-card {
+      background: #F8FAFC;
+      border: 1px solid #E2E8F0;
+      border-radius: 14px;
+      padding: 20px;
+      position: relative;
+    }
+
+    .step-number {
+      width: 32px;
+      height: 32px;
+      background: #0284C7;
+      color: #FFFFFF;
+      font-weight: 900;
+      font-size: 14px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 12px;
+    }
+
+    .step-card h4 {
+      font-size: 14px;
+      font-weight: 800;
+      color: #0F172A;
+      margin-bottom: 8px;
+    }
+
+    .step-card p {
+      font-size: 13px;
+      color: #475569;
+      line-height: 1.5;
+    }
+
+    /* Endpoints Master Table */
+    .table-section {
+      background: #FFFFFF;
+      border: 1px solid #E2E8F0;
+      border-radius: 18px;
+      padding: 28px;
+      box-shadow: 0 4px 16px rgba(15, 23, 42, 0.04);
+      margin-bottom: 32px;
+    }
+
+    .master-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 16px;
+      font-size: 13px;
+    }
+
+    .master-table th {
+      background: #F8FAFC;
+      padding: 12px 16px;
+      text-align: left;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      color: #64748B;
+      border-bottom: 2px solid #E2E8F0;
+    }
+
+    .master-table td {
+      padding: 14px 16px;
+      border-bottom: 1px solid #F1F5F9;
+      color: #1E293B;
+      vertical-align: middle;
+    }
+
+    .badge-method {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 800;
+      background: #E0F2FE;
+      color: #0369A1;
+    }
+
+    .network-chips {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 6px;
+    }
+
+    .ip-chip {
+      background: #F1F5F9;
+      border: 1px solid #CBD5E1;
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-family: monospace;
+      font-size: 12px;
+      font-weight: 700;
+      color: #0F172A;
+      cursor: pointer;
+    }
+
+    .ip-chip:hover {
+      background: #E2E8F0;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Top Bar Navigation -->
+    <header class="top-bar">
+      <div class="brand-group">
+        <img src="/static/media/logo.png" alt="Logo">
+        <div>
+          <h1 class="brand-title">Itanong Mo Kay Doc!</h1>
+          <span style="font-size: 12px; color: #0284C7; font-weight: 700;">Broadcast & Overlay Automation Deck</span>
+        </div>
+      </div>
+      <div class="nav-actions">
+        <a href="/admin" class="btn-nav-back">
+          <i data-lucide="arrow-left" class="icon-sm"></i> Back to Operator Panel
+        </a>
+        <div class="live-status-pill">
+          <div class="status-dot"></div>
+          <span id="txt-engine-status">Engine Connected</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- Hero Announcement -->
+    <section class="hero-banner">
+      <div class="hero-text">
+        <span class="hero-badge-tag">Stream Deck Integration</span>
+        <h2><i data-lucide="layout-grid" class="icon-lg"></i> Hardware & Mobile Stream Deck Setup</h2>
+        <p>
+          Control the broadcast directly from physical keys on an <strong>Elgato Stream Deck</strong> (15-key, XL, Mini, or Stream Deck Mobile on iOS/Android). Every key uses zero-latency local HTTP Webhooks.
+        </p>
+      </div>
+    </section>
+
+    <!-- Main Studio Grid -->
+    <div class="deck-studio-layout">
+      <!-- Left: Interactive Hardware Simulator -->
+      <section class="hardware-card">
+        <div class="section-title">
+          <span><i data-lucide="cpu" class="icon-sm"></i> Interactive Stream Deck Key Mapper (Click Any Key)</span>
+          <div class="host-toggle-wrap">
+            <button id="btn-mode-local" class="btn-host-toggle active" onclick="setHostMode('local')">Localhost</button>
+            <button id="btn-mode-lan" class="btn-host-toggle" onclick="setHostMode('lan')">Wi-Fi / LAN IP</button>
+          </div>
+        </div>
+
+        <div class="stream-deck-chassis">
+          <div class="chassis-header">
+            <span class="chassis-logo">ELGATO STREAM DECK // 15-KEY PROFILE</span>
+            <span class="chassis-indicator">● LIVE READY</span>
+          </div>
+
+          <div class="keys-grid" id="keys-container">
+            <!-- Populated dynamically by JS -->
+          </div>
+        </div>
+
+        <div style="margin-top: 18px; font-size: 13px; color: #64748B; display: flex; align-items: center; justify-content: space-between;">
+          <span><i data-lucide="lightbulb" class="icon-sm" style="color:#F59E0B;"></i> <strong>Tip:</strong> Click any key to inspect its exact URL, action summary, and test-trigger it immediately.</span>
+          <span id="detected-lan-text" style="font-weight: 700; color: #0284C7;">Detecting network IP...</span>
+        </div>
+      </section>
+
+      <!-- Right: Key Inspector & Realtime Tester -->
+      <aside class="inspector-card">
+        <div class="inspector-header">
+          <div class="inspector-icon-large" id="insp-icon"></div>
+          <div class="inspector-titles">
+            <h3 id="insp-title">Next Question</h3>
+            <span id="insp-key-slot">KEY #1 • LIVE CONTROL</span>
+          </div>
+        </div>
+
+        <div class="prop-row">
+          <span class="prop-label">Action Purpose</span>
+          <p id="insp-desc" style="font-size: 13px; color: #334155; line-height: 1.45;">
+            Advances directly to the next unanswered question and triggers the animated broadcast banner in OBS.
+          </p>
+        </div>
+
+        <div class="prop-row">
+          <span class="prop-label">Stream Deck Action Type</span>
+          <div style="font-size: 13px; font-weight: 700; color: #0F172A;">
+            System &gt; Website <span style="font-weight: 400; color: #64748B;">(or API Request plugin)</span>
+          </div>
+        </div>
+
+        <div class="prop-row">
+          <span class="prop-label">HTTP Webhook URL</span>
+          <div class="code-snippet-box">
+            <span class="code-text" id="insp-url">http://localhost:3000/api/stream/next</span>
+            <button class="btn-copy-action" id="btn-copy-insp" onclick="copyInspectorUrl()">Copy</button>
+          </div>
+        </div>
+
+        <div class="prop-row">
+          <span class="prop-label">Recommended Key Title</span>
+          <div style="font-size: 14px; font-weight: 800; color: #0F172A;" id="insp-suggested-title">
+            NEXT
+          </div>
+        </div>
+
+        <div style="margin-top: 8px;">
+          <button class="btn-test-trigger" id="btn-fire-test" onclick="fireTestTrigger()">
+            <i data-lucide="zap" class="icon-sm"></i> Test Action in OBS Now
+          </button>
+          <div class="test-result-indicator" id="test-feedback"></div>
+        </div>
+      </aside>
+    </div>
+
+    <!-- Step-by-Step Setup Guide -->
+    <section class="steps-section">
+      <h2 style="font-size: 18px; font-weight: 900; color: #0F172A; text-transform: uppercase; letter-spacing: 0.6px;">
+        <i data-lucide="book-open" class="icon-md"></i> 4-Step Quick Setup in Elgato Stream Deck App
+      </h2>
+      <div class="steps-grid">
+        <div class="step-card">
+          <div class="step-number">1</div>
+          <h4>Add "Website" Action</h4>
+          <p>Open Elgato Stream Deck app. In the right action list, scroll to <strong>System</strong> and drag <strong>Website</strong> onto any vacant key.</p>
+        </div>
+        <div class="step-card">
+          <div class="step-number">2</div>
+          <h4>Paste Webhook URL</h4>
+          <p>Click the key in Stream Deck and paste the endpoint (e.g. <code>http://localhost:3000/api/stream/next</code>) into the URL field.</p>
+        </div>
+        <div class="step-card">
+          <div class="step-number">3</div>
+          <h4>Check Background Option</h4>
+          <p>Check the checkbox <strong>"Open in background"</strong> or <strong>"POST request"</strong> so your browser doesn't open a new tab.</p>
+        </div>
+        <div class="step-card">
+          <div class="step-number">4</div>
+          <h4>Test Live in OBS</h4>
+          <p>Press your physical key! The question slides on-air instantly with chime sound effects in OBS Studio.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Master Webhooks Table -->
+    <section class="table-section">
+      <div class="section-title">
+        <span><i data-lucide="table" class="icon-sm"></i> Master Stream Deck Webhook API Endpoints</span>
+      </div>
+      <table class="master-table">
+        <thead>
+          <tr>
+            <th style="width: 140px;">Function</th>
+            <th style="width: 80px;">Method</th>
+            <th>Endpoint URL</th>
+            <th style="width: 280px;">OBS Behavior</th>
+            <th style="width: 90px;">Action</th>
+          </tr>
+        </thead>
+        <tbody id="master-endpoints-tbody">
+          <!-- Populated by JS -->
+        </tbody>
+      </table>
+    </section>
+  </div>
+
+  <script src="/static/js/lucide.min.js"></script>
+  <script>
+    const KEY_PRESETS = [
+      {
+        id: 'next',
+        slot: 'KEY #1',
+        title: 'NEXT',
+        sub: 'Advance',
+        icon: 'skip-forward',
+        endpoint: '/api/stream/next',
+        desc: 'Advances to the next unanswered question and immediately displays it on-air in OBS with spring entrance animation.',
+        color: '#12C12D'
+      },
+      {
+        id: 'prev',
+        slot: 'KEY #2',
+        title: 'PREV',
+        sub: 'Go Back',
+        icon: 'skip-back',
+        endpoint: '/api/stream/prev',
+        desc: 'Steps back to the previous question and displays it on-air in OBS.',
+        color: '#0284C7'
+      },
+      {
+        id: 'toggle',
+        slot: 'KEY #3',
+        title: 'TOGGLE',
+        sub: 'On-Air',
+        icon: 'radio',
+        endpoint: '/api/stream/toggle',
+        desc: 'Toggles visibility. If a question is currently shown, it hides it. If hidden, it displays the top unanswered question.',
+        color: '#F59E0B'
+      },
+      {
+        id: 'done-next',
+        slot: 'KEY #4',
+        title: 'DONE & NEXT',
+        sub: 'Complete',
+        icon: 'check-check',
+        endpoint: '/api/stream/done-next',
+        desc: 'Marks the current question as answered and instantly displays the next pending question.',
+        color: '#10B981'
+      },
+      {
+        id: 'hide',
+        slot: 'KEY #5',
+        title: 'PANIC HIDE',
+        sub: 'Clear Stream',
+        icon: 'octagon-alert',
+        endpoint: '/api/stream/hide',
+        desc: 'Emergency clear button. Instantly hides the active question overlay from the OBS broadcast.',
+        color: '#EF4444'
+      },
+      {
+        id: 'done',
+        slot: 'KEY #6',
+        title: 'MARK DONE',
+        sub: 'Answered',
+        icon: 'check',
+        endpoint: '/api/stream/done',
+        desc: 'Marks the active question as answered without advancing or hiding it.',
+        color: '#059669'
+      },
+      {
+        id: 'show',
+        slot: 'KEY #7',
+        title: 'TOP QUESTION',
+        sub: 'Queue Top',
+        icon: 'pin',
+        endpoint: '/api/stream/show',
+        desc: 'Displays the first unanswered question from the top of the queue.',
+        color: '#0284C7'
+      },
+      {
+        id: 'status',
+        slot: 'KEY #8',
+        title: 'STATUS',
+        sub: 'Telemetry',
+        icon: 'activity',
+        endpoint: '/api/stream/status',
+        desc: 'Returns live JSON status containing on-air state, active question data, and queue count totals.',
+        color: '#6366F1'
+      },
+      {
+        id: 'spare-1',
+        slot: 'KEY #9',
+        title: 'CHIME SFX',
+        sub: 'Audio Cue',
+        icon: 'bell',
+        endpoint: '/api/stream/show',
+        desc: 'Re-triggers the brand broadcast chime in OBS without changing the active question.',
+        color: '#8B5CF6'
+      },
+      {
+        id: 'spare-2',
+        slot: 'KEY #10',
+        title: 'EMPTY',
+        sub: 'Custom Slot',
+        icon: 'plus',
+        endpoint: '/api/stream/toggle',
+        desc: 'Customizable action key for your favorite broadcast shortcut.',
+        color: '#475569'
+      },
+      {
+        id: 'spare-3',
+        slot: 'KEY #11',
+        title: 'EMPTY',
+        sub: 'Custom Slot',
+        icon: 'plus',
+        endpoint: '/api/stream/next',
+        desc: 'Customizable action key.',
+        color: '#475569'
+      },
+      {
+        id: 'spare-4',
+        slot: 'KEY #12',
+        title: 'EMPTY',
+        sub: 'Custom Slot',
+        icon: 'plus',
+        endpoint: '/api/stream/hide',
+        desc: 'Customizable action key.',
+        color: '#475569'
+      },
+      {
+        id: 'spare-5',
+        slot: 'KEY #13',
+        title: 'EMPTY',
+        sub: 'Custom Slot',
+        icon: 'plus',
+        endpoint: '/api/stream/status',
+        desc: 'Customizable action key.',
+        color: '#475569'
+      },
+      {
+        id: 'spare-6',
+        slot: 'KEY #14',
+        title: 'EMPTY',
+        sub: 'Custom Slot',
+        icon: 'plus',
+        endpoint: '/api/stream/prev',
+        desc: 'Customizable action key.',
+        color: '#475569'
+      },
+      {
+        id: 'spare-7',
+        slot: 'KEY #15',
+        title: 'EMPTY',
+        sub: 'Custom Slot',
+        icon: 'plus',
+        endpoint: '/api/stream/toggle',
+        desc: 'Customizable action key.',
+        color: '#475569'
+      }
+    ];
+
+    let currentSelectedKey = KEY_PRESETS[0];
+    let hostMode = 'local'; // 'local' or 'lan'
+    let localIpAddress = '127.0.0.1';
+    let serverPort = 3000;
+
+    async function initSystem() {
+      try {
+        const res = await fetch('/api/system-info');
+        const data = await res.json();
+        serverPort = data.port || 3000;
+        if (data.ips && data.ips.length > 0) {
+          localIpAddress = data.ips[0].address;
+          document.getElementById('detected-lan-text').textContent = `Detected Local LAN IP: ${localIpAddress}`;
+        }
+      } catch (e) {
+        console.error('System info fetch error:', e);
+      }
+      renderKeys();
+      selectKey(KEY_PRESETS[0].id);
+      renderTable();
+      setupWebSocket();
+    }
+
+    function getBaseHost() {
+      if (hostMode === 'lan' && localIpAddress) {
+        return `http://${localIpAddress}:${serverPort}`;
+      }
+      return `${window.location.protocol}//${window.location.host}`;
+    }
+
+    function setHostMode(mode) {
+      hostMode = mode;
+      document.getElementById('btn-mode-local').classList.toggle('active', mode === 'local');
+      document.getElementById('btn-mode-lan').classList.toggle('active', mode === 'lan');
+      updateInspector();
+      renderTable();
+    }
+
+    function renderKeys() {
+      const container = document.getElementById('keys-container');
+      container.innerHTML = KEY_PRESETS.map((k, idx) => `
+        <div class="deck-key ${k.id === currentSelectedKey.id ? 'selected' : ''}" 
+             id="key-elem-${k.id}"
+             onclick="selectKey('${k.id}')">
+          <span class="key-badge-num">#${idx + 1}</span>
+          <span class="deck-key-icon"><i data-lucide="${k.icon}"></i></span>
+          <span class="deck-key-label">${k.title}</span>
+          <span class="deck-key-sub">${k.sub}</span>
+        </div>
+      `).join('');
+      if (window.lucide && window.lucide.createIcons) window.lucide.createIcons();
+    }
+
+    function selectKey(keyId) {
+      const found = KEY_PRESETS.find(k => k.id === keyId);
+      if (!found) return;
+      currentSelectedKey = found;
+
+      document.querySelectorAll('.deck-key').forEach(el => el.classList.remove('selected'));
+      const activeEl = document.getElementById(`key-elem-${keyId}`);
+      if (activeEl) activeEl.classList.add('selected');
+
+      updateInspector();
+    }
+
+    function updateInspector() {
+      const base = getBaseHost();
+      const fullUrl = `${base}${currentSelectedKey.endpoint}`;
+
+      const iconEl = document.getElementById('insp-icon');
+      iconEl.innerHTML = `<i data-lucide="${currentSelectedKey.icon}"></i>`;
+      iconEl.style.color = currentSelectedKey.color;
+      if (window.lucide && window.lucide.createIcons) window.lucide.createIcons();
+
+      document.getElementById('insp-title').textContent = currentSelectedKey.title;
+      document.getElementById('insp-key-slot').textContent = `${currentSelectedKey.slot} • ${currentSelectedKey.sub}`;
+      document.getElementById('insp-desc').textContent = currentSelectedKey.desc;
+      document.getElementById('insp-url').textContent = fullUrl;
+      document.getElementById('insp-suggested-title').textContent = currentSelectedKey.title;
+      document.getElementById('test-feedback').textContent = '';
+    }
+
+    async function copyInspectorUrl() {
+      const url = document.getElementById('insp-url').textContent;
+      const btn = document.getElementById('btn-copy-insp');
+      try {
+        await navigator.clipboard.writeText(url);
+        btn.innerHTML = '<i data-lucide="check" class="icon-xs"></i> Copied!';
+        btn.style.background = '#16A34A';
+        if (window.lucide && window.lucide.createIcons) window.lucide.createIcons();
+        setTimeout(() => {
+          btn.textContent = 'Copy';
+          btn.style.background = '';
+        }, 1500);
+      } catch (e) {
+        prompt('Copy Webhook URL:', url);
+      }
+    }
+
+    async function fireTestTrigger() {
+      const feedback = document.getElementById('test-feedback');
+      feedback.style.color = '#0284C7';
+      feedback.innerHTML = '<i data-lucide="zap" class="icon-xs"></i> Triggering action...';
+      if (window.lucide && window.lucide.createIcons) window.lucide.createIcons();
+
+      try {
+        const res = await fetch(currentSelectedKey.endpoint);
+        const data = await res.json();
+        feedback.style.color = '#16A34A';
+        const msg = data.active ? data.active.submitter_name : (data.message || 'Updated');
+        feedback.innerHTML = `<i data-lucide="check" class="icon-xs"></i> Success! Overlay responded in OBS (${escapeHtml(msg)})`;
+        if (window.lucide && window.lucide.createIcons) window.lucide.createIcons();
+      } catch (err) {
+        feedback.style.color = '#EF4444';
+        feedback.innerHTML = `<i data-lucide="alert-circle" class="icon-xs"></i> Error firing test webhook: ${escapeHtml(err.message)}`;
+        if (window.lucide && window.lucide.createIcons) window.lucide.createIcons();
+      }
+    }
+
+    function renderTable() {
+      const tbody = document.getElementById('master-endpoints-tbody');
+      const base = getBaseHost();
+
+      const uniqueEndpoints = [
+        { name: 'Next Question', method: 'GET / POST', ep: '/api/stream/next', desc: 'Displays next pending question with sound chime' },
+        { name: 'Previous Question', method: 'GET / POST', ep: '/api/stream/prev', desc: 'Step backwards in questions queue' },
+        { name: 'Toggle On-Air', method: 'GET / POST', ep: '/api/stream/toggle', desc: 'Shows/Hides current question' },
+        { name: 'Done & Next', method: 'GET / POST', ep: '/api/stream/done-next', desc: 'Marks active question answered and shows next' },
+        { name: 'Emergency Clear', method: 'GET / POST', ep: '/api/stream/hide', desc: 'Instantly clears question from OBS stream' },
+        { name: 'Mark Done Only', method: 'GET / POST', ep: '/api/stream/done', desc: 'Marks answered without clearing or advancing' },
+        { name: 'Stream Status', method: 'GET', ep: '/api/stream/status', desc: 'Returns JSON telemetry of queue and on-air state' }
+      ];
+
+      tbody.innerHTML = uniqueEndpoints.map((item, idx) => {
+        const fullUrl = `${base}${item.ep}`;
+        return `
+          <tr>
+            <td><strong>${item.name}</strong></td>
+            <td><span class="badge-method">${item.method}</span></td>
+            <td><code style="font-family:monospace; font-size:12px; color:#0369A1; font-weight:700;">${fullUrl}</code></td>
+            <td><span style="font-size:13px; color:#475569;">${item.desc}</span></td>
+            <td>
+              <button class="btn-copy-action" style="padding:4px 10px; font-size:11px;" onclick="copyTableUrl('${fullUrl}', this)">Copy</button>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    async function copyTableUrl(url, btn) {
+      try {
+        await navigator.clipboard.writeText(url);
+        const originalText = btn.innerHTML;
+        btn.innerHTML = '<i data-lucide="check" class="icon-xs"></i> Copied!';
+        btn.style.background = '#16A34A';
+        if (window.lucide && window.lucide.createIcons) window.lucide.createIcons();
+        setTimeout(() => {
+          btn.innerHTML = originalText;
+          btn.style.background = '';
+          if (window.lucide && window.lucide.createIcons) window.lucide.createIcons();
+        }, 1500);
+      } catch (e) {
+        prompt('Copy Webhook URL:', url);
+      }
+    }
+
+    function setupWebSocket() {
+      const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+      const ws = new WebSocket(`${protocol}//${window.location.host}/ws-v2?role=doc`);
+      const statusText = document.getElementById('txt-engine-status');
+
+      ws.onopen = () => {
+        if (statusText) statusText.textContent = 'Engine Connected';
+      };
+
+      ws.onclose = () => {
+        if (statusText) statusText.textContent = 'Reconnecting...';
+        setTimeout(setupWebSocket, 2000);
+      };
+    }
+
+    function escapeHtml(str) {
+      return (str || '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+
+    initSystem();
+  </script>
+</body>
+</html>

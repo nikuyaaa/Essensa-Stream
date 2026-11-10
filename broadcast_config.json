@@ -1,0 +1,22 @@
+{
+  "episode_title": "Itanong Mo Kay Doc!",
+  "episode_subtitle": "Holistic Health & Natural Wellness",
+  "ticker_text": "I-comment ang iyong tanong! • Like & Share our Livestream • Follow us on FB & TikTok @itanongmokaydoc • Disclaimer: For health education only, not a replacement for clinical consultation.",
+  "call_to_action": "Follow @itanongmokaydoc",
+  "socials": "FB & TikTok: @itanongmokaydoc",
+  "show_frames": true,
+  "speaker": {
+    "name": "Dr. Juan Dela Cruz, MD",
+    "title": "Naturopath Doctor",
+    "credentials": "Internal Medicine Specialist"
+  },
+  "lower_third": {
+    "active": true,
+    "name": "Dr. Juan Dela Cruz, MD",
+    "title": "Naturopath Doctor",
+    "credentials": "Internal Medicine Specialist",
+    "position": "top-left"
+  },
+  "top_cycle_duration": 7000,
+  "top_cycle_items": []
+}

@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Landscape Overlay - Itanong Mo Kay Doc!</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/css/brand.css?v=12">
+  <style>
+    body {
+      width: 1920px;
+      height: 1080px;
+      margin: 0;
+      position: relative;
+    }
+
+    /* =========================================
+       OUTER FRAME (Exact screen edges)
+       ========================================= */
+    .outer-matte-frame {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      border: 4px solid #FFFFFF;
+      pointer-events: none;
+      z-index: 25;
+      box-sizing: border-box;
+    }
+
+    /* =========================================
+       TOP SLANTED CYCLING INFO BANNER
+       ========================================= */
+    .top-header-wrap {
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 30;
+      filter: drop-shadow(0 3px 0 #12C12D) drop-shadow(0 8px 24px rgba(0, 0, 0, 0.45));
+    }
+
+    .top-header-banner {
+      width: 680px;
+      height: 74px;
+      background: #FFFFFF;
+      clip-path: polygon(0 0, 100% 0, 88% 100%, 12% 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 76px 4px 76px;
+      position: relative;
+      overflow: hidden;
+      box-sizing: border-box;
+    }
+
+    /* =========================================
+       BOTTOM INTEGRATED RIBBON BAR
+       ========================================= */
+    .bottom-bar-container {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 96px;
+      z-index: 20;
+      pointer-events: none;
+    }
+
+    .wing-left-wrap {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      z-index: 3;
+      filter: drop-shadow(3px -2px 0 #12C12D) drop-shadow(6px 0 18px rgba(0, 0, 0, 0.5));
+    }
+
+    .bottom-left-wing {
+      width: 320px;
+      height: 96px;
+      background: #FFFFFF;
+      clip-path: polygon(0 0, 82% 0, 100% 100%, 0 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding-left: 18px;
+      padding-right: 48px;
+    }
+
+    .bottom-left-wing img {
+      width: 235px;
+      height: 82px;
+      object-fit: contain;
+    }
+
+    .bottom-center-ticker {
+      position: absolute;
+      bottom: 0;
+      left: 200px;
+      right: 200px;
+      height: 60px;
+      background: var(--ribbon-gradient-bg);
+      display: flex;
+      align-items: center;
+      overflow: hidden;
+      color: #FFFFFF;
+      font-size: 16px;
+      font-weight: 800;
+      letter-spacing: 1.2px;
+      z-index: 1;
+      box-shadow: 0 -4px 25px rgba(0, 0, 0, 0.6);
+    }
+
+    .bottom-center-ticker::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, #12C12D 0%, #52EDFF 50%, #026DFE 100%);
+      box-shadow: 0 0 12px rgba(82, 237, 255, 0.4);
+    }
+
+    .bottom-center-ticker::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at 50% -20%, rgba(82, 237, 255, 0.12) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .wing-right-wrap {
+      position: absolute;
+      bottom: 0;
+      right: 0;
+      z-index: 3;
+      filter: drop-shadow(-3px -2px 0 #12C12D) drop-shadow(-6px 0 18px rgba(0, 0, 0, 0.5));
+    }
+
+    .bottom-right-wing {
+      width: 320px;
+      height: 96px;
+      background: #FFFFFF;
+      clip-path: polygon(18% 0, 100% 0, 100% 100%, 0 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding-left: 48px;
+      padding-right: 18px;
+    }
+
+    .bottom-right-wing img {
+      width: 235px;
+      height: 80px;
+      object-fit: contain;
+    }
+
+    /* =========================================
+       STACKED COMMENT POPUP (Adapted from Mockup)
+       ========================================= */
+    #overlay-container {
+      position: absolute;
+      bottom: 138px;
+      left: 60px;
+      right: 60px;
+      display: flex;
+      justify-content: center;
+      align-items: flex-end;
+      pointer-events: none;
+      z-index: 30;
+      animation: subtlePopupHover 3.8s ease-in-out infinite alternate;
+    }
+
+    @keyframes subtlePopupHover {
+      0% {
+        transform: translateY(0px);
+      }
+      100% {
+        transform: translateY(-6px);
+      }
+    }
+
+    .comment-popup-stack {
+      position: relative;
+      width: 1060px;
+      max-width: 1200px;
+    }
+
+    /* Bottom Stacked Layer 2 (Slowest to catch up on intro) */
+    .stack-layer-2 {
+      position: absolute;
+      left: 42px;
+      right: 42px;
+      bottom: -34px;
+      height: 80px;
+      background: #7E848C;
+      border-radius: 28px;
+      z-index: 1;
+      box-shadow: 0 14px 32px rgba(0, 0, 0, 0.45);
+      transform: translateY(460px) scale(0.84);
+      opacity: 0;
+      transition: transform 0.5s 0.06s cubic-bezier(0.55, 0, 1, 0.45), opacity 0.32s 0.06s ease-in;
+    }
+
+    /* Middle Stacked Layer 1 (Second to catch up on intro) */
+    .stack-layer-1 {
+      position: absolute;
+      left: 18px;
+      right: 18px;
+      bottom: -18px;
+      height: 80px;
+      background: #C9CDD2;
+      border-radius: 30px;
+      z-index: 2;
+      transform: translateY(400px) scale(0.88);
+      opacity: 0;
+      transition: transform 0.44s 0.03s cubic-bezier(0.55, 0, 1, 0.45), opacity 0.28s 0.03s ease-in;
+    }
+
+    /* Main White Rounded Card (Top card: Fastest on intro) */
+    .comment-card-main {
+      position: relative;
+      z-index: 3;
+      background: #F9FBFD;
+      border-radius: 34px;
+      padding: 32px 48px 32px 38px;
+      display: flex;
+      align-items: center;
+      gap: 36px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+      transform: translateY(340px) scale(0.92);
+      opacity: 0;
+      transition: transform 0.38s cubic-bezier(0.55, 0, 1, 0.45), opacity 0.25s ease-in;
+    }
+
+    /* Floating Top-Right Question Marks (? ?) */
+    .floating-qmarks {
+      position: absolute;
+      top: -78px;
+      right: 14px;
+      display: flex;
+      align-items: flex-end;
+      gap: 4px;
+      z-index: 5;
+      filter: drop-shadow(0 6px 14px rgba(0, 0, 0, 0.45));
+      transform: translateY(100px) scale(0.4);
+      opacity: 0;
+      transition: transform 0.3s ease-in, opacity 0.22s ease-in;
+    }
+
+    /* =========================================
+       DECK INTRO ANIMATION (Top card fastest, rest catch up non-linearly)
+       ========================================= */
+    .comment-popup-stack.active .comment-card-main {
+      transform: translateY(0) scale(1);
+      opacity: 1;
+      transition: transform 0.52s cubic-bezier(0.2, 1.32, 0.32, 1), opacity 0.25s ease-out;
+    }
+
+    .comment-popup-stack.active .stack-layer-1 {
+      transform: translateY(0) scale(1);
+      opacity: 1;
+      transition: transform 0.72s 0.09s cubic-bezier(0.17, 1.26, 0.3, 1), opacity 0.32s 0.09s ease-out;
+      animation: stackHover1 3.8s 0.85s ease-in-out infinite alternate;
+    }
+
+    .comment-popup-stack.active .stack-layer-2 {
+      transform: translateY(0) scale(1);
+      opacity: 1;
+      transition: transform 0.92s 0.18s cubic-bezier(0.15, 1.2, 0.28, 1), opacity 0.36s 0.18s ease-out;
+      animation: stackHover2 3.8s 1.1s ease-in-out infinite alternate;
+    }
+
+    .comment-popup-stack.active .floating-qmarks {
+      transform: translateY(0) scale(1);
+      opacity: 1;
+      transition: transform 0.58s 0.14s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.28s 0.14s ease-out;
+    }
+
+    /* =========================================
+       DECK DISCARD & PROMOTE ANIMATION
+       (Old top card flicks away; card beneath rises to become the new main card)
+       ========================================= */
+    .discarding-card {
+      position: absolute !important;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 10 !important;
+      pointer-events: none;
+      animation: discardOldTopCard 0.54s cubic-bezier(0.32, 0, 0.15, 1) forwards !important;
+    }
+
+    @keyframes discardOldTopCard {
+      0% {
+        transform: translate3d(0, 0, 0) rotate(0deg) scale(1);
+        opacity: 1;
+      }
+      22% {
+        transform: translate3d(24px, -22px, 0) rotate(2deg) scale(1.015);
+        opacity: 1;
+      }
+      100% {
+        transform: translate3d(240px, -160px, 0) rotate(10deg) scale(0.86);
+        opacity: 0;
+      }
+    }
+
+    .comment-popup-stack.active.promoting-deck .comment-card-main {
+      animation: promoteCardBeneath 0.58s cubic-bezier(0.2, 1.32, 0.32, 1) forwards;
+    }
+
+    @keyframes promoteCardBeneath {
+      0% {
+        transform: translateY(18px) scale(0.966);
+        background-color: #C9CDD2;
+      }
+      100% {
+        transform: translateY(0) scale(1);
+        background-color: #F9FBFD;
+      }
+    }
+
+    .comment-popup-stack.active.promoting-deck .stack-layer-1 {
+      animation: stepUpLayer1 0.68s 0.06s cubic-bezier(0.17, 1.26, 0.3, 1) backwards;
+    }
+
+    @keyframes stepUpLayer1 {
+      0% {
+        transform: translateY(16px) scale(0.96);
+        background-color: #7E848C;
+      }
+      100% {
+        transform: translateY(0) scale(1);
+        background-color: #C9CDD2;
+      }
+    }
+
+    .comment-popup-stack.active.promoting-deck .stack-layer-2 {
+      animation: replenishLayer2 0.78s 0.12s cubic-bezier(0.15, 1.2, 0.28, 1) backwards;
+    }
+
+    @keyframes replenishLayer2 {
+      0% {
+        transform: translateY(24px) scale(0.91);
+        opacity: 0;
+      }
+      100% {
+        transform: translateY(0) scale(1);
+        opacity: 1;
+      }
+    }
+
+    .comment-popup-stack.active.promoting-deck .floating-qmarks {
+      animation: qmarksBounce 0.48s 0.08s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    @keyframes qmarksBounce {
+      0% { transform: translateY(0) scale(1); }
+      45% { transform: translateY(-12px) scale(1.12); }
+      100% { transform: translateY(0) scale(1); }
+    }
+
+    @keyframes stackHover1 {
+      0% { transform: translateY(0px) scale(1); }
+      100% { transform: translateY(2px) scale(0.996); }
+    }
+
+    @keyframes stackHover2 {
+      0% { transform: translateY(0px) scale(1); }
+      100% { transform: translateY(4px) scale(0.992); }
+    }
+
+    .floating-qmarks {
+      position: absolute;
+      top: -76px;
+      right: 14px;
+      display: flex;
+      align-items: flex-end;
+      gap: 6px;
+      z-index: 5;
+      filter: drop-shadow(0 6px 14px rgba(0, 0, 0, 0.45));
+      font-family: 'Bauhaus 93', system-ui, sans-serif;
+      color: #FFFFFF;
+      user-select: none;
+      line-height: 1;
+    }
+
+    .floating-qmarks .q-small {
+      font-size: 68px;
+      transform: rotate(-8deg);
+      display: inline-block;
+      animation: bobSmall 2.6s ease-in-out infinite alternate;
+    }
+
+    .floating-qmarks .q-large {
+      font-size: 96px;
+      transform: rotate(12deg);
+      display: inline-block;
+      animation: bobLarge 2.6s 0.3s ease-in-out infinite alternate;
+    }
+
+    @keyframes bobSmall {
+      0% { transform: translateY(0) rotate(-8deg); }
+      100% { transform: translateY(-7px) rotate(-3deg); }
+    }
+
+    @keyframes bobLarge {
+      0% { transform: translateY(0) rotate(12deg); }
+      100% { transform: translateY(-9px) rotate(17deg); }
+    }
+
+    /* Left Cyan Circle with ? */
+    .question-avatar-circle {
+      width: 142px;
+      height: 142px;
+      border-radius: 50%;
+      flex-shrink: 0;
+      background: linear-gradient(180deg, #3BE3FF 0%, #00A8F3 100%);
+      box-shadow: 0 6px 16px rgba(0, 140, 210, 0.42), 4px 4px 12px rgba(0, 0, 0, 0.18);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Bauhaus 93', system-ui, sans-serif;
+      color: #FFFFFF;
+      font-size: 114px;
+      line-height: 1;
+      padding-top: 4px;
+      text-shadow: 0 4px 10px rgba(0, 80, 150, 0.4);
+      user-select: none;
+    }
+
+    .question-avatar-circle svg {
+      width: 82px;
+      height: 98px;
+    }
+
+    /* Right Text Content */
+    .comment-content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .submitter-name {
+      font-size: 28px;
+      font-weight: 900;
+      color: #0014A8;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+      margin-bottom: 8px;
+      line-height: 1.15;
+    }
+
+    .question-body {
+      font-size: 27px;
+      font-weight: 500;
+      line-height: 1.36;
+      color: #111827;
+    }
+  </style>
+</head>
+<body>
+  <!-- WHITE OUTER FRAME (Exact screen edges) -->
+  <div class="outer-matte-frame"></div>
+
+  <!-- TOP CYCLING BROADCAST BANNER -->
+  <div class="top-header-wrap">
+    <header class="top-header-banner" id="top-info-banner" aria-label="Broadcast Information Banner">
+      <div class="banner-watermark watermark-left" id="banner-wm-left" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/>
+          <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+          <line x1="12" x2="12" y1="19" y2="22"/>
+          <line x1="8" x2="16" y1="22" y2="22"/>
+        </svg>
+      </div>
+      <div class="top-info-slide active" id="top-info-slide">
+        <div id="top-info-title" class="top-info-title">DR. JUAN DELA CRUZ, MD</div>
+        <div id="top-info-sub" class="top-info-sub">NATUROPATH DOCTOR</div>
+      </div>
+      <div class="banner-watermark watermark-right" id="banner-wm-right" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M4.8 2.8A2.5 2.5 0 0 0 2 5.3v2.4a7 7 0 0 0 14 0V5.3a2.5 2.5 0 0 0-2.8-2.5h-1.4A2.5 2.5 0 0 0 9 5.3v2.4a4 4 0 0 1-8 0V5.3a2.5 2.5 0 0 0-2.8-2.5Z"/>
+          <path d="M8 15v1a6 6 0 0 0 6 6v0a6 6 0 0 0 6-6v-4"/>
+          <circle cx="19" cy="11" r="3.5" stroke="currentColor"/>
+          <path d="M19 9.2v3.6M17.2 11h3.6" stroke="currentColor"/>
+        </svg>
+      </div>
+    </header>
+  </div>
+
+  <!-- STACKED COMMENT POPUP -->
+  <div id="overlay-container">
+    <div id="question-card" class="comment-popup-stack">
+      <!-- Floating Top-Right ? ? -->
+      <div class="floating-qmarks">
+        <span class="q-small">?</span>
+        <span class="q-large">?</span>
+      </div>
+
+      <!-- Stacked Layers Underneath -->
+      <div class="stack-layer-2"></div>
+      <div class="stack-layer-1"></div>
+
+      <!-- Main White Rounded Card -->
+      <div class="comment-card-main">
+        <div class="question-avatar-circle">?</div>
+        <div class="comment-content">
+          <div id="submitter-name" class="submitter-name">COMMENTOR NAME</div>
+          <div id="question-text" class="question-body">
+            Doc, totoo po ba na nakakagaling ng ubo ang pag-inom ng maligamgam na tubig na may kalamansi at honey?
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CONNECTED BOTTOM RIBBON BAR -->
+  <footer class="bottom-bar-container">
+    <div class="wing-left-wrap">
+      <div class="bottom-left-wing">
+        <img src="/static/media/wordmark-logo.png" alt="Itanong Mo Kay Doc!">
+      </div>
+    </div>
+
+    <div class="bottom-center-ticker ticker-wrap">
+      <div id="frame-ticker-text" class="ticker-content">
+        WAY OF LIVING • EMPOWERING FILIPINO NETWORKER-ENTREPRENEURS WORLDWIDE • ITANONG MO KAY DOC! LIVE Q&A • DROP YOUR QUESTIONS IN THE COMMENTS
+      </div>
+    </div>
+
+    <div class="wing-right-wrap">
+      <div class="bottom-right-wing">
+        <img src="/static/media/NEW-ESSENSA-LOGO-LANDSCAPE.png" alt="Essensa Naturale">
+      </div>
+    </div>
+  </footer>
+
+  <script src="/static/js/overlay.js?v=12"></script>
+</body>
+</html>

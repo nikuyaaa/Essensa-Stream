@@ -1,0 +1,38 @@
+[
+  {
+    "id": "q-1794303323434",
+    "submitter_name": "bryan",
+    "platform": "facebook",
+    "question_text": "tite",
+    "category": "",
+    "is_answered": false,
+    "created_at": "2026-11-10T09:35:23.438Z"
+  },
+  {
+    "id": "q-1",
+    "submitter_name": "Maria Santos",
+    "platform": "facebook",
+    "question_text": "Doc, totoo po ba na nakakagaling ng ubo ang pag-inom ng maligamgam na tubig na may kalamansi at honey?",
+    "category": "General Health",
+    "is_answered": false,
+    "created_at": "2026-11-10T07:41:33.877Z"
+  },
+  {
+    "id": "q-2",
+    "submitter_name": "@nurse_anne_tiktok",
+    "platform": "tiktok",
+    "question_text": "Ano po ang mabisang first-aid kapag biglang tumaas ang blood pressure habang nasa bahay?",
+    "category": "Hypertension",
+    "is_answered": false,
+    "created_at": "2026-11-10T07:41:33.879Z"
+  },
+  {
+    "id": "q-3",
+    "submitter_name": "Ramon Bautista",
+    "platform": "facebook",
+    "question_text": "Doc, safe po bang uminom ng maintenance medicine sa high blood kahit normal na ang reading ko?",
+    "category": "Maintenance",
+    "is_answered": true,
+    "created_at": "2026-11-10T07:41:33.879Z"
+  }
+]
